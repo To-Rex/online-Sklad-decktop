@@ -1,20 +1,21 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 
 class ProductPage extends StatefulWidget {
   var category_id;
   var category_name;
+
   ProductPage({super.key, this.category_id, this.category_name});
 
   @override
   _ProductPageState createState() => _ProductPageState();
 }
 
-class _ProductPageState extends State<ProductPage> with SingleTickerProviderStateMixin {
-
+class _ProductPageState extends State<ProductPage>
+    with SingleTickerProviderStateMixin {
   var productId = [];
   var productName = [];
   var productDescription = [];
@@ -27,12 +28,12 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
   var productSellerId = [];
   var productNumber = [];
 
-
   Future<void> _getProductsByCategory() async {
     var catId = widget.category_id;
     print(catId);
     final response = await http.get(
-      Uri.parse('https://golalang-online-sklad-production.up.railway.app/getProductsByCategory?categoryId=$catId'),
+      Uri.parse(
+          'https://golalang-online-sklad-production.up.railway.app/getProductsByCategory?categoryId=$catId'),
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -71,33 +72,86 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50), // here the desired height
-        child: AppBar(
-          backgroundColor: const Color.fromRGBO(33, 158, 188, 10),
-          title: Text(widget.category_name),
-        ),
-      ),
-      body: Column(
-        children: [
-          //list of products name
-          Expanded(
-            child: ListView.builder(
-              itemCount: productName.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(productName[index]),
-                );
-              },
+    if (productId.isEmpty) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(50), // here the desired height
+          child: AppBar(
+            backgroundColor: Colors.white,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(widget.category_name),
+                const Expanded(child:SizedBox(),),
+                SizedBox(
+                  height: 30,
+                  width: MediaQuery.of(context).size.width/4,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221), width: 1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      textAlign: TextAlign.justify,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Qidirish',
+                        suffixIcon: Icon(
+                          Icons.search,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width/50,
+                ),
+                IconButton(
+                  hoverColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.white,
+                  color: Colors.white,
+                  onPressed: () {},
+                  icon: SvgPicture.asset(
+                    'assets/userIcon.svg',
+                    height: 25,
+                    width: 25,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
-    );
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: productName.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(productName[index]),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
