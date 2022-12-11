@@ -116,6 +116,45 @@ class _SamplePageState extends State<SamplePage>
       setState(() {});
     }
   }
+  //https://golalang-online-sklad-production.up.railway.app/deleteCategory?categoryId=3eW1hacUxP8yyODQfYHwXi96Y1Cp7p3g
+  Future<void> _deleteCategory(String id) async {
+    final response = await http.delete(Uri.parse(
+        'https://golalang-online-sklad-production.up.railway.app/deleteCategory?categoryId=$id'));
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Bo\'lim muvaffaqiyatli o\'chirildi'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 1700),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.green,
+          ),
+        );
+        category_name.clear();
+        category_id.clear();
+        _getAllCategory();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No internet connection'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 1700),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+      setState(() {});
+    }
+  }
+
 
   Future<void> _showDialogAddCategory() async {
     return showDialog<void>(
@@ -190,7 +229,7 @@ class _SamplePageState extends State<SamplePage>
     );
   }
 
-  Future<void> _showCategoryDialog(int index) async {
+  Future<void> _showDeleteCategoryDialog(int index) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -199,7 +238,7 @@ class _SamplePageState extends State<SamplePage>
           title: Text(category_name[index]),
           content: SingleChildScrollView(
             child: ListBody(
-              children: <Widget>[
+              children: const <Widget>[
                 Text('Bo`limni o`chirmoqchimisiz?'),
               ],
             ),
@@ -214,7 +253,7 @@ class _SamplePageState extends State<SamplePage>
             TextButton(
               child: const Text('O`chirish'),
               onPressed: () {
-                //_deleteCategory(index);
+                _deleteCategory(category_id[index]);
                 Navigator.of(context).pop();
               },
             ),
@@ -315,7 +354,7 @@ class _SamplePageState extends State<SamplePage>
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
                     onTap: () {
-                      _showCategoryDialog(index);
+                      //_showCategoryDialog(index);
                     },
                     child: Card(
                       elevation: 0.01,
@@ -335,7 +374,7 @@ class _SamplePageState extends State<SamplePage>
                                 highlightColor:
                                     const Color.fromRGBO(217, 217, 217, 100),
                                 onPressed: () {
-                                  
+                                  _showDeleteCategoryDialog(index);
                                 },
                                 icon: SvgPicture.asset(
                                   'assets/deleteIcon.svg',
