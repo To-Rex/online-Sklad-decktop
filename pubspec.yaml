@@ -35,7 +35,10 @@ dependencies:
   http: ^0.13.5
   shared_preferences:
   flutter_svg: ^1.1.6
-
+  window_manager:
+    git:
+      url: https://github.com/leanflutter/window_manager.git
+      ref: main
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2

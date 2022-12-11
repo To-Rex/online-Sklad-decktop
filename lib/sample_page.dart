@@ -30,6 +30,10 @@ class _SamplePageState extends State<SamplePage>
   var userStatus = '';
   var userBlocked = false;
   var userNames = '';
+  var minWeight = '';
+  var maxWeight = '';
+  var minHeight = '';
+  var maxHeight = '';
 
   Future<void> _getAllCategory() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -50,6 +54,7 @@ class _SamplePageState extends State<SamplePage>
     userStatus = prefs.getString('userstatus') ?? '';
     userBlocked = prefs.getBool('blocked') ?? false;
     userNames = prefs.getString('username') ?? '';
+
 
     final response = await http.get(Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/getAllCategory'));
@@ -388,8 +393,8 @@ class _SamplePageState extends State<SamplePage>
                                 },
                                 icon: SvgPicture.asset(
                                   'assets/deleteIcon.svg',
-                                  height: 20,
-                                  width: 20,
+                                  width: MediaQuery.of(context).size.width * 0.025,
+                                  height: MediaQuery.of(context).size.height * 0.025,
                                 ),
                               ),
                             ],
