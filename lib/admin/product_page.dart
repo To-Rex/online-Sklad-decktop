@@ -15,6 +15,19 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> with SingleTickerProviderStateMixin {
 
+  var productId = [];
+  var productName = [];
+  var productDescription = [];
+  var productPrice = [];
+  var productCategoryId = [];
+  var productBenefit = [];
+  var productStock = [];
+  var productStatus = [];
+  var productDate = [];
+  var productSellerId = [];
+  var productNumber = [];
+
+
   Future<void> _getProductsByCategory() async {
     var catId = widget.category_id;
     final response = await http.get(
@@ -22,9 +35,32 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print(data);
+      for (var i = 0; i < data.length; i++) {
+        setState(() {
+          productId.add(data[i]['product_id']);
+          productName.add(data[i]['product_name']);
+          productDescription.add(data[i]['product_desc']);
+          productPrice.add(data[i]['product_price']);
+          productCategoryId.add(data[i]['product_cat_id']);
+          productBenefit.add(data[i]['product_benefit']);
+          productStock.add(data[i]['product_stock']);
+          productStatus.add(data[i]['product_status']);
+          productDate.add(data[i]['product_date']);
+          productSellerId.add(data[i]['product_seller']);
+          productNumber.add(data[i]['product_number']);
+        });
+      }
     } else {
-      throw Exception('Failed to load data');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No internet connection'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          duration: Duration(milliseconds: 1700),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
