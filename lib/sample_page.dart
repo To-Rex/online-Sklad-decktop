@@ -326,13 +326,35 @@ class _SamplePageState extends State<SamplePage>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const SizedBox(height: 50),
+                          Row(
+                            children: [
+                              const Expanded(child: SizedBox()),
+                              IconButton(
+                                hoverColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                highlightColor:
+                                    const Color.fromRGBO(217, 217, 217, 100),
+                                onPressed: () {
+                                  
+                                },
+                                icon: SvgPicture.asset(
+                                  'assets/deleteIcon.svg',
+                                  height: 20,
+                                  width: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Expanded(child: SizedBox()),
                           Text(
                             category_name[index],
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.01,
                           ),
                         ],
                       ),

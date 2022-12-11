@@ -208,7 +208,7 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
           const Expanded(child: SizedBox()),
           Row(
             children: [
-              Expanded(child: SizedBox()),
+              const Expanded(child: SizedBox()),
               SizedBox(
                 height: 50,
                 width: MediaQuery.of(context).size.width/7.5,
