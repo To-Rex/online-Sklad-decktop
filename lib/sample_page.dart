@@ -7,6 +7,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'admin/product_page.dart';
+
 class SamplePage extends StatefulWidget {
   const SamplePage({super.key});
 
@@ -354,7 +356,15 @@ class _SamplePageState extends State<SamplePage>
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
                     onTap: () {
-                      //_showCategoryDialog(index);
+                       Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductPage(
+                            category_id: category_id[index],
+                            category_name: category_name[index],
+                          ),
+                        ),
+                      );
                     },
                     child: Card(
                       elevation: 0.01,

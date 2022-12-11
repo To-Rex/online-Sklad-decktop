@@ -2,17 +2,20 @@
 import 'package:flutter/material.dart';
 
 class ProductPage extends StatefulWidget {
-  const ProductPage({super.key});
+  const ProductPage({super.key, required category_id, required category_name});
 
   @override
-  _TablesPageState createState() => _TablesPageState();
+  _ProductPageState createState() => _ProductPageState();
 }
 
-class _TablesPageState extends State<ProductPage> with SingleTickerProviderStateMixin {
+class _ProductPageState extends State<ProductPage> with SingleTickerProviderStateMixin {
+
   @override
   void initState() {
     super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
