@@ -13,9 +13,9 @@ Future<void> main() async {
   WindowOptions windowOptions = const WindowOptions(
     size: Size(800, 600),
     center: true,
-    backgroundColor: Colors.transparent,
+    backgroundColor: Colors.white,
     skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.hidden,
+    //titleBarStyle: TitleBarStyle.hidden,
     minimumSize: Size(800, 600),
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {

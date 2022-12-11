@@ -30,6 +30,7 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
 
   Future<void> _getProductsByCategory() async {
     var catId = widget.category_id;
+    print(catId);
     final response = await http.get(
       Uri.parse('https://golalang-online-sklad-production.up.railway.app/getProductsByCategory?categoryId=$catId'),
     );
@@ -37,17 +38,17 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
       final data = jsonDecode(response.body);
       for (var i = 0; i < data.length; i++) {
         setState(() {
-          productId.add(data[i]['product_id']);
-          productName.add(data[i]['product_name']);
-          productDescription.add(data[i]['product_desc']);
-          productPrice.add(data[i]['product_price']);
-          productCategoryId.add(data[i]['product_cat_id']);
-          productBenefit.add(data[i]['product_benefit']);
-          productStock.add(data[i]['product_stock']);
-          productStatus.add(data[i]['product_status']);
-          productDate.add(data[i]['product_date']);
-          productSellerId.add(data[i]['product_seller']);
-          productNumber.add(data[i]['product_number']);
+          productId.add(data['data'][i]['product_id']);
+          productName.add(data['data'][i]['product_name']);
+          productDescription.add(data['data'][i]['product_desc']);
+          productPrice.add(data['data'][i]['product_price']);
+          productCategoryId.add(data['data'][i]['product_cat_id']);
+          productBenefit.add(data['data'][i]['product_benefit']);
+          productStock.add(data['data'][i]['product_stock']);
+          productStatus.add(data['data'][i]['product_status']);
+          productDate.add(data['data'][i]['product_date']);
+          productSellerId.add(data['data'][i]['product_seller']);
+          productNumber.add(data['data'][i]['product_number']);
         });
       }
     } else {
@@ -83,9 +84,18 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
         ),
       ),
       body: Column(
-        children: const [
-          Text(''),
-          //floating button default
+        children: [
+          //list of products name
+          Expanded(
+            child: ListView.builder(
+              itemCount: productName.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(productName[index]),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
