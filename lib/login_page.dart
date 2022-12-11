@@ -74,6 +74,37 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
       _isLoading = false;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final data = jsonDecode(response.body);
+      if (data['message'] == 'User not found') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('User not found'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 1700),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red,
+          ),
+        );
+        _isLoading = false;
+        return;
+      }
+      if (data['message'] == 'Wrong password') {
+        _passwordController.clear();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Wrong password'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 1700),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red,
+          ),
+        );
+        _isLoading = false;
+        return;
+      }
       prefs.setString('name', data['name']);
       prefs.setString('surname', data['surname']);
       prefs.setString('phone', data['phone']);
@@ -83,6 +114,7 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
       prefs.setString('userstatus', data['userstatus']);
       prefs.setString('registerdate', data['registerdate']);
       prefs.setBool('blocked', data['blocked']);
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const SamplePage()),
