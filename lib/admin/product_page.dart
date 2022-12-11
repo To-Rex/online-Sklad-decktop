@@ -15,8 +15,6 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> with SingleTickerProviderStateMixin {
 
-
- // https://golalang-online-sklad-production.up.railway.app/getProductsByCategory?categoryId=iYVt395gIGixhDlAmW9OYbCFcs0C2lBe
   Future<void> _getProductsByCategory() async {
     var catId = widget.category_id;
     final response = await http.get(
@@ -42,9 +40,10 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(10), // here the desired height
+        preferredSize: const Size.fromHeight(50), // here the desired height
         child: AppBar(
           backgroundColor: const Color.fromRGBO(33, 158, 188, 10),
+          title: Text(widget.category_name),
         ),
       ),
       body: Column(
