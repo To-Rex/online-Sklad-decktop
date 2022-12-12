@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductPage extends StatefulWidget {
   var category_id;
@@ -27,6 +28,41 @@ class _ProductPageState extends State<ProductPage>
   var productDate = [];
   var productSellerId = [];
   var productNumber = [];
+
+  var userName = '';
+  var userId = '';
+  var userSurname = '';
+  var userPhone = '';
+  var userRole = '';
+  var userStatus = '';
+  var userBlocked = false;
+  var userNames = '';
+  var minWeight = '';
+  var maxWeight = '';
+  var minHeight = '';
+  var maxHeight = '';
+
+  Future<void> _getUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userName = prefs.getString('name') ?? '';
+    userId = prefs.getString('userid') ?? '';
+    userSurname = prefs.getString('surname') ?? '';
+    userPhone = prefs.getString('phone') ?? '';
+    userRole = prefs.getString('role') ?? '';
+    userStatus = prefs.getString('userstatus') ?? '';
+    userBlocked = prefs.getBool('blocked') ?? false;
+    userNames = prefs.getString('username') ?? '';
+    print('userNames: $userNames');
+    print('userBlocked: $userBlocked');
+    print('userStatus: $userStatus');
+    print('userRole: $userRole');
+    print('userPhone: $userPhone');
+    print('userSurname: $userSurname');
+    print('userId: $userId');
+    print('userName: $userName');
+
+  }
+
 
   Future<void> _getProductsByCategory() async {
     productId.clear();
@@ -79,8 +115,82 @@ class _ProductPageState extends State<ProductPage>
     }
   }
 
+  Future<void> _addProduct() async {
+    final response = await http.post(
+      Uri.parse('https://golalang-online-sklad-production.up.railway.app/addProduct'),
+      body: jsonEncode(<String, String>{
+        'product_name': 'Product name',
+        'product_desc': 'Product description',
+        'product_price': '1000',
+        'product_cat_id': widget.category_id,
+        'product_benefit': '10',
+        'product_stock': '100',
+        'product_status': 'sell',
+        'product_seller': userId,
+        'product_number': '1',
+      }),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print(data);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No internet connection or server error'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          duration: Duration(milliseconds: 2700),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+  //show dialog add product
+  Future<void> _showDialogAddProduct() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Yangi mahsulot qo\'shish'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Column(
+                  children: [
+                    
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('bekor qilish'),
+              onPressed: () {
+                _addProduct();
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('qo\'shish'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
+    _getUser();
     _getProductsByCategory();
     super.initState();
   }
@@ -206,7 +316,10 @@ class _ProductPageState extends State<ProductPage>
                                       child: SizedBox(),
                                     ),
                                     IconButton(onPressed:
-                                        () {},
+                                        () {
+                                      //product qo`shish
+                                          _showDialogAddProduct();
+                                        },
                                         icon: const Icon(Icons.add_circle_outline_outlined,color: Colors.deepPurpleAccent,size: 30,)),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width / 35,
