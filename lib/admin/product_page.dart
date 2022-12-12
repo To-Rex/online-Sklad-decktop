@@ -162,7 +162,167 @@ class _ProductPageState extends State<ProductPage>
               children: <Widget>[
                 Column(
                   children: [
-                    
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 2.5,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 221, 221, 221),
+                        border: Border.all(
+                            color: const Color.fromARGB(255, 221, 221, 221),
+                            width: 2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TextField(
+                        cursorColor: Colors.deepPurpleAccent,
+                        //controller: _categoryNameController,
+                        textAlign: TextAlign.left,
+                        textInputAction: TextInputAction.next,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(left: 10, right: 10),
+                          border: InputBorder.none,
+                          hintText: 'Mahsulot nomi',
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 221, 221, 221),
+                        border: Border.all(
+                            color: const Color.fromARGB(255, 221, 221, 221),
+                            width: 2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TextField(
+                        cursorColor: Colors.deepPurpleAccent,
+                        //controller: _categoryNameController,
+                        textAlign: TextAlign.left,
+                        textInputAction: TextInputAction.next,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(left: 10, right: 10),
+                          border: InputBorder.none,
+                          hintText: 'Mahsulot izohi',
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 221, 221, 221),
+                        border: Border.all(
+                            color: const Color.fromARGB(255, 221, 221, 221),
+                            width: 2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TextField(
+                        cursorColor: Colors.deepPurpleAccent,
+                        //controller: _categoryNameController,
+                        textAlign: TextAlign.left,
+                        textInputAction: TextInputAction.next,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(left: 10, right: 10),
+                          border: InputBorder.none,
+                          hintText: 'Mahsulot narxi',
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 221, 221, 221),
+                        border: Border.all(
+                            color: const Color.fromARGB(255, 221, 221, 221),
+                            width: 2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TextField(
+                        cursorColor: Colors.deepPurpleAccent,
+                        //controller: _categoryNameController,
+                        textAlign: TextAlign.left,
+                        textInputAction: TextInputAction.next,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(left: 10, right: 10),
+                          border: InputBorder.none,
+                          hintText: 'Mahsulot foydasi',
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 221, 221, 221),
+                            border: Border.all(
+                                color: const Color.fromARGB(255, 221, 221, 221),
+                                width: 2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              _addProduct();
+                            },
+                            icon: SvgPicture.asset(
+                              'assets/minusIcon.svg',
+                              color: Colors.deepPurpleAccent,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.02,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 221, 221, 221),
+                            border: Border.all(
+                                color: const Color.fromARGB(255, 221, 221, 221),
+                                width: 2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TextField(
+                            cursorColor: Colors.deepPurpleAccent,
+                            //controller: _categoryNameController,
+                            textAlign: TextAlign.left,
+                            textInputAction: TextInputAction.next,
+                            decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.only(left: 10, right: 10),
+                              border: InputBorder.none,
+                              hintText: 'Mahsulot miqdori',
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.02,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 221, 221, 221),
+                            border: Border.all(
+                                color: const Color.fromARGB(255, 221, 221, 221),
+                                width: 2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              _addProduct();
+                            },
+                            icon: const Icon(
+                              Icons.add,
+                              color: Colors.deepPurpleAccent,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ],
