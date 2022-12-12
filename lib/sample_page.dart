@@ -301,7 +301,10 @@ class _SamplePageState extends State<SamplePage>
                   child: SizedBox(),
                 ),
                 Text("Salom, $userName",
-                    style: TextStyle(fontSize: 20, color: Colors.black)),
+                    style: const TextStyle(fontSize: 18, color: Colors.black)),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.009,
+                ),
                 IconButton(
                   hoverColor: Colors.transparent,
                   splashColor: Colors.transparent,
@@ -310,10 +313,14 @@ class _SamplePageState extends State<SamplePage>
                   onPressed: () {},
                   icon: SvgPicture.asset(
                     'assets/userIcon.svg',
-                    height: 25,
-                    width: 25,
-                    color: Colors.black,
+                    height: 30,
+                    width: 30,
+                    color: Colors.deepPurpleAccent,
+                    //color: Colors.black,
                   ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.005,
                 ),
               ],
             ),
@@ -323,9 +330,6 @@ class _SamplePageState extends State<SamplePage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (category_name.isNotEmpty)
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.015,
-              ),
             Expanded(
               child: GridView.builder(
                 itemCount: category_name.length,
@@ -371,6 +375,7 @@ class _SamplePageState extends State<SamplePage>
                                 },
                                 icon: SvgPicture.asset(
                                   'assets/deleteIcon.svg',
+                                  color: Colors.deepPurpleAccent,
                                   width:
                                       MediaQuery.of(context).size.width * 0.025,
                                   height: MediaQuery.of(context).size.height *
@@ -399,6 +404,9 @@ class _SamplePageState extends State<SamplePage>
             ),
             Row(
               children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.01,
+                ),
                 IconButton(
                   hoverColor: Colors.transparent,
                   splashColor: Colors.transparent,
@@ -411,6 +419,7 @@ class _SamplePageState extends State<SamplePage>
                   icon: const Icon(
                     Icons.refresh,
                     size: 30,
+                    color: Colors.deepPurpleAccent,
                   ),
                 ),
                 SizedBox(
@@ -420,15 +429,18 @@ class _SamplePageState extends State<SamplePage>
                     style: const TextStyle(fontSize: 20, color: Colors.black)),
               ],
             ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.015,
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: const Color.fromRGBO(217, 217, 217, 100),
+          backgroundColor: Colors.white,
           onPressed: () {
             // Add your onPressed code here!
             _showDialogAddCategory();
           },
-          child: const Icon(Icons.add, color: Colors.black),
+          child: const Icon(Icons.add, color: Colors.deepPurpleAccent),
         ),
       );
     } else {
