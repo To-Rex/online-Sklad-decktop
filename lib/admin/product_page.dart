@@ -17,6 +17,14 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage>
     with SingleTickerProviderStateMixin {
+
+  late final _productNameController = TextEditingController();
+  late final _productDescriptionController = TextEditingController();
+  late final _productPriceController = TextEditingController();
+  late final _productBenefitController = TextEditingController();
+  late final _productStockController = TextEditingController();
+  late final _productNumberController = TextEditingController();
+
   var productId = [];
   var productName = [];
   var productDescription = [];
@@ -173,7 +181,7 @@ class _ProductPageState extends State<ProductPage>
                       ),
                       child: TextField(
                         cursorColor: Colors.deepPurpleAccent,
-                        //controller: _categoryNameController,
+                        controller: _productNameController,
                         textAlign: TextAlign.left,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
@@ -196,7 +204,7 @@ class _ProductPageState extends State<ProductPage>
                       ),
                       child: TextField(
                         cursorColor: Colors.deepPurpleAccent,
-                        //controller: _categoryNameController,
+                        controller: _productDescriptionController,
                         textAlign: TextAlign.left,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
@@ -219,7 +227,7 @@ class _ProductPageState extends State<ProductPage>
                       ),
                       child: TextField(
                         cursorColor: Colors.deepPurpleAccent,
-                        //controller: _categoryNameController,
+                        controller: _productPriceController,
                         textAlign: TextAlign.left,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
@@ -242,7 +250,7 @@ class _ProductPageState extends State<ProductPage>
                       ),
                       child: TextField(
                         cursorColor: Colors.deepPurpleAccent,
-                        //controller: _categoryNameController,
+                        controller: _productBenefitController,
                         textAlign: TextAlign.left,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
@@ -290,7 +298,7 @@ class _ProductPageState extends State<ProductPage>
                             width: MediaQuery.of(context).size.width * 0.2,
                             child: TextField(
                               cursorColor: Colors.deepPurpleAccent,
-                              //controller: _categoryNameController,
+                              controller: _productNumberController,
                               textAlign: TextAlign.center,
                               textInputAction: TextInputAction.next,
                               decoration: const InputDecoration(
@@ -357,6 +365,16 @@ class _ProductPageState extends State<ProductPage>
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _productNameController.dispose();
+    _productDescriptionController.dispose();
+    _productPriceController.dispose();
+    _productBenefitController.dispose();
+    _productStockController.dispose();
+    _productNumberController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
