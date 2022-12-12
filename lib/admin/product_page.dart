@@ -288,15 +288,19 @@ class _ProductPageState extends State<ProductPage>
                                 width: 2),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: TextField(
-                            cursorColor: Colors.deepPurpleAccent,
-                            //controller: _categoryNameController,
-                            textAlign: TextAlign.left,
-                            textInputAction: TextInputAction.next,
-                            decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.only(left: 10, right: 10),
-                              border: InputBorder.none,
-                              hintText: 'Mahsulot miqdori',
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.2,
+                            child: TextField(
+                              cursorColor: Colors.deepPurpleAccent,
+                              //controller: _categoryNameController,
+                              textAlign: TextAlign.center,
+                              textInputAction: TextInputAction.next,
+                              decoration: const InputDecoration(
+                                contentPadding:
+                                    EdgeInsets.only(left: 10, right: 10),
+                                border: InputBorder.none,
+                                hintText: 'Mahsulot miqdori',
+                              ),
                             ),
                           ),
                         ),
