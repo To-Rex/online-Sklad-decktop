@@ -55,7 +55,6 @@ class _SamplePageState extends State<SamplePage>
     userBlocked = prefs.getBool('blocked') ?? false;
     userNames = prefs.getString('username') ?? '';
 
-
     final response = await http.get(Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/getAllCategory'));
     print(response.body);
@@ -123,6 +122,7 @@ class _SamplePageState extends State<SamplePage>
       setState(() {});
     }
   }
+
   //https://golalang-online-sklad-production.up.railway.app/deleteCategory?categoryId=3eW1hacUxP8yyODQfYHwXi96Y1Cp7p3g
   Future<void> _deleteCategory(String id) async {
     final response = await http.delete(Uri.parse(
@@ -161,7 +161,6 @@ class _SamplePageState extends State<SamplePage>
       setState(() {});
     }
   }
-
 
   Future<void> _showDialogAddCategory() async {
     return showDialog<void>(
@@ -287,6 +286,39 @@ class _SamplePageState extends State<SamplePage>
     if (category_name.isNotEmpty) {
       return Scaffold(
         backgroundColor: Colors.white,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(50), // here the desired height
+          child: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0.4,
+            actionsIconTheme: const IconThemeData(color: Colors.black),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text("Bo`limlar",
+                    style: TextStyle(fontSize: 20, color: Colors.black)),
+                const Expanded(
+                  child: SizedBox(),
+                ),
+                Text("Salom, $userName",
+                    style: TextStyle(fontSize: 20, color: Colors.black)),
+                IconButton(
+                  hoverColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.white,
+                  color: Colors.white,
+                  onPressed: () {},
+                  icon: SvgPicture.asset(
+                    'assets/userIcon.svg',
+                    height: 25,
+                    width: 25,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -294,60 +326,6 @@ class _SamplePageState extends State<SamplePage>
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.015,
               ),
-            Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.02,
-                ),
-                Row(
-                  children: [
-                    const Text(
-                      'Hello, ',
-                    ),
-                    SizedBox(
-                      //width: MediaQuery.of(context).size.width/5.5,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          border: Border.all(
-                              color: const Color.fromARGB(255, 221, 221, 221),
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          '$userName      ',
-                          style: const TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 16,
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            fontWeight: FontWeight.w500,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const Expanded(child: SizedBox()),
-                IconButton(
-                  hoverColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  highlightColor: const Color.fromRGBO(217, 217, 217, 100),
-                  onPressed: () {},
-                  icon: SvgPicture.asset(
-                    'assets/userIcon.svg',
-                    height: 25,
-                    width: 25,
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.02,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.025,
-            ),
             Expanded(
               child: GridView.builder(
                 itemCount: category_name.length,
@@ -361,7 +339,7 @@ class _SamplePageState extends State<SamplePage>
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
                     onTap: () {
-                       Navigator.push(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProductPage(
@@ -372,8 +350,8 @@ class _SamplePageState extends State<SamplePage>
                       );
                     },
                     child: Card(
-                      elevation: 0.01,
-                      color: const Color.fromRGBO(217, 217, 217, 100),
+                      elevation: 10,
+                      color: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -393,8 +371,10 @@ class _SamplePageState extends State<SamplePage>
                                 },
                                 icon: SvgPicture.asset(
                                   'assets/deleteIcon.svg',
-                                  width: MediaQuery.of(context).size.width * 0.025,
-                                  height: MediaQuery.of(context).size.height * 0.025,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.025,
+                                  height: MediaQuery.of(context).size.height *
+                                      0.025,
                                 ),
                               ),
                             ],
@@ -433,6 +413,11 @@ class _SamplePageState extends State<SamplePage>
                     size: 30,
                   ),
                 ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.02,
+                ),
+                Text("Jami: ${category_name.length}",
+                    style: const TextStyle(fontSize: 20, color: Colors.black)),
               ],
             ),
           ],
