@@ -63,18 +63,6 @@ class _ProductPageState extends State<ProductPage>
   }
 
   Future<void> _getProductsByCategory() async {
-    productId.clear();
-    productName.clear();
-    productDescription.clear();
-    productPrice.clear();
-    productCategoryId.clear();
-    productBenefit.clear();
-    productStock.clear();
-    productStatus.clear();
-    productDate.clear();
-    productSellerId.clear();
-    productNumber.clear();
-
     var catId = widget.category_id;
     print(catId);
     final response = await http.get(
@@ -83,7 +71,17 @@ class _ProductPageState extends State<ProductPage>
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print(data.length);
+      productId.clear();
+      productName.clear();
+      productDescription.clear();
+      productPrice.clear();
+      productCategoryId.clear();
+      productBenefit.clear();
+      productStock.clear();
+      productStatus.clear();
+      productDate.clear();
+      productSellerId.clear();
+      productNumber.clear();
       for (var i = 0; i < data.length; i++) {
         setState(() {
           productId.add(data['data'][i]['product_id']);
@@ -660,17 +658,6 @@ class _ProductPageState extends State<ProductPage>
                 splashColor: Colors.transparent,
                 highlightColor: const Color.fromRGBO(217, 217, 217, 100),
                 onPressed: () {
-                  // var productId = [];
-                  // var productName = [];
-                  // var productDescription = [];
-                  // var productPrice = [];
-                  // var productCategoryId = [];
-                  // var productBenefit = [];
-                  // var productStock = [];
-                  // var productStatus = [];
-                  // var productDate = [];
-                  // var productSellerId = [];
-                  // var productNumber = [];
                   productId.clear();
                   productName.clear();
                   productDescription.clear();
