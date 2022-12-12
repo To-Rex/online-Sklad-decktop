@@ -69,6 +69,8 @@ flutter:
   assets:
     - assets/userIcon.svg
     - assets/deleteIcon.svg
+    - assets/productIcon.svg
+    - assets/editIcon.svg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
