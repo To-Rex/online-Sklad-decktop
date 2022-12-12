@@ -85,19 +85,26 @@ class _ProductPageState extends State<ProductPage>
           preferredSize: const Size.fromHeight(50), // here the desired height
           child: AppBar(
             backgroundColor: Colors.white,
+            elevation: 0.4,
+            actionsIconTheme: const IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(widget.category_name),
-                const Expanded(child:SizedBox(),),
+                Text(widget.category_name,
+                    style: const TextStyle(fontSize: 20, color: Colors.black)),
+                const Expanded(
+                  child: SizedBox(),
+                ),
                 SizedBox(
                   height: 30,
-                  width: MediaQuery.of(context).size.width/4,
+                  width: MediaQuery.of(context).size.width / 4,
                   child: Container(
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 221, 221, 221),
                       border: Border.all(
-                          color: const Color.fromARGB(255, 221, 221, 221), width: 1),
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const TextField(
@@ -118,7 +125,7 @@ class _ProductPageState extends State<ProductPage>
                   ),
                 ),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width/50,
+                  width: MediaQuery.of(context).size.width / 50,
                 ),
                 IconButton(
                   hoverColor: Colors.transparent,
