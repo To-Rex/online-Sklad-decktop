@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -51,6 +52,18 @@ class _ProductPageState extends State<ProductPage>
   var maxHeight = '';
   var _isLoad = true;
 
+  Future<bool> checkInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
+    return false;
+  }
+
   Future<void> _getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.getString('name') ?? '';
@@ -88,9 +101,9 @@ class _ProductPageState extends State<ProductPage>
         setState(() {});
         return;
       }
-      for (var i = 0; i < data.length; i++) {
+      for (var i = 0; i < data['data'].length; i++) {
+        _isLoad = false;
         setState(() {
-          _isLoad = false;
           productId.add(data['data'][i]['product_id']);
           productName.add(data['data'][i]['product_name']);
           productDescription.add(data['data'][i]['product_desc']);
@@ -149,7 +162,6 @@ class _ProductPageState extends State<ProductPage>
       _productBenefitController.clear();
       _productStockController.clear();
       _productNumberController.clear();
-      //{message: Product added, status: success}
       if (data['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -388,8 +400,9 @@ class _ProductPageState extends State<ProductPage>
             TextButton(
               child: const Text('qo\'shish'),
               onPressed: () {
-                print(_productPriceController.value);
-                print(_productBenefitController.text);
+                setState(() {
+                  _isLoad = true;
+                });
                 _addProduct();
                 Navigator.of(context).pop();
               },
@@ -405,6 +418,16 @@ class _ProductPageState extends State<ProductPage>
     _getUser();
     _getProductsByCategory();
     super.initState();
+    checkInternetConnection().then((value) {
+      if (!value) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Internetga ulanish yo\'q!'),
+              backgroundColor: Colors.red,
+            )
+        );
+      }
+    });
   }
 
   @override
@@ -729,8 +752,7 @@ class _ProductPageState extends State<ProductPage>
                   productDate.clear();
                   productSellerId.clear();
                   productNumber.clear();
-                  setState(() {
-                  });
+                  setState(() {_isLoad = true;});
                   _getProductsByCategory();
                 },
                 icon: const Icon(
