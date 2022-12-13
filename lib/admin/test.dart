@@ -27,9 +27,19 @@ class _ProductPageState extends State<ProductPage>
   late final _productStockController = TextEditingController();
   late final _productNumberController = TextEditingController();
 
+  var productId = [];
+  var productName = [];
+  var productDescription = [];
+  var productPrice = [];
+  var productCategoryId = [];
+  var productBenefit = [];
+  var productStock = [];
+  var productStatus = [];
+  var productDate = [];
+  var productSellerId = [];
+  var productNumber = [];
 
-  var _productList = [];
-  var products = [];
+  //var _productList = [];
 
   var userName = '';
   var userId = '';
@@ -77,18 +87,17 @@ class _ProductPageState extends State<ProductPage>
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      // productId.clear();
-      // productName.clear();
-      // productDescription.clear();
-      // productPrice.clear();
-      // productCategoryId.clear();
-      // productBenefit.clear();
-      // productStock.clear();
-      // productStatus.clear();
-      // productDate.clear();
-      // productSellerId.clear();
-      // productNumber.clear();
-      _productList.clear();
+      productId.clear();
+      productName.clear();
+      productDescription.clear();
+      productPrice.clear();
+      productCategoryId.clear();
+      productBenefit.clear();
+      productStock.clear();
+      productStatus.clear();
+      productDate.clear();
+      productSellerId.clear();
+      productNumber.clear();
       if (data['status'] == 'success' && data['data'] == null) {
         print('No data');
         _isLoad = false;
@@ -97,37 +106,35 @@ class _ProductPageState extends State<ProductPage>
       }
       for (var i = 0; i < data['data'].length; i++) {
         _isLoad = false;
-        _productList.add(ProductList(
-          productId: data['data'][i]['product_id'],
-          productName: data['data'][i]['product_name'],
-          productDescription: data['data'][i]['product_desc'],
-          productPrice: data['data'][i]['product_price'],
-          productCatId: data['data'][i]['product_cat_id'],
-          productBenefit: data['data'][i]['product_benefit'],
-          productStock: data['data'][i]['product_stock'],
-          productStatus: data['data'][i]['product_status'],
-          productDate: data['data'][i]['product_date'],
-          productSeller: data['data'][i]['product_seller'],
-          productNumber: data['data'][i]['product_number'],
-        ));
-        products = _productList;
         setState(() {
-          // productId.add(data['data'][i]['product_id']);
-          // productName.add(data['data'][i]['product_name']);
-          // productDescription.add(data['data'][i]['product_desc']);
-          // productPrice.add(data['data'][i]['product_price']);
-          // productCategoryId.add(data['data'][i]['product_cat_id']);
-          // productBenefit.add(data['data'][i]['product_benefit']);
-          // productStock.add(data['data'][i]['product_stock']);
-          // productStatus.add(data['data'][i]['product_status']);
-          // productDate.add(data['data'][i]['product_date']);
-          // productSellerId.add(data['data'][i]['product_seller']);
-          // productNumber.add(data['data'][i]['product_number']);
+          productId.add(data['data'][i]['product_id']);
+          productName.add(data['data'][i]['product_name']);
+          productDescription.add(data['data'][i]['product_desc']);
+          productPrice.add(data['data'][i]['product_price']);
+          productCategoryId.add(data['data'][i]['product_cat_id']);
+          productBenefit.add(data['data'][i]['product_benefit']);
+          productStock.add(data['data'][i]['product_stock']);
+          productStatus.add(data['data'][i]['product_status']);
+          productDate.add(data['data'][i]['product_date']);
+          productSellerId.add(data['data'][i]['product_seller']);
+          productNumber.add(data['data'][i]['product_number']);
 
-
+          // _productList.add(ProductList(
+          //   productId: data['data'][i]['product_id'],
+          //   productName: data['data'][i]['product_name'],
+          //   productDescription: data['data'][i]['product_desc'],
+          //   productPrice: data['data'][i]['product_price'],
+          //   productCatId: data['data'][i]['product_cat_id'],
+          //   productBenefit: data['data'][i]['product_benefit'],
+          //   productStock: data['data'][i]['product_stock'],
+          //   productStatus: data['data'][i]['product_status'],
+          //   productDate: data['data'][i]['product_date'],
+          //   productSeller: data['data'][i]['product_seller'],
+          //   productNumber: data['data'][i]['product_number'],
+          // ));
         });
       }
-      print(_productList);
+
     } else {
       _isLoad = false;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -228,10 +235,7 @@ class _ProductPageState extends State<ProductPage>
                 Column(
                   children: [
                     SizedBox(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width / 2.5,
+                      width: MediaQuery.of(context).size.width / 2.5,
                     ),
                     Container(
                       decoration: BoxDecoration(
@@ -254,10 +258,7 @@ class _ProductPageState extends State<ProductPage>
                       ),
                     ),
                     SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.02,
+                      height: MediaQuery.of(context).size.height * 0.02,
                     ),
                     Container(
                       decoration: BoxDecoration(
@@ -280,10 +281,7 @@ class _ProductPageState extends State<ProductPage>
                       ),
                     ),
                     SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.02,
+                      height: MediaQuery.of(context).size.height * 0.02,
                     ),
                     Container(
                       decoration: BoxDecoration(
@@ -307,10 +305,7 @@ class _ProductPageState extends State<ProductPage>
                       ),
                     ),
                     SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.02,
+                      height: MediaQuery.of(context).size.height * 0.02,
                     ),
                     Container(
                       decoration: BoxDecoration(
@@ -334,10 +329,7 @@ class _ProductPageState extends State<ProductPage>
                       ),
                     ),
                     SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.02,
+                      height: MediaQuery.of(context).size.height * 0.02,
                     ),
                     Row(
                       children: [
@@ -360,10 +352,7 @@ class _ProductPageState extends State<ProductPage>
                           ),
                         ),
                         SizedBox(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.02,
+                          width: MediaQuery.of(context).size.width * 0.02,
                         ),
                         Container(
                           decoration: BoxDecoration(
@@ -374,10 +363,7 @@ class _ProductPageState extends State<ProductPage>
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: SizedBox(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.2,
+                            width: MediaQuery.of(context).size.width * 0.2,
                             child: TextField(
                               cursorColor: Colors.deepPurpleAccent,
                               controller: _productNumberController,
@@ -393,10 +379,7 @@ class _ProductPageState extends State<ProductPage>
                           ),
                         ),
                         SizedBox(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.02,
+                          width: MediaQuery.of(context).size.width * 0.02,
                         ),
                         Container(
                           decoration: BoxDecoration(
@@ -474,7 +457,6 @@ class _ProductPageState extends State<ProductPage>
     _productNumberController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -496,10 +478,7 @@ class _ProductPageState extends State<ProductPage>
               ),
               SizedBox(
                 height: 30,
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width / 4,
+                width: MediaQuery.of(context).size.width / 4,
                 child: Container(
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 221, 221, 221),
@@ -514,12 +493,8 @@ class _ProductPageState extends State<ProductPage>
                     textInputAction: TextInputAction.next,
                     onChanged: (value) {
                       setState(() {
-                        _searchProduct(value);
-                        // _productList = _productList.where((element) {
-                        //   return element.productName
-                        //       .toLowerCase()
-                        //       .contains(value.toLowerCase());
-                        // }).toList();
+                        //search products by name
+
                       });
                     },
                     decoration: const InputDecoration(
@@ -536,10 +511,7 @@ class _ProductPageState extends State<ProductPage>
                 ),
               ),
               SizedBox(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width / 50,
+                width: MediaQuery.of(context).size.width / 50,
               ),
               IconButton(
                 hoverColor: Colors.transparent,
@@ -589,19 +561,13 @@ class _ProductPageState extends State<ProductPage>
                           children: [
                             SizedBox(
                                 height:
-                                MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height / 50),
+                                MediaQuery.of(context).size.height / 50),
                             //product qo`shish
                             Row(
                               //mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SizedBox(
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width / 50,
+                                  width: MediaQuery.of(context).size.width / 50,
                                 ),
                                 const Text(
                                   'Yangi mahsulot',
@@ -624,131 +590,125 @@ class _ProductPageState extends State<ProductPage>
                                       size: 30,
                                     )),
                                 SizedBox(
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width / 35,
+                                  width: MediaQuery.of(context).size.width / 35,
                                 ),
                               ],
                             ),
                             SizedBox(
                                 height:
-                                MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height / 50),
+                                MediaQuery.of(context).size.height / 50),
                           ],
                         ),
                       ),
-                      // for (var i = 0; i < productId.length; i++)
-                      //   if (productId.isNotEmpty)
-                      //     Container(
-                      //       margin: const EdgeInsets.only(
-                      //           left: 10, right: 10, top: 10, bottom: 10),
-                      //       decoration: BoxDecoration(
-                      //         color: Colors.white,
-                      //         borderRadius: BorderRadius.circular(10),
-                      //         boxShadow: [
-                      //           BoxShadow(
-                      //             color: Colors.grey.withOpacity(0.35),
-                      //             //color: Color.fromARGB(255, 221, 221, 221),
-                      //             spreadRadius: 1,
-                      //             blurRadius: 10,
-                      //             offset: const Offset(0, 3),
-                      //           ),
-                      //         ],
-                      //       ),
-                      //       child: Column(
-                      //         children: [
-                      //           SizedBox(
-                      //               height: MediaQuery.of(context).size.height /
-                      //                   50),
-                      //           Row(
-                      //             children: [
-                      //               SizedBox(
-                      //                   width:
-                      //                       MediaQuery.of(context).size.width *
-                      //                           0.01),
-                      //               Container(
-                      //                 margin: const EdgeInsets.only(left: 10),
-                      //                 child: SvgPicture.asset(
-                      //                   'assets/productIcon.svg',
-                      //                   height: 50,
-                      //                   width: 50,
-                      //                 ),
-                      //               ),
-                      //               SizedBox(
-                      //                   width:
-                      //                       MediaQuery.of(context).size.width *
-                      //                           0.01),
-                      //               Expanded(
-                      //                 child: Column(
-                      //                   crossAxisAlignment:
-                      //                       CrossAxisAlignment.start,
-                      //                   children: [
-                      //                     Text(
-                      //                       productName[i],
-                      //                       style: const TextStyle(
-                      //                           fontSize: 18,
-                      //                           fontWeight: FontWeight.bold),
-                      //                     ),
-                      //                     const SizedBox(
-                      //                       height: 5,
-                      //                     ),
-                      //                     Text(
-                      //                       '${productPrice[i]} so\'m',
-                      //                       style: const TextStyle(
-                      //                           fontSize: 16,
-                      //                           fontWeight: FontWeight.bold),
-                      //                     ),
-                      //                     const SizedBox(
-                      //                       height: 5,
-                      //                     ),
-                      //                     Text(
-                      //                       productDescription[i],
-                      //                       style: const TextStyle(
-                      //                           fontSize: 14,
-                      //                           color: Colors.grey,
-                      //                           fontWeight: FontWeight.bold),
-                      //                     ),
-                      //                   ],
-                      //                 ),
-                      //               ),
-                      //               IconButton(
-                      //                 onPressed: () {},
-                      //                 icon: SvgPicture.asset(
-                      //                   'assets/editIcon.svg',
-                      //                   height: 25,
-                      //                   width: 25,
-                      //                   color: Colors.deepPurpleAccent,
-                      //                 ),
-                      //               ),
-                      //               SizedBox(
-                      //                 width: MediaQuery.of(context).size.width *
-                      //                     0.005,
-                      //               ),
-                      //               IconButton(
-                      //                 onPressed: () {},
-                      //                 icon: SvgPicture.asset(
-                      //                   'assets/deleteIcon.svg',
-                      //                   height: 25,
-                      //                   width: 25,
-                      //                   color: Colors.deepPurpleAccent,
-                      //                 ),
-                      //               ),
-                      //               SizedBox(
-                      //                 width: MediaQuery.of(context).size.width /
-                      //                     40,
-                      //               ),
-                      //             ],
-                      //           ),
-                      //           SizedBox(
-                      //               height: MediaQuery.of(context).size.height /
-                      //                   50),
-                      //         ],
-                      //       ),
-                      //     ),
-                      for (var i = 0; i < products.length; i++)
+                      for (var i = 0; i < productId.length; i++)
+                        if (productId.isNotEmpty)
+                          Container(
+                            margin: const EdgeInsets.only(
+                                left: 10, right: 10, top: 10, bottom: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.35),
+                                  //color: Color.fromARGB(255, 221, 221, 221),
+                                  spreadRadius: 1,
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height /
+                                        50),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                        width:
+                                        MediaQuery.of(context).size.width *
+                                            0.01),
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 10),
+                                      child: SvgPicture.asset(
+                                        'assets/productIcon.svg',
+                                        height: 50,
+                                        width: 50,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        width:
+                                        MediaQuery.of(context).size.width *
+                                            0.01),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            productName[i],
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            '${productPrice[i]} so\'m',
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            productDescription[i],
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: SvgPicture.asset(
+                                        'assets/editIcon.svg',
+                                        height: 25,
+                                        width: 25,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.005,
+                                    ),
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: SvgPicture.asset(
+                                        'assets/deleteIcon.svg',
+                                        height: 25,
+                                        width: 25,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width /
+                                          40,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height /
+                                        50),
+                              ],
+                            ),
+                          ),
+                      if (productId.isEmpty)
                         Container(
                           margin: const EdgeInsets.only(
                               left: 10, right: 10, top: 10, bottom: 10),
@@ -769,137 +729,7 @@ class _ProductPageState extends State<ProductPage>
                             children: [
                               SizedBox(
                                   height:
-                                  MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height / 50),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                      width: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width *
-                                          0.01),
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 10),
-                                    child: SvgPicture.asset(
-                                      'assets/productIcon.svg',
-                                      height: 50,
-                                      width: 50,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                      width: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width *
-                                          0.01),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          products[i].productName,
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          '${products[i]
-                                              .productPrice} so\'m',
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          products[i].productDescription,
-                                          style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-
-                                    },
-                                    icon: SvgPicture.asset(
-                                      'assets/editIcon.svg',
-                                      height: 25,
-                                      width: 25,
-                                      color: Colors.deepPurpleAccent,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width *
-                                        0.005,
-                                  ),
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: SvgPicture.asset(
-                                      'assets/deleteIcon.svg',
-                                      height: 25,
-                                      width: 25,
-                                      color: Colors.deepPurpleAccent,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width:
-                                    MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width / 40,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                  height:
-                                  MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height / 50),
-                            ],
-                          ),
-                        ),
-
-                      if (_productList.isEmpty)
-                        Container(
-                          margin: const EdgeInsets.only(
-                              left: 10, right: 10, top: 10, bottom: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.35),
-                                //color: Color.fromARGB(255, 221, 221, 221),
-                                spreadRadius: 1,
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                  height:
-                                  MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height / 50),
+                                  MediaQuery.of(context).size.height / 50),
                               //hozircha mahsulot yo`q
                               //progress bar
                               const Center(
@@ -913,10 +743,7 @@ class _ProductPageState extends State<ProductPage>
                               ),
                               SizedBox(
                                   height:
-                                  MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height / 50),
+                                  MediaQuery.of(context).size.height / 50),
                             ],
                           ),
                         ),
@@ -930,28 +757,25 @@ class _ProductPageState extends State<ProductPage>
           Row(
             children: [
               SizedBox(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width * 0.01,
+                width: MediaQuery.of(context).size.width * 0.01,
               ),
               IconButton(
                 hoverColor: Colors.transparent,
                 splashColor: Colors.transparent,
                 highlightColor: const Color.fromRGBO(217, 217, 217, 100),
                 onPressed: () {
-                  // productId.clear();
-                  // productName.clear();
-                  // productDescription.clear();
-                  // productPrice.clear();
-                  // productCategoryId.clear();
-                  // productBenefit.clear();
-                  // productStock.clear();
-                  // productStatus.clear();
-                  // productDate.clear();
-                  // productSellerId.clear();
-                  // productNumber.clear();
-                  // setState(() {_isLoad = true;});
+                  productId.clear();
+                  productName.clear();
+                  productDescription.clear();
+                  productPrice.clear();
+                  productCategoryId.clear();
+                  productBenefit.clear();
+                  productStock.clear();
+                  productStatus.clear();
+                  productDate.clear();
+                  productSellerId.clear();
+                  productNumber.clear();
+                  setState(() {_isLoad = true;});
                   _getProductsByCategory();
                 },
                 icon: const Icon(
@@ -961,18 +785,12 @@ class _ProductPageState extends State<ProductPage>
                 ),
               ),
               SizedBox(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width * 0.02,
+                width: MediaQuery.of(context).size.width * 0.02,
               ),
-              Text("Jami: ${_productList.length}",
+              Text("Jami: ${productId.length}",
                   style: const TextStyle(fontSize: 20, color: Colors.black)),
               SizedBox(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width * 0.02,
+                width: MediaQuery.of(context).size.width * 0.02,
               ),
               if (_isLoad)
                 const CircularProgressIndicator(
@@ -981,34 +799,10 @@ class _ProductPageState extends State<ProductPage>
             ],
           ),
           SizedBox(
-            height: MediaQuery
-                .of(context)
-                .size
-                .height / 50,
+            height: MediaQuery.of(context).size.height / 50,
           ),
         ],
       ),
     );
   }
-
-  void _searchProduct(String value) {
-    if (value.isEmpty) {
-      setState(() {
-        products = _productList;
-      });
-    } else {
-      //search name price
-      setState(() {
-        products = _productList
-            .where((element) =>
-        element.productName.toLowerCase().contains(value.toLowerCase()) ||
-            element.productPrice
-                .toString()
-                .toLowerCase()
-                .contains(value.toLowerCase()))
-            .toList();
-      });
-    }
-  }
-
 }

@@ -1,26 +1,61 @@
 class ProductList {
-  final int product_id;
-  final String product_name;
-  final String product_desc;
-  final String product_cat_id;
-  final String product_price;
-  final String product_benefit;
-  final String product_stock;
-  final int product_status;
-  final int product_date;
-  final String product_seller;
-  final String product_number;
-  ProductList({
-    required this.product_id,
-    required this.product_name,
-    required this.product_desc,
-    required this.product_cat_id,
-    required this.product_price,
-    required this.product_benefit,
-    required this.product_stock,
-    required this.product_status,
-    required this.product_date,
-    required this.product_seller,
-    required this.product_number,
-  });
+  final String productId;
+  final String productName;
+  final String productDescription;
+  final String productCatId;
+  final int productPrice;
+  final int productBenefit;
+  final String productStock;
+  final String productStatus;
+  final String productDate;
+  final String productSeller;
+  final int productNumber;
+
+  //Class 'ProductList' has no instance getter 'product_name' with matching arguments
+  ProductList(
+      {required this.productId,
+      required this.productName,
+      required this.productDescription,
+      required this.productCatId,
+      required this.productPrice,
+      required this.productBenefit,
+      required this.productStock,
+      required this.productStatus,
+      required this.productDate,
+      required this.productSeller,
+      required this.productNumber});
+
+  factory ProductList.fromJson(Map<String, dynamic> json) {
+    return ProductList(
+      productId: json['product_id'],
+      productName: json['product_name'],
+      productDescription: json['product_description'],
+      productCatId: json['product_cat_id'],
+      productPrice: json['product_price'],
+      productBenefit: json['product_benefit'],
+      productStock: json['product_stock'],
+      productStatus: json['product_status'],
+      productDate: json['product_date'],
+      productSeller: json['product_seller'],
+      productNumber: json['product_number'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'product_id': productId,
+      'product_name': productName,
+      'product_description': productDescription,
+      'product_cat_id': productCatId,
+      'product_price': productPrice,
+      'product_benefit': productBenefit,
+      'product_stock': productStock,
+      'product_status': productStatus,
+      'product_date': productDate,
+      'product_seller': productSeller,
+      'product_number': productNumber,
+    };
+  }
+
+
 }
