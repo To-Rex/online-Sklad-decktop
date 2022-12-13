@@ -49,6 +49,7 @@ class _ProductPageState extends State<ProductPage>
   var maxWeight = '';
   var minHeight = '';
   var maxHeight = '';
+  var _isLoad = true;
 
   Future<void> _getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -60,19 +61,10 @@ class _ProductPageState extends State<ProductPage>
     userStatus = prefs.getString('userstatus') ?? '';
     userBlocked = prefs.getBool('blocked') ?? false;
     userNames = prefs.getString('username') ?? '';
-    print('userNames: $userNames');
-    print('userBlocked: $userBlocked');
-    print('userStatus: $userStatus');
-    print('userRole: $userRole');
-    print('userPhone: $userPhone');
-    print('userSurname: $userSurname');
-    print('userId: $userId');
-    print('userName: $userName');
   }
 
   Future<void> _getProductsByCategory() async {
     var catId = widget.category_id;
-    print(catId);
     final response = await http.get(
       Uri.parse(
           'https://golalang-online-sklad-production.up.railway.app/getProductsByCategory?categoryId=$catId'),
@@ -90,8 +82,15 @@ class _ProductPageState extends State<ProductPage>
       productDate.clear();
       productSellerId.clear();
       productNumber.clear();
+      if (data['status'] == 'success' && data['data'] == null) {
+        print('No data');
+        _isLoad = false;
+        setState(() {});
+        return;
+      }
       for (var i = 0; i < data.length; i++) {
         setState(() {
+          _isLoad = false;
           productId.add(data['data'][i]['product_id']);
           productName.add(data['data'][i]['product_name']);
           productDescription.add(data['data'][i]['product_desc']);
@@ -105,7 +104,9 @@ class _ProductPageState extends State<ProductPage>
           productNumber.add(data['data'][i]['product_number']);
         });
       }
+
     } else {
+      _isLoad = false;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('No internet connection'),
@@ -120,28 +121,64 @@ class _ProductPageState extends State<ProductPage>
   }
 
   Future<void> _addProduct() async {
+    var price = int.parse(_productPriceController.text);
+    var benefit = int.parse(_productBenefitController.text);
+    var number = int.parse(_productNumberController.text);
+    _productStockController.text = 'active';
     final response = await http.post(
       Uri.parse(
           'https://golalang-online-sklad-production.up.railway.app/addProduct'),
-      body: jsonEncode(<String, String>{
-        'product_name': 'Product name',
-        'product_desc': 'Product description',
-        'product_price': '1000',
+      body: jsonEncode(<Object, Object>{
+        'product_name': _productNameController.text,
+        'product_desc': _productDescriptionController.text,
+        'product_price': price,
         'product_cat_id': widget.category_id,
-        'product_benefit': '10',
-        'product_stock': '100',
+        'product_benefit': benefit,
+        'product_stock': _productStockController.text,
         'product_status': 'sell',
         'product_seller': userId,
-        'product_number': '1',
+        'product_number': number,
       }),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       print(data);
+      _productNameController.clear();
+      _productDescriptionController.clear();
+      _productPriceController.clear();
+      _productBenefitController.clear();
+      _productStockController.clear();
+      _productNumberController.clear();
+      //{message: Product added, status: success}
+      if (data['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mahsulot qo\'shildi'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 1700),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.green,
+          ),
+        );
+        _getProductsByCategory();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mahsulot qo\'shilmadi'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 1700),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      _getProductsByCategory();
     } else {
+      print(response.body);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('No internet connection or server error'),
@@ -229,6 +266,7 @@ class _ProductPageState extends State<ProductPage>
                         cursorColor: Colors.deepPurpleAccent,
                         controller: _productPriceController,
                         textAlign: TextAlign.left,
+                        keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
                           contentPadding: EdgeInsets.only(left: 10, right: 10),
@@ -252,6 +290,7 @@ class _ProductPageState extends State<ProductPage>
                         cursorColor: Colors.deepPurpleAccent,
                         controller: _productBenefitController,
                         textAlign: TextAlign.left,
+                        keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
                           contentPadding: EdgeInsets.only(left: 10, right: 10),
@@ -349,6 +388,9 @@ class _ProductPageState extends State<ProductPage>
             TextButton(
               child: const Text('qo\'shish'),
               onPressed: () {
+                print(_productPriceController.value);
+                print(_productBenefitController.text);
+                _addProduct();
                 Navigator.of(context).pop();
               },
             ),
@@ -705,8 +747,10 @@ class _ProductPageState extends State<ProductPage>
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.02,
               ),
-              if (productId.isEmpty)
-                const CircularProgressIndicator(),
+              if (_isLoad)
+                const CircularProgressIndicator(
+                  color: Colors.deepPurpleAccent,
+                ),
             ],
           ),
           SizedBox(
