@@ -1194,34 +1194,6 @@ class _ProductPageState extends State<ProductPage>
                     ),
                     child: TextField(
                       cursorColor: Colors.deepPurpleAccent,
-                      controller: _productNameController,
-                      textAlign: TextAlign.left,
-                      keyboardType: TextInputType.text,
-                      keyboardAppearance: Brightness.light,
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10, right: 10),
-                        border: InputBorder.none,
-                        hintText: 'Mahsulot nomi',
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 221, 221, 221),
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      cursorColor: Colors.deepPurpleAccent,
                       controller: _productDescriptionController,
                       textAlign: TextAlign.left,
                       keyboardType: TextInputType.text,
@@ -1305,7 +1277,7 @@ class _ProductPageState extends State<ProductPage>
                   _productNameController.clear();
                   _productPriceController.clear();
                   _productBenefitController.clear();
-                  _productNumbersController.clear();
+                  _productDescriptionController.clear();
                   Navigator.pop(context);
                 },
                 child: const Text('Bekor qilish'),
@@ -1313,6 +1285,7 @@ class _ProductPageState extends State<ProductPage>
               TextButton(
                 onPressed: () {
                   if (_productNameController.text.isEmpty  ||
+                      _productDescriptionController.text.isEmpty ||
                       _productPriceController.text.isEmpty ||
                       _productBenefitController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -1323,7 +1296,7 @@ class _ProductPageState extends State<ProductPage>
                     );
                   } else {
                     _isLoad = true;
-                    //_editProduct(product.id);
+
                     Navigator.pop(context);
                   }
                 },
