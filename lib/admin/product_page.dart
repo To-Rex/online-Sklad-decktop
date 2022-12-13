@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -331,7 +332,8 @@ class _ProductPageState extends State<ProductPage>
                         textAlign: TextAlign.left,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(left: 10, right: 10),
+                          contentPadding:
+                              EdgeInsets.only(left: 10, right: 10),
                           border: InputBorder.none,
                           hintText: 'Mahsulot nomi',
                         ),
@@ -354,7 +356,8 @@ class _ProductPageState extends State<ProductPage>
                         textAlign: TextAlign.left,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(left: 10, right: 10),
+                          contentPadding:
+                              EdgeInsets.only(left: 10, right: 10),
                           border: InputBorder.none,
                           hintText: 'Mahsulot izohi',
                         ),
@@ -378,7 +381,8 @@ class _ProductPageState extends State<ProductPage>
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(left: 10, right: 10),
+                          contentPadding:
+                              EdgeInsets.only(left: 10, right: 10),
                           border: InputBorder.none,
                           hintText: 'Mahsulot narxi',
                         ),
@@ -402,7 +406,8 @@ class _ProductPageState extends State<ProductPage>
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(left: 10, right: 10),
+                          contentPadding:
+                              EdgeInsets.only(left: 10, right: 10),
                           border: InputBorder.none,
                           hintText: 'Mahsulot foydasi',
                         ),
@@ -490,18 +495,35 @@ class _ProductPageState extends State<ProductPage>
             TextButton(
               child: const Text('bekor qilish'),
               onPressed: () {
-                _addProduct();
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
               child: const Text('qo\'shish'),
               onPressed: () {
-                setState(() {
-                  _isLoad = true;
-                });
-                _addProduct();
-                Navigator.of(context).pop();
+                if (_productNameController.text.isEmpty ||
+                    _productPriceController.text.isEmpty ||
+                    _productBenefitController.text.isEmpty ||
+                    _productNumberController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Barcha maydonlarni to\'ldiring'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                if (_productNameController.text.isNotEmpty &&
+                    _productPriceController.text.isNotEmpty &&
+                    _productBenefitController.text.isNotEmpty &&
+                    _productNumberController.text.isNotEmpty) {
+                  setState(() {
+                    _isLoad = true;
+                  });
+                  _addProduct();
+                  Navigator.of(context).pop();
+                }
               },
             ),
           ],
@@ -509,7 +531,6 @@ class _ProductPageState extends State<ProductPage>
       },
     );
   }
-
   @override
   void initState() {
     _getUser();
@@ -632,16 +653,13 @@ class _ProductPageState extends State<ProductPage>
                   ),
                   child: Column(
                     children: [
-                      SizedBox(
-                          height:
-                          MediaQuery.of(context).size.height / 50),
+                      SizedBox(height: MediaQuery.of(context).size.height / 50),
                       //product qo`shish
                       Row(
                         //mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width:
-                            MediaQuery.of(context).size.width / 50,
+                            width: MediaQuery.of(context).size.width / 50,
                           ),
                           const Text(
                             'Yangi mahsulot',
@@ -663,14 +681,11 @@ class _ProductPageState extends State<ProductPage>
                                 size: 30,
                               )),
                           SizedBox(
-                            width:
-                            MediaQuery.of(context).size.width / 35,
+                            width: MediaQuery.of(context).size.width / 35,
                           ),
                         ],
                       ),
-                      SizedBox(
-                          height:
-                          MediaQuery.of(context).size.height / 50),
+                      SizedBox(height: MediaQuery.of(context).size.height / 50),
                     ],
                   ),
                 ),
@@ -701,7 +716,8 @@ class _ProductPageState extends State<ProductPage>
                           child: Column(
                             children: [
                               SizedBox(
-                                  height: MediaQuery.of(context).size.height * 0.02),
+                                  height: MediaQuery.of(context).size.height *
+                                      0.02),
                               Row(
                                 children: [
                                   SizedBox(
@@ -753,16 +769,20 @@ class _ProductPageState extends State<ProductPage>
                                   ),
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: const Color.fromARGB(255, 221, 221, 221),
+                                      color: const Color.fromARGB(
+                                          255, 221, 221, 221),
                                       border: Border.all(
-                                          color: const Color.fromARGB(255, 221, 221, 221),
+                                          color: const Color.fromARGB(
+                                              255, 221, 221, 221),
                                           width: 5),
                                       borderRadius: BorderRadius.circular(5),
                                     ),
-                                    child: Text('  ${products[i].productNumber}  Dona  '),
+                                    child: Text(
+                                        '  ${products[i].productNumber}  Dona  '),
                                   ),
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.009,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.009,
                                   ),
                                   IconButton(
                                       onPressed: () {
@@ -774,7 +794,8 @@ class _ProductPageState extends State<ProductPage>
                                         size: 30,
                                       )),
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.005,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.005,
                                   ),
                                   IconButton(
                                     onPressed: () {},
@@ -786,7 +807,8 @@ class _ProductPageState extends State<ProductPage>
                                     ),
                                   ),
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.005,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.005,
                                   ),
                                   IconButton(
                                     onPressed: () {
@@ -801,14 +823,14 @@ class _ProductPageState extends State<ProductPage>
                                     ),
                                   ),
                                   SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.025,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.025,
                                   ),
                                 ],
                               ),
                               SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.02),
+                                  height: MediaQuery.of(context).size.height *
+                                      0.02),
                             ],
                           ),
                         ),
