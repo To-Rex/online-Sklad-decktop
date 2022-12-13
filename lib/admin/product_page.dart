@@ -68,6 +68,7 @@ class _ProductPageState extends State<ProductPage>
   }
 
   Future<void> _getProductsByCategory() async {
+
     var catId = widget.category_id;
     final response = await http.get(
       Uri.parse(
@@ -77,7 +78,6 @@ class _ProductPageState extends State<ProductPage>
       final data = jsonDecode(response.body);
       _productList.clear();
       if (data['status'] == 'success' && data['data'] == null) {
-        print('No data');
         _isLoad = false;
         setState(() {});
         return;
@@ -100,7 +100,6 @@ class _ProductPageState extends State<ProductPage>
         products = _productList;
         setState(() {});
       }
-      print(_productList);
     } else {
       _isLoad = false;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -117,6 +116,16 @@ class _ProductPageState extends State<ProductPage>
   }
 
   Future<void> _addProduct() async {
+    checkInternetConnection().then((value) {
+      if (!value) {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Internetga ulanish yo\'q!'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+    });
     var price = int.parse(_productPriceController.text);
     var benefit = int.parse(_productBenefitController.text);
     var number = int.parse(_productNumberController.text);
@@ -138,7 +147,6 @@ class _ProductPageState extends State<ProductPage>
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print(data);
       _productNameController.clear();
       _productDescriptionController.clear();
       _productPriceController.clear();
@@ -173,7 +181,6 @@ class _ProductPageState extends State<ProductPage>
       }
       _getProductsByCategory();
     } else {
-      print(response.body);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('No internet connection or server error'),
@@ -189,6 +196,16 @@ class _ProductPageState extends State<ProductPage>
 
   //delete product
   Future<void> _deleteProduct(String productId) async {
+    checkInternetConnection().then((value) {
+      if (!value) {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Internetga ulanish yo\'q!'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+    });
     setState(() {});
     final response = await http.delete(
       Uri.parse(
@@ -240,6 +257,16 @@ class _ProductPageState extends State<ProductPage>
 
   //show dialog add product
   Future<void> _showDialogAddProduct() async {
+    checkInternetConnection().then((value) {
+      if (!value) {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Internetga ulanish yo\'q!'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+    });
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
