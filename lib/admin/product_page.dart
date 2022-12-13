@@ -25,6 +25,7 @@ class _ProductPageState extends State<ProductPage>
   late final _productBenefitController = TextEditingController();
   late final _productStockController = TextEditingController();
   late final _productNumberController = TextEditingController();
+  late final _productNumbersController = TextEditingController();
 
   final _productList = [];
   var products = [];
@@ -68,7 +69,6 @@ class _ProductPageState extends State<ProductPage>
   }
 
   Future<void> _getProductsByCategory() async {
-
     var catId = widget.category_id;
     final response = await http.get(
       Uri.parse(
@@ -191,6 +191,47 @@ class _ProductPageState extends State<ProductPage>
           behavior: SnackBarBehavior.floating,
         ),
       );
+    }
+  }
+
+  //product _sellProduct
+
+  Future<void> _sellProduct(String productId) async {
+    checkInternetConnection().then((value) {
+      if (!value) {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Internetga ulanish yo\'q!'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+    });
+    var number = int.parse(_productNumbersController.text);
+    _productStockController.text = 'active';
+    //https://golalang-online-sklad-production.up.railway.app/productSell?productId=A0dNkcXdzQvI8mIbMEBU5w89VHaU3Vh8&userId=creator&number=1
+    final response = await http.post(
+      Uri.parse(
+          'https://golalang-online-sklad-production.up.railway.app/productSell?productId=$productId&userId=$userId&number=$number'),
+    );
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print(data);
+      if (data['status'] == 'success') {
+        _productStockController.clear();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mahsulot sotildi'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 1700),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.green,
+          ),
+        );
+        _getProductsByCategory();
+      }
     }
   }
 
@@ -495,6 +536,7 @@ class _ProductPageState extends State<ProductPage>
     _productBenefitController.dispose();
     _productStockController.dispose();
     _productNumberController.dispose();
+    _productNumbersController.dispose();
     super.dispose();
   }
 
@@ -575,71 +617,74 @@ class _ProductPageState extends State<ProductPage>
           Expanded(
             child: ListView(
               children: [
-                GestureDetector(
-                  onTap: () {
-                    //read product
-                  },
+                Container(
+                  margin: const EdgeInsets.only(
+                      left: 10, right: 10, top: 10, bottom: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.35),
+                        //color: Color.fromARGB(255, 221, 221, 221),
+                        spreadRadius: 1,
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
                   child: Column(
                     children: [
-                      Container(
-                        margin: const EdgeInsets.only(
-                            left: 10, right: 10, top: 10, bottom: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.35),
-                              //color: Color.fromARGB(255, 221, 221, 221),
-                              spreadRadius: 1,
-                              blurRadius: 10,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height / 50),
-                            //product qo`shish
-                            Row(
-                              //mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width / 50,
-                                ),
-                                const Text(
-                                  'Yangi mahsulot',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const Expanded(
-                                  child: SizedBox(),
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      _showDialogAddProduct();
-                                    },
-                                    icon: const Icon(
-                                      Icons.add_circle_outline_outlined,
-                                      color: Colors.deepPurpleAccent,
-                                      size: 30,
-                                    )),
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width / 35,
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height / 50),
-                          ],
-                        ),
+                      SizedBox(
+                          height:
+                          MediaQuery.of(context).size.height / 50),
+                      //product qo`shish
+                      Row(
+                        //mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width:
+                            MediaQuery.of(context).size.width / 50,
+                          ),
+                          const Text(
+                            'Yangi mahsulot',
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const Expanded(
+                            child: SizedBox(),
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                _showDialogAddProduct();
+                              },
+                              icon: const Icon(
+                                Icons.add_circle_outline_outlined,
+                                color: Colors.deepPurpleAccent,
+                                size: 30,
+                              )),
+                          SizedBox(
+                            width:
+                            MediaQuery.of(context).size.width / 35,
+                          ),
+                        ],
                       ),
-                      for (var i = 0; i < products.length; i++)
+                      SizedBox(
+                          height:
+                          MediaQuery.of(context).size.height / 50),
+                    ],
+                  ),
+                ),
+                for (var i = 0; i < products.length; i++)
+                  GestureDetector(
+                    onTap: () {
+                      _showProductDialog(products[i].productId);
+                      print(products[i].productId);
+                    },
+                    child: Column(
+                      children: [
                         Container(
                           margin: const EdgeInsets.only(
                               left: 10, right: 10, top: 10, bottom: 10),
@@ -725,7 +770,8 @@ class _ProductPageState extends State<ProductPage>
                                   ),
                                   IconButton(
                                     onPressed: () {
-                                      _showDialogDeleteProduct(products[i].productId);
+                                      _showDialogDeleteProduct(
+                                          products[i].productId);
                                     },
                                     icon: SvgPicture.asset(
                                       'assets/deleteIcon.svg',
@@ -746,49 +792,48 @@ class _ProductPageState extends State<ProductPage>
                             ],
                           ),
                         ),
-
-                      if (_productList.isEmpty)
-                        Container(
-                          margin: const EdgeInsets.only(
-                              left: 10, right: 10, top: 10, bottom: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.35),
-                                //color: Color.fromARGB(255, 221, 221, 221),
-                                spreadRadius: 1,
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 50),
-                              //hozircha mahsulot yo`q
-                              //progress bar
-                              const Center(
-                                child: Text(
-                                  'Hozircha mahsulot yo`q',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
+                        if (_productList.isEmpty)
+                          Container(
+                            margin: const EdgeInsets.only(
+                                left: 10, right: 10, top: 10, bottom: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.35),
+                                  //color: Color.fromARGB(255, 221, 221, 221),
+                                  spreadRadius: 1,
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
                                 ),
-                              ),
-                              SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 50),
-                            ],
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height /
+                                        50),
+                                //hozircha mahsulot yo`q
+                                //progress bar
+                                const Center(
+                                  child: Text(
+                                    'Hozircha mahsulot yo`q',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height /
+                                        50),
+                              ],
+                            ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
               ],
             ),
             //progress bar
@@ -881,6 +926,61 @@ class _ProductPageState extends State<ProductPage>
                   Navigator.pop(context);
                 },
                 child: const Text('Ha'),
+              ),
+            ],
+          );
+        });
+  }
+
+  void _showProductDialog(String id) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Mahsulotni sotish'),
+            content: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.1,
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _productNumbersController,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.text,
+                      keyboardAppearance: Brightness.light,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Mahsulot soni',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Bekor qilish'),
+              ),
+              TextButton(
+                onPressed: () {
+                  _isLoad = true;
+                  _sellProduct(id);
+                  Navigator.pop(context);
+                },
+                child: const Text('Sotish'),
               ),
             ],
           );
