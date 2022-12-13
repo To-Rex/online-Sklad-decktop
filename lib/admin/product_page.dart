@@ -317,6 +317,33 @@ class _ProductPageState extends State<ProductPage>
       );
     }
   }
+  //https://golalang-online-sklad-production.up.railway.app/addProductSell/?productId=kzwItZyg6aJoH4stRSo5MwJK8AaFU9qH&number=1&userId=KR5BX7h1n1GHy5QuubRdbJJWb3OPLFj8
+  Future<void> _putPraductSell(String productId) async {
+    checkInternetConnection().then((value) {
+      if (!value) {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Internetga ulanish yo\'q!'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+    });
+    var number = int.parse(_productNumbersController.text);
+    final response = await http.post(
+      Uri.parse(
+          'https://golalang-online-sklad-production.up.railway.app/addProductSell/?productId=$productId&number=$number&userId=$userId'),
+      body: jsonEncode(<Object, Object>{
+        'product_price': _productPriceController.text,
+        'product_benefit': _productBenefitController.text,
+      }),
+    );
+    if (response.statusCode == 200) {
+      _productNumbersController.clear();
+      final data = jsonDecode(response.body);
+      print(data);
+    }
+  }
 
   Future<void> _deleteProduct(String productId) async {
     checkInternetConnection().then((value) {
