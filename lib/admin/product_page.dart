@@ -271,6 +271,7 @@ class _ProductPageState extends State<ProductPage>
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      print(data);
       _productNameController.clear();
       _productDescriptionController.clear();
       _productPriceController.clear();
@@ -900,6 +901,14 @@ class _ProductPageState extends State<ProductPage>
                                   ),
                                   IconButton(
                                     onPressed: () {
+                                      _productNameController.text =
+                                          products[i].productName.toString();
+                                      _productPriceController.text =
+                                          products[i].productPrice.toString();
+                                      _productDescriptionController.text =
+                                          products[i].productDescription.toString();
+                                      _productBenefitController.text =
+                                          products[i].productBenefit.toString();
                                       _showDialogEditProduct(products[i].productId);
                                     },
                                     icon: SvgPicture.asset(
@@ -1150,10 +1159,7 @@ class _ProductPageState extends State<ProductPage>
           return AlertDialog(
             title: const Text('Mahsulotni tahrirlash'),
             content: SizedBox(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.5,
+              width: MediaQuery.of(context).size.width * 0.5,
               child: Column(
                 children: [
                   Container(
@@ -1296,7 +1302,8 @@ class _ProductPageState extends State<ProductPage>
                     );
                   } else {
                     _isLoad = true;
-
+                    setState(() {});
+                    _updateProduct(id);
                     Navigator.pop(context);
                   }
                 },
@@ -1305,6 +1312,5 @@ class _ProductPageState extends State<ProductPage>
             ],
           );
         });
-
   }
 }
