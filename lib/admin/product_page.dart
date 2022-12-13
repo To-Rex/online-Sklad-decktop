@@ -582,7 +582,7 @@ class _ProductPageState extends State<ProductPage>
                       hintText: 'Qidirish',
                       suffixIcon: Icon(
                         Icons.search,
-                        color: Colors.black,
+                        color: Colors.deepPurpleAccent,
                         size: 20,
                       ),
                     ),
@@ -602,7 +602,7 @@ class _ProductPageState extends State<ProductPage>
                   'assets/userIcon.svg',
                   height: 25,
                   width: 25,
-                  color: Colors.black,
+                  color: Colors.deepPurpleAccent,
                 ),
               ),
             ],
