@@ -332,78 +332,78 @@ class _SamplePageState extends State<SamplePage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (category_name.isNotEmpty)
-            Expanded(
-              child: GridView.builder(
-                itemCount: category_name.length,
-                padding: const EdgeInsets.all(70),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 6,
-                  childAspectRatio: 1.0,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProductPage(
-                            category_id: category_id[index],
-                            category_name: category_name[index],
-                          ),
-                        ),
-                      );
-                    },
-                    child: Card(
-                      elevation: 10,
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              const Expanded(child: SizedBox()),
-                              IconButton(
-                                hoverColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                highlightColor:
-                                    const Color.fromRGBO(217, 217, 217, 100),
-                                onPressed: () {
-                                  _showDeleteCategoryDialog(index);
-                                },
-                                icon: SvgPicture.asset(
-                                  'assets/deleteIcon.svg',
-                                  color: Colors.deepPurpleAccent,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.025,
-                                  height: MediaQuery.of(context).size.height *
-                                      0.025,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Expanded(child: SizedBox()),
-                          Text(
-                            category_name[index],
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+              Expanded(
+                child: GridView.builder(
+                  itemCount: category_name.length,
+                  padding: const EdgeInsets.all(70),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 6,
+                    childAspectRatio: 1.0,
+                    crossAxisSpacing: 10.0,
+                    mainAxisSpacing: 10.0,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductPage(
+                              category_id: category_id[index],
+                              category_name: category_name[index],
                             ),
                           ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.01,
-                          ),
-                        ],
+                        );
+                      },
+                      child: Card(
+                        elevation: 10,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                const Expanded(child: SizedBox()),
+                                IconButton(
+                                  hoverColor: Colors.transparent,
+                                  splashColor: Colors.transparent,
+                                  highlightColor:
+                                      const Color.fromRGBO(217, 217, 217, 100),
+                                  onPressed: () {
+                                    _showDeleteCategoryDialog(index);
+                                  },
+                                  icon: SvgPicture.asset(
+                                    'assets/deleteIcon.svg',
+                                    color: Colors.deepPurpleAccent,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.025,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.025,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Expanded(child: SizedBox()),
+                            Text(
+                              category_name[index],
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.01,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
-            ),
             Row(
               children: [
                 SizedBox(
