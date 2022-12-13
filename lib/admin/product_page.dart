@@ -208,17 +208,14 @@ class _ProductPageState extends State<ProductPage>
       }
     });
     var number = int.parse(_productNumbersController.text);
-    _productStockController.text = 'active';
-    //https://golalang-online-sklad-production.up.railway.app/productSell?productId=A0dNkcXdzQvI8mIbMEBU5w89VHaU3Vh8&userId=creator&number=1
     final response = await http.post(
       Uri.parse(
           'https://golalang-online-sklad-production.up.railway.app/productSell?productId=$productId&userId=$userId&number=$number'),
     );
     if (response.statusCode == 200) {
+      _productNumbersController.clear();
       final data = jsonDecode(response.body);
-      print(data);
       if (data['status'] == 'success') {
-        _productStockController.clear();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Mahsulot sotildi'),
