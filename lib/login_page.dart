@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const SamplePage()),
+        MaterialPageRoute(builder: (context) => SamplePage()),
       );
 
     } else {

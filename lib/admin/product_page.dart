@@ -515,11 +515,6 @@ class _ProductPageState extends State<ProductPage>
                     onChanged: (value) {
                       setState(() {
                         _searchProduct(value);
-                        // _productList = _productList.where((element) {
-                        //   return element.productName
-                        //       .toLowerCase()
-                        //       .contains(value.toLowerCase());
-                        // }).toList();
                       });
                     },
                     decoration: const InputDecoration(
@@ -615,7 +610,6 @@ class _ProductPageState extends State<ProductPage>
                                 ),
                                 IconButton(
                                     onPressed: () {
-                                      //product qo`shish
                                       _showDialogAddProduct();
                                     },
                                     icon: const Icon(
@@ -940,18 +934,9 @@ class _ProductPageState extends State<ProductPage>
                 splashColor: Colors.transparent,
                 highlightColor: const Color.fromRGBO(217, 217, 217, 100),
                 onPressed: () {
-                  // productId.clear();
-                  // productName.clear();
-                  // productDescription.clear();
-                  // productPrice.clear();
-                  // productCategoryId.clear();
-                  // productBenefit.clear();
-                  // productStock.clear();
-                  // productStatus.clear();
-                  // productDate.clear();
-                  // productSellerId.clear();
-                  // productNumber.clear();
-                  // setState(() {_isLoad = true;});
+                  _productList.clear();
+                  products.clear();
+                  setState(() {_isLoad = true;});
                   _getProductsByCategory();
                 },
                 icon: const Icon(

@@ -291,7 +291,9 @@ class _SamplePageState extends State<SamplePage>
           child: AppBar(
             backgroundColor: Colors.white,
             elevation: 0.4,
+            automaticallyImplyLeading: false,
             actionsIconTheme: const IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
