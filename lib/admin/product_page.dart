@@ -195,8 +195,6 @@ class _ProductPageState extends State<ProductPage>
     }
   }
 
-  //product _sellProduct
-
   Future<void> _sellProduct(String productId) async {
     checkInternetConnection().then((value) {
       if (!value) {
@@ -214,6 +212,7 @@ class _ProductPageState extends State<ProductPage>
           'https://golalang-online-sklad-production.up.railway.app/productSell?productId=$productId&userId=$userId&number=$number'),
     );
     if (response.statusCode == 200) {
+      print(response.body);
       _productNumbersController.clear();
       final data = jsonDecode(response.body);
       if (data['status'] == 'success') {
@@ -229,6 +228,19 @@ class _ProductPageState extends State<ProductPage>
           ),
         );
         _getProductsByCategory();
+      }else {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mahsulot sotilmadi. Mahsulot yetarli emas'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 3000),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
@@ -1012,15 +1024,26 @@ class _ProductPageState extends State<ProductPage>
             actions: [
               TextButton(
                 onPressed: () {
+                  _productNumbersController.clear();
                   Navigator.pop(context);
                 },
                 child: const Text('Bekor qilish'),
               ),
+
               TextButton(
                 onPressed: () {
-                  _isLoad = true;
-                  _sellProduct(id);
-                  Navigator.pop(context);
+                  if (_productNumbersController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Mahsulot sonini kiriting!'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  } else {
+                    _isLoad = true;
+                    _sellProduct(id);
+                    Navigator.pop(context);
+                  }
                 },
                 child: const Text('Sotish'),
               ),
