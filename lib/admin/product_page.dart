@@ -701,8 +701,7 @@ class _ProductPageState extends State<ProductPage>
                           child: Column(
                             children: [
                               SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 50),
+                                  height: MediaQuery.of(context).size.height * 0.02),
                               Row(
                                 children: [
                                   SizedBox(
@@ -752,6 +751,31 @@ class _ProductPageState extends State<ProductPage>
                                       ],
                                     ),
                                   ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(255, 221, 221, 221),
+                                      border: Border.all(
+                                          color: const Color.fromARGB(255, 221, 221, 221),
+                                          width: 5),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Text('  ${products[i].productNumber}  Dona  '),
+                                  ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.009,
+                                  ),
+                                  IconButton(
+                                      onPressed: () {
+                                        //_showDialogEditProduct(products[i]);
+                                      },
+                                      icon: const Icon(
+                                        Icons.sell_outlined,
+                                        color: Colors.deepPurpleAccent,
+                                        size: 30,
+                                      )),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.005,
+                                  ),
                                   IconButton(
                                     onPressed: () {},
                                     icon: SvgPicture.asset(
@@ -762,8 +786,7 @@ class _ProductPageState extends State<ProductPage>
                                     ),
                                   ),
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.005,
+                                    width: MediaQuery.of(context).size.width * 0.005,
                                   ),
                                   IconButton(
                                     onPressed: () {
@@ -779,13 +802,13 @@ class _ProductPageState extends State<ProductPage>
                                   ),
                                   SizedBox(
                                     width:
-                                        MediaQuery.of(context).size.width / 40,
+                                        MediaQuery.of(context).size.width * 0.025,
                                   ),
                                 ],
                               ),
                               SizedBox(
                                   height:
-                                      MediaQuery.of(context).size.height / 50),
+                                      MediaQuery.of(context).size.height * 0.02),
                             ],
                           ),
                         ),
