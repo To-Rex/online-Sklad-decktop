@@ -189,6 +189,7 @@ class _ProductPageState extends State<ProductPage>
 
   //delete product
   Future<void> _deleteProduct(String productId) async {
+    setState(() {});
     final response = await http.delete(
       Uri.parse(
           'https://golalang-online-sklad-production.up.railway.app/deleteProduct?productId=$productId'),
@@ -613,114 +614,6 @@ class _ProductPageState extends State<ProductPage>
                           ],
                         ),
                       ),
-                      // for (var i = 0; i < productId.length; i++)
-                      //   if (productId.isNotEmpty)
-                      //     Container(
-                      //       margin: const EdgeInsets.only(
-                      //           left: 10, right: 10, top: 10, bottom: 10),
-                      //       decoration: BoxDecoration(
-                      //         color: Colors.white,
-                      //         borderRadius: BorderRadius.circular(10),
-                      //         boxShadow: [
-                      //           BoxShadow(
-                      //             color: Colors.grey.withOpacity(0.35),
-                      //             //color: Color.fromARGB(255, 221, 221, 221),
-                      //             spreadRadius: 1,
-                      //             blurRadius: 10,
-                      //             offset: const Offset(0, 3),
-                      //           ),
-                      //         ],
-                      //       ),
-                      //       child: Column(
-                      //         children: [
-                      //           SizedBox(
-                      //               height: MediaQuery.of(context).size.height /
-                      //                   50),
-                      //           Row(
-                      //             children: [
-                      //               SizedBox(
-                      //                   width:
-                      //                       MediaQuery.of(context).size.width *
-                      //                           0.01),
-                      //               Container(
-                      //                 margin: const EdgeInsets.only(left: 10),
-                      //                 child: SvgPicture.asset(
-                      //                   'assets/productIcon.svg',
-                      //                   height: 50,
-                      //                   width: 50,
-                      //                 ),
-                      //               ),
-                      //               SizedBox(
-                      //                   width:
-                      //                       MediaQuery.of(context).size.width *
-                      //                           0.01),
-                      //               Expanded(
-                      //                 child: Column(
-                      //                   crossAxisAlignment:
-                      //                       CrossAxisAlignment.start,
-                      //                   children: [
-                      //                     Text(
-                      //                       productName[i],
-                      //                       style: const TextStyle(
-                      //                           fontSize: 18,
-                      //                           fontWeight: FontWeight.bold),
-                      //                     ),
-                      //                     const SizedBox(
-                      //                       height: 5,
-                      //                     ),
-                      //                     Text(
-                      //                       '${productPrice[i]} so\'m',
-                      //                       style: const TextStyle(
-                      //                           fontSize: 16,
-                      //                           fontWeight: FontWeight.bold),
-                      //                     ),
-                      //                     const SizedBox(
-                      //                       height: 5,
-                      //                     ),
-                      //                     Text(
-                      //                       productDescription[i],
-                      //                       style: const TextStyle(
-                      //                           fontSize: 14,
-                      //                           color: Colors.grey,
-                      //                           fontWeight: FontWeight.bold),
-                      //                     ),
-                      //                   ],
-                      //                 ),
-                      //               ),
-                      //               IconButton(
-                      //                 onPressed: () {},
-                      //                 icon: SvgPicture.asset(
-                      //                   'assets/editIcon.svg',
-                      //                   height: 25,
-                      //                   width: 25,
-                      //                   color: Colors.deepPurpleAccent,
-                      //                 ),
-                      //               ),
-                      //               SizedBox(
-                      //                 width: MediaQuery.of(context).size.width *
-                      //                     0.005,
-                      //               ),
-                      //               IconButton(
-                      //                 onPressed: () {},
-                      //                 icon: SvgPicture.asset(
-                      //                   'assets/deleteIcon.svg',
-                      //                   height: 25,
-                      //                   width: 25,
-                      //                   color: Colors.deepPurpleAccent,
-                      //                 ),
-                      //               ),
-                      //               SizedBox(
-                      //                 width: MediaQuery.of(context).size.width /
-                      //                     40,
-                      //               ),
-                      //             ],
-                      //           ),
-                      //           SizedBox(
-                      //               height: MediaQuery.of(context).size.height /
-                      //                   50),
-                      //         ],
-                      //       ),
-                      //     ),
                       for (var i = 0; i < products.length; i++)
                         Container(
                           margin: const EdgeInsets.only(
@@ -958,6 +851,7 @@ class _ProductPageState extends State<ProductPage>
               ),
               TextButton(
                 onPressed: () {
+                  _isLoad = true;
                   _deleteProduct(id);
                   Navigator.pop(context);
                 },
