@@ -212,7 +212,6 @@ class _ProductPageState extends State<ProductPage>
           'https://golalang-online-sklad-production.up.railway.app/productSell?productId=$productId&userId=$userId&number=$number'),
     );
     if (response.statusCode == 200) {
-      print(response.body);
       _productNumbersController.clear();
       final data = jsonDecode(response.body);
       if (data['status'] == 'success') {
@@ -228,7 +227,7 @@ class _ProductPageState extends State<ProductPage>
           ),
         );
         _getProductsByCategory();
-      }else {
+      } else {
         _isLoad = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -245,7 +244,6 @@ class _ProductPageState extends State<ProductPage>
     }
   }
 
-  //delete product
   Future<void> _deleteProduct(String productId) async {
     checkInternetConnection().then((value) {
       if (!value) {
@@ -344,8 +342,7 @@ class _ProductPageState extends State<ProductPage>
                         textAlign: TextAlign.left,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
-                          contentPadding:
-                              EdgeInsets.only(left: 10, right: 10),
+                          contentPadding: EdgeInsets.only(left: 10, right: 10),
                           border: InputBorder.none,
                           hintText: 'Mahsulot nomi',
                         ),
@@ -368,8 +365,7 @@ class _ProductPageState extends State<ProductPage>
                         textAlign: TextAlign.left,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
-                          contentPadding:
-                              EdgeInsets.only(left: 10, right: 10),
+                          contentPadding: EdgeInsets.only(left: 10, right: 10),
                           border: InputBorder.none,
                           hintText: 'Mahsulot izohi',
                         ),
@@ -393,8 +389,7 @@ class _ProductPageState extends State<ProductPage>
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
-                          contentPadding:
-                              EdgeInsets.only(left: 10, right: 10),
+                          contentPadding: EdgeInsets.only(left: 10, right: 10),
                           border: InputBorder.none,
                           hintText: 'Mahsulot narxi',
                         ),
@@ -418,8 +413,7 @@ class _ProductPageState extends State<ProductPage>
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
-                          contentPadding:
-                              EdgeInsets.only(left: 10, right: 10),
+                          contentPadding: EdgeInsets.only(left: 10, right: 10),
                           border: InputBorder.none,
                           hintText: 'Mahsulot foydasi',
                         ),
@@ -543,6 +537,7 @@ class _ProductPageState extends State<ProductPage>
       },
     );
   }
+
   @override
   void initState() {
     _getUser();
@@ -993,7 +988,10 @@ class _ProductPageState extends State<ProductPage>
           return AlertDialog(
             title: const Text('Mahsulotni sotish'),
             content: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.1,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.1,
               child: Column(
                 children: [
                   Container(
@@ -1029,7 +1027,6 @@ class _ProductPageState extends State<ProductPage>
                 },
                 child: const Text('Bekor qilish'),
               ),
-
               TextButton(
                 onPressed: () {
                   if (_productNumbersController.text.isEmpty) {
