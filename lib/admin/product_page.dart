@@ -470,10 +470,15 @@ class _ProductPageState extends State<ProductPage>
                         width: 1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const TextField(
+                  child: TextField(
                     cursorColor: Colors.deepPurpleAccent,
                     textAlign: TextAlign.justify,
                     textInputAction: TextInputAction.next,
+                    onChanged: (value) {
+                      setState(() {
+                        
+                      });
+                    },
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(left: 10, right: 10),
                       border: InputBorder.none,
