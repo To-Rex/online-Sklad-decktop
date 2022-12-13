@@ -213,7 +213,6 @@ class _ProductPageState extends State<ProductPage>
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print(data);
       if (data['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -241,7 +240,6 @@ class _ProductPageState extends State<ProductPage>
         );
       }
     } else {
-      print(response.body);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('No internet connection or server error'),
