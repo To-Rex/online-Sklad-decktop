@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:online_ombor/models/product_list.dart';
@@ -258,7 +258,8 @@ class _ProductPageState extends State<ProductPage>
     var price = int.parse(_productPriceController.text);
     var benefit = int.parse(_productBenefitController.text);
     final response = await http.put(
-      Uri.parse('https://golalang-online-sklad-production.up.railway.app/updateProduct?productId=$productId'),
+      Uri.parse(
+          'https://golalang-online-sklad-production.up.railway.app/updateProduct?productId=$productId'),
       body: jsonEncode(<Object, Object>{
         'product_name': _productNameController.text,
         'product_desc': _productDescriptionController.text,
@@ -271,7 +272,6 @@ class _ProductPageState extends State<ProductPage>
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print(data);
       _productNameController.clear();
       _productDescriptionController.clear();
       _productPriceController.clear();
@@ -317,33 +317,59 @@ class _ProductPageState extends State<ProductPage>
       );
     }
   }
+
   //https://golalang-online-sklad-production.up.railway.app/addProductSell/?productId=kzwItZyg6aJoH4stRSo5MwJK8AaFU9qH&number=1&userId=KR5BX7h1n1GHy5QuubRdbJJWb3OPLFj8
   Future<void> _putPraductSell(String productId) async {
-    checkInternetConnection().then((value) {
-      if (!value) {
-        _isLoad = false;
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Internetga ulanish yo\'q!'),
-          backgroundColor: Colors.red,
-        ));
-        return;
-      }
-    });
-    var number = int.parse(_productNumberController.text.toString());
-
-    //body in x-ww-form-urlencoded format KEY = transaction_price VALUE = 1000 KEY = transaction_benefit VALUE = 1
+    var number = int.parse(_productNumberController.text);
 
     final response = await http.post(
-      Uri.parse('https://golalang-online-sklad-production.up.railway.app/addProductSell/?productId=$productId&number=$number&userId=$userId'),
-      body: "`transaction_price` = ${_productPriceController.text} & `transaction_benefit` = ${_productBenefitController.text}",
-      headers: <String, String>{
+      Uri.parse(
+          'https://golalang-online-sklad-production.up.railway.app/addProductSell?productId=$productId&number=$number&userId=$userId'),
+      body: {
+        'transaction_benefit': _productBenefitController.text,
+        'transaction_price': _productPriceController.text,
+      },
+      headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
+      encoding: Encoding.getByName('utf-8'),
     );
-    print(response.body);
-    print(response.statusCode);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      _productNameController.clear();
+      _productDescriptionController.clear();
+      _productPriceController.clear();
+      _productBenefitController.clear();
+      _productNumberController.clear();
+      if (data['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mahsulot sotildi'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 1700),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.green,
+          ),
+        );
+        _getProductsByCategory();
+      } else {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mahsulot sotilmadi. Mahsulot yetarli emas'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 3000),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
-
 
   Future<void> _deleteProduct(String productId) async {
     checkInternetConnection().then((value) {
@@ -489,6 +515,10 @@ class _ProductPageState extends State<ProductPage>
                         textAlign: TextAlign.left,
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'[0-9]')),
+                        ],
                         decoration: const InputDecoration(
                           contentPadding: EdgeInsets.only(left: 10, right: 10),
                           border: InputBorder.none,
@@ -513,6 +543,10 @@ class _ProductPageState extends State<ProductPage>
                         textAlign: TextAlign.left,
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'[0-9]')),
+                        ],
                         decoration: const InputDecoration(
                           contentPadding: EdgeInsets.only(left: 10, right: 10),
                           border: InputBorder.none,
@@ -535,19 +569,21 @@ class _ProductPageState extends State<ProductPage>
                           ),
                           child: IconButton(
                             onPressed: () {
-                              if(_productNumberController.text.isEmpty){
+                              if (_productNumberController.text.isEmpty) {
                                 _productNumberController.text = '0';
                                 return;
                               }
-                              if (int.parse(_productNumberController.text) < 0) {
+                              if (int.parse(_productNumberController.text) <
+                                  0) {
                                 _productNumberController.text = '0';
                                 return;
                               }
-                              if (int.parse(_productNumberController.text) == 0) {
+                              if (int.parse(_productNumberController.text) ==
+                                  0) {
                                 return;
                               }
-                              _productNumberController.text = (int.parse(_productNumberController.text) -
-                                          1)
+                              _productNumberController.text =
+                                  (int.parse(_productNumberController.text) - 1)
                                       .toString();
                               setState(() {});
                             },
@@ -575,6 +611,11 @@ class _ProductPageState extends State<ProductPage>
                               controller: _productNumberController,
                               textAlign: TextAlign.center,
                               textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9]')),
+                              ],
                               decoration: const InputDecoration(
                                 contentPadding:
                                     EdgeInsets.only(left: 10, right: 10),
@@ -597,13 +638,16 @@ class _ProductPageState extends State<ProductPage>
                           ),
                           child: IconButton(
                             onPressed: () {
-                              if(_productNumberController.text.isEmpty){
+                              if (_productNumberController.text.isEmpty) {
                                 _productNumberController.text = '0';
                               }
-                              if (int.parse(_productNumberController.text) < 0) {
+                              if (int.parse(_productNumberController.text) <
+                                  0) {
                                 _productNumberController.text = '0';
                               }
-                              _productNumberController.text = (int.parse(_productNumberController.text) + 1).toString();
+                              _productNumberController.text =
+                                  (int.parse(_productNumberController.text) + 1)
+                                      .toString();
                               setState(() {});
                             },
                             icon: const Icon(
@@ -821,8 +865,7 @@ class _ProductPageState extends State<ProductPage>
                 for (var i = 0; i < products.length; i++)
                   GestureDetector(
                     onTap: () {
-                      _showProductDialog(products[i].productId);
-                      print(products[i].productId);
+                      _showProductDialog(products[i].productId,products[i].productNumber);
                     },
                     child: Column(
                       children: [
@@ -915,9 +958,14 @@ class _ProductPageState extends State<ProductPage>
                                   ),
                                   IconButton(
                                       onPressed: () {
-                                        _productPriceController.text = products[i].productPrice.toString();
-                                        _productBenefitController.text = products[i].productBenefit.toString();
-                                        _showDialogSellProduct(products[i].productId);
+                                        _productPriceController.text =
+                                            products[i].productPrice.toString();
+                                        _productBenefitController.text =
+                                            products[i]
+                                                .productBenefit
+                                                .toString();
+                                        _showDialogSellProduct(
+                                            products[i].productId);
                                       },
                                       icon: const Icon(
                                         Icons.sell_outlined,
@@ -935,10 +983,13 @@ class _ProductPageState extends State<ProductPage>
                                       _productPriceController.text =
                                           products[i].productPrice.toString();
                                       _productDescriptionController.text =
-                                          products[i].productDescription.toString();
+                                          products[i]
+                                              .productDescription
+                                              .toString();
                                       _productBenefitController.text =
                                           products[i].productBenefit.toString();
-                                      _showDialogEditProduct(products[i].productId);
+                                      _showDialogEditProduct(
+                                          products[i].productId);
                                     },
                                     icon: SvgPicture.asset(
                                       'assets/editIcon.svg',
@@ -1113,17 +1164,14 @@ class _ProductPageState extends State<ProductPage>
         });
   }
 
-  void _showProductDialog(String id) {
+  void _showProductDialog(String id, int productNumber) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Mahsulotni sotish'),
             content: SizedBox(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 0.1,
+              height: MediaQuery.of(context).size.height * 0.1,
               child: Column(
                 children: [
                   Container(
@@ -1141,6 +1189,9 @@ class _ProductPageState extends State<ProductPage>
                       keyboardType: TextInputType.text,
                       keyboardAppearance: Brightness.light,
                       textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10, right: 10),
                         border: InputBorder.none,
@@ -1169,7 +1220,18 @@ class _ProductPageState extends State<ProductPage>
                       ),
                     );
                   } else {
+                    if (int.parse(_productNumbersController.text) >
+                        productNumber) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Mahsulot soni yetarli emas!'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
                     _isLoad = true;
+                    setState(() {});
                     _sellProduct(id);
                     Navigator.pop(context);
                   }
@@ -1214,10 +1276,7 @@ class _ProductPageState extends State<ProductPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -1242,10 +1301,7 @@ class _ProductPageState extends State<ProductPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -1262,6 +1318,9 @@ class _ProductPageState extends State<ProductPage>
                       keyboardType: TextInputType.text,
                       keyboardAppearance: Brightness.light,
                       textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10, right: 10),
                         border: InputBorder.none,
@@ -1270,10 +1329,7 @@ class _ProductPageState extends State<ProductPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -1290,6 +1346,9 @@ class _ProductPageState extends State<ProductPage>
                       keyboardType: TextInputType.text,
                       keyboardAppearance: Brightness.light,
                       textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10, right: 10),
                         border: InputBorder.none,
@@ -1298,10 +1357,7 @@ class _ProductPageState extends State<ProductPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                 ],
               ),
@@ -1319,7 +1375,7 @@ class _ProductPageState extends State<ProductPage>
               ),
               TextButton(
                 onPressed: () {
-                  if (_productNameController.text.isEmpty  ||
+                  if (_productNameController.text.isEmpty ||
                       _productDescriptionController.text.isEmpty ||
                       _productPriceController.text.isEmpty ||
                       _productBenefitController.text.isEmpty) {
@@ -1368,6 +1424,9 @@ class _ProductPageState extends State<ProductPage>
                       keyboardType: TextInputType.text,
                       keyboardAppearance: Brightness.light,
                       textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10, right: 10),
                         border: InputBorder.none,
@@ -1376,10 +1435,7 @@ class _ProductPageState extends State<ProductPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -1396,6 +1452,9 @@ class _ProductPageState extends State<ProductPage>
                       keyboardType: TextInputType.text,
                       keyboardAppearance: Brightness.light,
                       textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10, right: 10),
                         border: InputBorder.none,
@@ -1404,10 +1463,7 @@ class _ProductPageState extends State<ProductPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Row(
                     children: [
@@ -1421,7 +1477,7 @@ class _ProductPageState extends State<ProductPage>
                         ),
                         child: IconButton(
                           onPressed: () {
-                            if(_productNumberController.text.isEmpty){
+                            if (_productNumberController.text.isEmpty) {
                               _productNumberController.text = '0';
                               return;
                             }
@@ -1432,9 +1488,9 @@ class _ProductPageState extends State<ProductPage>
                             if (int.parse(_productNumberController.text) == 0) {
                               return;
                             }
-                            _productNumberController.text = (int.parse(_productNumberController.text) -
-                                1)
-                                .toString();
+                            _productNumberController.text =
+                                (int.parse(_productNumberController.text) - 1)
+                                    .toString();
                             setState(() {});
                           },
                           icon: SvgPicture.asset(
@@ -1461,9 +1517,12 @@ class _ProductPageState extends State<ProductPage>
                             controller: _productNumberController,
                             textAlign: TextAlign.center,
                             textInputAction: TextInputAction.next,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                            ],
                             decoration: const InputDecoration(
                               contentPadding:
-                              EdgeInsets.only(left: 10, right: 10),
+                                  EdgeInsets.only(left: 10, right: 10),
                               border: InputBorder.none,
                               hintText: 'Mahsulot miqdori',
                             ),
@@ -1483,13 +1542,15 @@ class _ProductPageState extends State<ProductPage>
                         ),
                         child: IconButton(
                           onPressed: () {
-                            if(_productNumberController.text.isEmpty){
+                            if (_productNumberController.text.isEmpty) {
                               _productNumberController.text = '0';
                             }
                             if (int.parse(_productNumberController.text) < 0) {
                               _productNumberController.text = '0';
                             }
-                            _productNumberController.text = (int.parse(_productNumberController.text) + 1).toString();
+                            _productNumberController.text =
+                                (int.parse(_productNumberController.text) + 1)
+                                    .toString();
                             setState(() {});
                           },
                           icon: const Icon(
@@ -1515,6 +1576,24 @@ class _ProductPageState extends State<ProductPage>
               ),
               TextButton(
                 onPressed: () {
+                  if (_productNumberController.text.isEmpty) {
+                    _productNumberController.text = '0';
+                  }
+                  if (int.parse(_productNumberController.text) < 0) {
+                    _productNumberController.text = '0';
+                  }
+                  if (_productPriceController.text.isEmpty) {
+                    _productPriceController.text = '0';
+                  }
+                  if (int.parse(_productPriceController.text) < 0) {
+                    _productPriceController.text = '0';
+                  }
+                  if (_productBenefitController.text.isEmpty) {
+                    _productBenefitController.text = '0';
+                  }
+                  if (int.parse(_productBenefitController.text) < 0) {
+                    _productBenefitController.text = '0';
+                  }
                   if (_productPriceController.text.isEmpty ||
                       _productBenefitController.text.isEmpty ||
                       _productNumberController.text.isEmpty) {
@@ -1526,14 +1605,19 @@ class _ProductPageState extends State<ProductPage>
                     );
                     return;
                   }
+
                   if (int.parse(_productNumberController.text) <= 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                            'Mahsulot miqdori 0 dan katta bo\'lishi kerak'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
                     return;
                   }
                   _isLoad = true;
                   setState(() {});
-                  print(_productPriceController.text);
-                  print(_productBenefitController.text);
-                  print(_productNumberController.text);
                   _putPraductSell(productId);
                   Navigator.pop(context);
                 },
@@ -1542,6 +1626,5 @@ class _ProductPageState extends State<ProductPage>
             ],
           );
         });
-
   }
 }
