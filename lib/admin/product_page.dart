@@ -329,21 +329,21 @@ class _ProductPageState extends State<ProductPage>
         return;
       }
     });
-    var number = int.parse(_productNumbersController.text);
+    var number = int.parse(_productNumberController.text.toString());
+
+    //body in x-ww-form-urlencoded format KEY = transaction_price VALUE = 1000 KEY = transaction_benefit VALUE = 1
+
     final response = await http.post(
-      Uri.parse(
-          'https://golalang-online-sklad-production.up.railway.app/addProductSell/?productId=$productId&number=$number&userId=$userId'),
-      body: jsonEncode(<Object, Object>{
-        'product_price': _productPriceController.text,
-        'product_benefit': _productBenefitController.text,
-      }),
+      Uri.parse('https://golalang-online-sklad-production.up.railway.app/addProductSell/?productId=$productId&number=$number&userId=$userId'),
+      body: "`transaction_price` = ${_productPriceController.text} & `transaction_benefit` = ${_productBenefitController.text}",
+      headers: <String, String>{
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
     );
-    if (response.statusCode == 200) {
-      _productNumbersController.clear();
-      final data = jsonDecode(response.body);
-      print(data);
-    }
+    print(response.body);
+    print(response.statusCode);
   }
+
 
   Future<void> _deleteProduct(String productId) async {
     checkInternetConnection().then((value) {
@@ -915,7 +915,9 @@ class _ProductPageState extends State<ProductPage>
                                   ),
                                   IconButton(
                                       onPressed: () {
-
+                                        _productPriceController.text = products[i].productPrice.toString();
+                                        _productBenefitController.text = products[i].productBenefit.toString();
+                                        _showDialogSellProduct(products[i].productId);
                                       },
                                       icon: const Icon(
                                         Icons.sell_outlined,
@@ -1339,5 +1341,207 @@ class _ProductPageState extends State<ProductPage>
             ],
           );
         });
+  }
+
+  void _showDialogSellProduct(String productId) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Mahsulotni sotish'),
+            content: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _productPriceController,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.text,
+                      keyboardAppearance: Brightness.light,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Mahsulot narxi',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.02,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _productBenefitController,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.text,
+                      keyboardAppearance: Brightness.light,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Mahsulot foydasi',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.02,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 221, 221, 221),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            if(_productNumberController.text.isEmpty){
+                              _productNumberController.text = '0';
+                              return;
+                            }
+                            if (int.parse(_productNumberController.text) < 0) {
+                              _productNumberController.text = '0';
+                              return;
+                            }
+                            if (int.parse(_productNumberController.text) == 0) {
+                              return;
+                            }
+                            _productNumberController.text = (int.parse(_productNumberController.text) -
+                                1)
+                                .toString();
+                            setState(() {});
+                          },
+                          icon: SvgPicture.asset(
+                            'assets/minusIcon.svg',
+                            color: Colors.deepPurpleAccent,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.02,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 221, 221, 221),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          child: TextField(
+                            cursorColor: Colors.deepPurpleAccent,
+                            controller: _productNumberController,
+                            textAlign: TextAlign.center,
+                            textInputAction: TextInputAction.next,
+                            decoration: const InputDecoration(
+                              contentPadding:
+                              EdgeInsets.only(left: 10, right: 10),
+                              border: InputBorder.none,
+                              hintText: 'Mahsulot miqdori',
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.02,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 221, 221, 221),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            if(_productNumberController.text.isEmpty){
+                              _productNumberController.text = '0';
+                            }
+                            if (int.parse(_productNumberController.text) < 0) {
+                              _productNumberController.text = '0';
+                            }
+                            _productNumberController.text = (int.parse(_productNumberController.text) + 1).toString();
+                            setState(() {});
+                          },
+                          icon: const Icon(
+                            Icons.add,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  _productBenefitController.clear();
+                  _productNumberController.clear();
+                  _productPriceController.clear();
+                  Navigator.pop(context);
+                },
+                child: const Text('Bekor qilish'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (_productPriceController.text.isEmpty ||
+                      _productBenefitController.text.isEmpty ||
+                      _productNumberController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Barcha maydonlarni to\'ldiring'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  if (int.parse(_productNumberController.text) <= 0) {
+                    return;
+                  }
+                  _isLoad = true;
+                  setState(() {});
+                  print(_productPriceController.text);
+                  print(_productBenefitController.text);
+                  print(_productNumberController.text);
+                  _putPraductSell(productId);
+                  Navigator.pop(context);
+                },
+                child: const Text('Saqlash'),
+              ),
+            ],
+          );
+        });
+
   }
 }
