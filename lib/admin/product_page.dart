@@ -884,7 +884,6 @@ class _ProductPageState extends State<ProductPage>
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.35),
-                                //color: Color.fromARGB(255, 221, 221, 221),
                                 spreadRadius: 1,
                                 blurRadius: 10,
                                 offset: const Offset(0, 3),
