@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:online_ombor/admin/user_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'admin/product_page.dart';
@@ -123,7 +124,6 @@ class _SamplePageState extends State<SamplePage>
     }
   }
 
-  //https://golalang-online-sklad-production.up.railway.app/deleteCategory?categoryId=3eW1hacUxP8yyODQfYHwXi96Y1Cp7p3g
   Future<void> _deleteCategory(String id) async {
     final response = await http.delete(Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/deleteCategory?categoryId=$id'));
@@ -312,7 +312,14 @@ class _SamplePageState extends State<SamplePage>
                   splashColor: Colors.transparent,
                   highlightColor: Colors.white,
                   color: Colors.white,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const UserPage(),
+                      ),
+                    );
+                  },
                   icon: SvgPicture.asset(
                     'assets/userIcon.svg',
                     height: 30,

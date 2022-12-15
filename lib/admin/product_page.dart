@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:online_ombor/admin/user_page.dart';
 import 'package:online_ombor/models/product_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -318,7 +319,6 @@ class _ProductPageState extends State<ProductPage>
     }
   }
 
-  //https://golalang-online-sklad-production.up.railway.app/addProductSell/?productId=kzwItZyg6aJoH4stRSo5MwJK8AaFU9qH&number=1&userId=KR5BX7h1n1GHy5QuubRdbJJWb3OPLFj8
   Future<void> _putPraductSell(String productId) async {
     var number = int.parse(_productNumberController.text);
 
@@ -429,8 +429,7 @@ class _ProductPageState extends State<ProductPage>
     }
   }
 
-  //show dialog add product
-  Future<void> _showDialogAddProduct() async {
+   Future<void> _showDialogAddProduct() async {
     checkInternetConnection().then((value) {
       if (!value) {
         _isLoad = false;
@@ -791,7 +790,14 @@ class _ProductPageState extends State<ProductPage>
                 splashColor: Colors.transparent,
                 highlightColor: Colors.white,
                 color: Colors.white,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UserPage(),
+                    ),
+                  );
+                },
                 icon: SvgPicture.asset(
                   'assets/userIcon.svg',
                   height: 25,
