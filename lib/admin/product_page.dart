@@ -1073,7 +1073,6 @@ class _ProductPageState extends State<ProductPage>
                   ),
               ],
             ),
-            //progress bar
           ),
           Row(
             children: [
