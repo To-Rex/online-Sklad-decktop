@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:online_ombor/models/user_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserPage extends StatefulWidget {
@@ -27,6 +29,9 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
   var minHeight = '';
   var maxHeight = '';
 
+  var userList = [];
+  var users = [];
+
   Future<bool> checkInternetConnection() async {
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -49,10 +54,64 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
     userBlocked = prefs.getBool('blocked') ?? false;
     userNames = prefs.getString('username') ?? '';
   }
+  //https://golalang-online-sklad-production.up.railway.app/getAllUser
+  Future<void> _getUsers() async {
+    var url = Uri.parse('https://golalang-online-sklad-production.up.railway.app/getAllUser');
+    var response = await http.get(url);
+    final data = jsonDecode(response.body);
+    if (data['status'] == 'success' && data['message'] == null){
+      print('data is null');
+      return;
+    }
+
+    if (data['status'] == 'success' && data['message'] != null){
+      for (var i = 0; i < data['message'].length; i++){
+        userList.add(UserList(
+          userName: data['message'][i]['username'],
+          name: data['message'][i]['name'],
+          surName: data['message'][i]['surname'],
+          phone: data['message'][i]['phone'],
+          country: data['message'][i]['country'],
+          password: data['message'][i]['password'],
+          registerDate: data['message'][i]['register_date'],
+          blocked: data['message'][i]['blocked'],
+          userId: data['message'][i]['user_id'],
+          userStatus: data['message'][i]['user_status'],
+          userRole: data['message'][i]['user_role'],
+        ));
+      }
+      setState(() {
+        users = userList;
+      });
+      return;
+    }
+  }
+  void _searchProduct(String value) {
+    if (value.isEmpty) {
+      setState(() {
+        users = userList;
+      });
+    } else {
+      //search name price
+      setState(() {
+        users = userList
+            .where((element) =>
+        element.userName
+            .toLowerCase()
+            .contains(value.toLowerCase()) ||
+            element.name
+                .toString()
+                .toLowerCase()
+                .contains(value.toLowerCase()))
+            .toList();
+      });
+    }
+  }
 
   @override
   void initState() {
     _getUser();
+    _getUsers();
     super.initState();
     checkInternetConnection().then((value) {
       if (!value) {
@@ -70,15 +129,285 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(0), // here the desired height
+        preferredSize: const Size.fromHeight(50), // here the desired height
         child: AppBar(
-          backgroundColor: const Color.fromRGBO(33, 158, 188, 10),
+          backgroundColor: Colors.white,
+          elevation: 0.4,
+          actionsIconTheme: const IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Expanded(
+                child: SizedBox(),
+              ),
+              SizedBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width / 4,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 221, 221, 221),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 221, 221, 221),
+                        width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: TextField(
+                    cursorColor: Colors.deepPurpleAccent,
+                    textAlign: TextAlign.justify,
+                    textInputAction: TextInputAction.next,
+                    onChanged: (value) {
+                      setState(() {
+                        _searchProduct(value);
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.only(left: 10, right: 10),
+                      border: InputBorder.none,
+                      hintText: 'Qidirish',
+                      suffixIcon: Icon(
+                        Icons.search,
+                        color: Colors.deepPurpleAccent,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 50,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.05,
+
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 221, 221, 221),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 221, 221, 221),
+                        width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: IconButton(
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.white,
+                    color: Colors.white,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const UserPage(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(
+                      Icons.add,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       body: Column(
-        children: const [
-          Text(''),
-          //floating button default
+        children: [
+          Expanded(
+              child:
+              ListView(
+                children: [
+                  for (var i = 0; i < users.length; i++)
+                    GestureDetector(
+                      onTap: () {
+
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(
+                                left: 10, right: 10, top: 10, bottom: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.35),
+                                  spreadRadius: 1,
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.02),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                        width: MediaQuery.of(context).size.width *
+                                            0.01),
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 10),
+                                      child: SvgPicture.asset(
+                                        'assets/userIcon.svg',
+                                        height: 60,
+                                        width: 60,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        width: MediaQuery.of(context).size.width *
+                                            0.01),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            users[i].name,
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            users[i].phone,
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            users[i].userName,
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color.fromARGB(
+                                            255, 221, 221, 221),
+                                        border: Border.all(
+                                            color: const Color.fromARGB(
+                                                255, 221, 221, 221),
+                                            width: 5),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Text(
+                                        users[i].userRole,
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.009,
+                                    ),
+                                    IconButton(
+                                        onPressed: () {
+
+                                        },
+                                        icon: const Icon(
+                                          Icons.sell_outlined,
+                                          color: Colors.deepPurpleAccent,
+                                          size: 30,
+                                        )),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.005,
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                      },
+                                      icon: SvgPicture.asset(
+                                        'assets/editIcon.svg',
+                                        height: 25,
+                                        width: 25,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.005,
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                      },
+                                      icon: SvgPicture.asset(
+                                        'assets/deleteIcon.svg',
+                                        height: 25,
+                                        width: 25,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.025,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.02),
+                              ],
+                            ),
+                          ),
+                          if (users.isEmpty)
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  left: 10, right: 10, top: 10, bottom: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.35),
+                                    //color: Color.fromARGB(255, 221, 221, 221),
+                                    spreadRadius: 1,
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                      height: MediaQuery.of(context).size.height /
+                                          50),
+                                  const Center(
+                                    child: Text(
+                                      'Hozircha mahsulot yo`q',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height: MediaQuery.of(context).size.height /
+                                          50),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+          ),
         ],
       ),
     );

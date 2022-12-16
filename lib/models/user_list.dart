@@ -8,7 +8,7 @@ class UserList{
   final String country;
   final String password;
   final String registerDate;
-  final String blocked;
+  final bool blocked;
   final String userId;
   final String userStatus;
   final String userRole;
