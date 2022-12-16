@@ -429,7 +429,7 @@ class _ProductPageState extends State<ProductPage>
     }
   }
 
-   Future<void> _showDialogAddProduct() async {
+  Future<void> _showDialogAddProduct() async {
     checkInternetConnection().then((value) {
       if (!value) {
         _isLoad = false;
