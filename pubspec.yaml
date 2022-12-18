@@ -75,6 +75,7 @@ flutter:
     - assets/userBlock.svg
     - assets/userPermission.svg
     - assets/userStatic.svg
+    - assets/sort.svg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
