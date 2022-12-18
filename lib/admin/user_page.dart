@@ -345,6 +345,7 @@ class _UserPageState extends State<UserPage>
                                     width: MediaQuery.of(context).size.width *
                                         0.009,
                                   ),
+                                  if (users[i].userRole == 'user'||users[i].userRole == "admin"&&userRole=='creator')
                                   IconButton(
                                       onPressed: () {},
                                       icon: SvgPicture.asset(
@@ -357,6 +358,7 @@ class _UserPageState extends State<UserPage>
                                     width: MediaQuery.of(context).size.width *
                                         0.005,
                                   ),
+                                  if (users[i].userRole == 'user'||users[i].userRole == "admin"&&userRole=='creator')
                                   IconButton(
                                     onPressed: () {},
                                     icon: SvgPicture.asset(
@@ -388,6 +390,7 @@ class _UserPageState extends State<UserPage>
                                     width: MediaQuery.of(context).size.width *
                                         0.005,
                                   ),
+                                  if (users[i].userRole == 'user'||users[i].userRole == "admin"&&userRole=='creator')
                                   IconButton(
                                     onPressed: () {},
                                     icon: SvgPicture.asset(
