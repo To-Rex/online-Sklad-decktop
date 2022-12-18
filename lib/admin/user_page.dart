@@ -176,9 +176,10 @@ class _UserPageState extends State<UserPage>
                   ),
                 ),
               ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 50,
-              ),
+              if (userRole == 'creator')
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 50,
+                ),
               if (userRole == 'creator')
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.05,
