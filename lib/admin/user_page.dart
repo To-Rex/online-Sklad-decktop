@@ -370,15 +370,20 @@ class _UserPageState extends State<UserPage>
                                     width: MediaQuery.of(context).size.width *
                                         0.005,
                                   ),
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: SvgPicture.asset(
-                                      'assets/deleteIcon.svg',
-                                      height: 25,
-                                      width: 25,
-                                      color: Colors.deepPurpleAccent,
+                                  if (users[i].userRole == 'user'||users[i].userRole == "admin"&&userRole=='creator')
+                                    IconButton(
+                                      onPressed: () {
+                                        print(users[i].userRole);
+                                        print(userRole);
+                                      },
+                                      icon: SvgPicture.asset(
+                                        'assets/deleteIcon.svg',
+                                        height: 25,
+                                        width: 25,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
                                     ),
-                                  ),
+
                                   SizedBox(
                                     width: MediaQuery.of(context).size.width *
                                         0.005,
