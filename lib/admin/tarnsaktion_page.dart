@@ -18,7 +18,6 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
         child: AppBar(
