@@ -254,6 +254,7 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
                                       margin: const EdgeInsets.only(left: 10),
                                       child: SvgPicture.asset(
                                         'assets/userIcon.svg',
+                                        color: Colors.deepPurpleAccent,
                                         height: 60,
                                         width: 60,
                                       ),
@@ -308,7 +309,7 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
                                         users[i].userRole,
                                         style: const TextStyle(
                                             fontSize: 14,
-                                            color: Colors.grey,
+                                            color: Colors.black45,
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
@@ -320,10 +321,11 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
                                         onPressed: () {
 
                                         },
-                                        icon: const Icon(
-                                          Icons.sell_outlined,
+                                        icon: SvgPicture.asset(
+                                          'assets/userPermission.svg',
                                           color: Colors.deepPurpleAccent,
-                                          size: 30,
+                                          height: 25,
+                                          width: 25,
                                         )),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
@@ -348,6 +350,20 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
                                       },
                                       icon: SvgPicture.asset(
                                         'assets/deleteIcon.svg',
+                                        height: 25,
+                                        width: 25,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.005,
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                      },
+                                      icon: SvgPicture.asset(
+                                        'assets/userBlock.svg',
                                         height: 25,
                                         width: 25,
                                         color: Colors.deepPurpleAccent,
