@@ -15,6 +15,8 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
     super.initState();
   }
 
+  String _selectedMenu = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,6 +85,31 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
                     highlightColor: Colors.white,
                     color: Colors.white,
                     onPressed: () {
+                      //context menu
+                      showMenu(
+                        context: context,
+                        position: RelativeRect.fromLTRB(
+                            MediaQuery.of(context).size.width * 0.8,
+                            MediaQuery.of(context).size.height * 0.1, 0, 0),
+                        items: [
+                          const PopupMenuItem(
+                            value: '1',
+                            child: Text('1 oylik'),
+                          ),
+                          const PopupMenuItem(
+                            value: '2',
+                            child: Text('2 oylik'),
+                          ),
+                          const PopupMenuItem(
+                            value: '3',
+                            child: Text('3 oylik'),
+                          ),
+                        ],
+                      ).then((value) {
+                        setState(() {
+                          //_selectedMenu = value;
+                        });
+                      });
                     },
                     icon: SvgPicture.asset(
                       'assets/sort.svg',
@@ -105,4 +132,8 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
       ),
     );
   }
+}
+
+mixin Menu {
+  String get name;
 }
