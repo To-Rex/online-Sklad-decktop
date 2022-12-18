@@ -9,11 +9,9 @@ class TransaktionsPage extends StatefulWidget {
 
 class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerProviderStateMixin {
 
-  late TabController _tabController;
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
