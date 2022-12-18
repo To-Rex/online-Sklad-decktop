@@ -176,35 +176,35 @@ class _UserPageState extends State<UserPage>
                   ),
                 ),
               ),
-
               SizedBox(
                 width: MediaQuery.of(context).size.width / 50,
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 221, 221, 221),
-                    border: Border.all(
-                        color: const Color.fromARGB(255, 221, 221, 221),
-                        width: 1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: IconButton(
-                    hoverColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.white,
-                    color: Colors.white,
-                    onPressed: () {},
-                    icon: SvgPicture.asset(
-                      'assets/userTransaktion.svg',
-                      color: Colors.deepPurpleAccent,
-                      height: 25,
-                      width: 25,
+              if (userRole == 'creator')
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.05,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: IconButton(
+                      hoverColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.white,
+                      color: Colors.white,
+                      onPressed: () {},
+                      icon: SvgPicture.asset(
+                        'assets/userStatic.svg',
+                        color: Colors.deepPurpleAccent,
+                        height: 25,
+                        width: 25,
+                      ),
                     ),
                   ),
                 ),
-              ),
               SizedBox(
                 width: MediaQuery.of(context).size.width / 50,
               ),
