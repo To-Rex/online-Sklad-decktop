@@ -14,8 +14,8 @@ class UserPage extends StatefulWidget {
   _UserPageState createState() => _UserPageState();
 }
 
-class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixin {
-
+class _UserPageState extends State<UserPage>
+    with SingleTickerProviderStateMixin {
   var userName = '';
   var userId = '';
   var userSurname = '';
@@ -43,6 +43,7 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
     }
     return false;
   }
+
   Future<void> _getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.getString('name') ?? '';
@@ -54,18 +55,20 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
     userBlocked = prefs.getBool('blocked') ?? false;
     userNames = prefs.getString('username') ?? '';
   }
+
   //https://golalang-online-sklad-production.up.railway.app/getAllUser
   Future<void> _getUsers() async {
-    var url = Uri.parse('https://golalang-online-sklad-production.up.railway.app/getAllUser');
+    var url = Uri.parse(
+        'https://golalang-online-sklad-production.up.railway.app/getAllUser');
     var response = await http.get(url);
     final data = jsonDecode(response.body);
-    if (data['status'] == 'success' && data['message'] == null){
+    if (data['status'] == 'success' && data['message'] == null) {
       print('data is null');
       return;
     }
 
-    if (data['status'] == 'success' && data['message'] != null){
-      for (var i = 0; i < data['message'].length; i++){
+    if (data['status'] == 'success' && data['message'] != null) {
+      for (var i = 0; i < data['message'].length; i++) {
         userList.add(UserList(
           userName: data['message'][i]['username'],
           name: data['message'][i]['name'],
@@ -86,6 +89,7 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
       return;
     }
   }
+
   void _searchProduct(String value) {
     if (value.isEmpty) {
       setState(() {
@@ -96,13 +100,11 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
       setState(() {
         users = userList
             .where((element) =>
-        element.userName
-            .toLowerCase()
-            .contains(value.toLowerCase()) ||
-            element.name
-                .toString()
-                .toLowerCase()
-                .contains(value.toLowerCase()))
+                element.userName.toLowerCase().contains(value.toLowerCase()) ||
+                element.name
+                    .toString()
+                    .toLowerCase()
+                    .contains(value.toLowerCase()))
             .toList();
       });
     }
@@ -123,7 +125,6 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,6 +142,7 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
               const Expanded(
                 child: SizedBox(),
               ),
+              //iconbutton
               SizedBox(
                 height: 30,
                 width: MediaQuery.of(context).size.width / 4,
@@ -174,12 +176,40 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
                   ),
                 ),
               ),
+
               SizedBox(
                 width: MediaQuery.of(context).size.width / 50,
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.05,
-
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 221, 221, 221),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 221, 221, 221),
+                        width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: IconButton(
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.white,
+                    color: Colors.white,
+                    onPressed: () {},
+                    icon: SvgPicture.asset(
+                      'assets/userTransaktion.svg',
+                      color: Colors.deepPurpleAccent,
+                      height: 25,
+                      width: 25,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 50,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.05,
                 child: Container(
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 221, 221, 221),
@@ -215,16 +245,165 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
       body: Column(
         children: [
           Expanded(
-              child:
-              ListView(
-                children: [
-                  for (var i = 0; i < users.length; i++)
-                    GestureDetector(
-                      onTap: () {
-
-                      },
-                      child: Column(
-                        children: [
+            child: ListView(
+              children: [
+                for (var i = 0; i < users.length; i++)
+                  GestureDetector(
+                    onTap: () {},
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(
+                              left: 10, right: 10, top: 10, bottom: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.35),
+                                spreadRadius: 1,
+                                blurRadius: 10,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.02),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.01),
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 10),
+                                    child: SvgPicture.asset(
+                                      'assets/userIcon.svg',
+                                      color: Colors.deepPurpleAccent,
+                                      height: 60,
+                                      width: 60,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.01),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          users[i].name,
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          users[i].phone,
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          users[i].userName,
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(
+                                          255, 221, 221, 221),
+                                      border: Border.all(
+                                          color: const Color.fromARGB(
+                                              255, 221, 221, 221),
+                                          width: 5),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Text(
+                                      users[i].userRole,
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black45,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.009,
+                                  ),
+                                  IconButton(
+                                      onPressed: () {},
+                                      icon: SvgPicture.asset(
+                                        'assets/userPermission.svg',
+                                        color: Colors.deepPurpleAccent,
+                                        height: 25,
+                                        width: 25,
+                                      )),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.005,
+                                  ),
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: SvgPicture.asset(
+                                      'assets/editIcon.svg',
+                                      height: 25,
+                                      width: 25,
+                                      color: Colors.deepPurpleAccent,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.005,
+                                  ),
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: SvgPicture.asset(
+                                      'assets/deleteIcon.svg',
+                                      height: 25,
+                                      width: 25,
+                                      color: Colors.deepPurpleAccent,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.005,
+                                  ),
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: SvgPicture.asset(
+                                      'assets/userBlock.svg',
+                                      height: 25,
+                                      width: 25,
+                                      color: Colors.deepPurpleAccent,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.025,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.02),
+                            ],
+                          ),
+                        ),
+                        if (users.isEmpty)
                           Container(
                             margin: const EdgeInsets.only(
                                 left: 10, right: 10, top: 10, bottom: 10),
@@ -234,6 +413,7 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.grey.withOpacity(0.35),
+                                  //color: Color.fromARGB(255, 221, 221, 221),
                                   spreadRadius: 1,
                                   blurRadius: 10,
                                   offset: const Offset(0, 3),
@@ -243,186 +423,28 @@ class _UserPageState extends State<UserPage>  with SingleTickerProviderStateMixi
                             child: Column(
                               children: [
                                 SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.02),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                        width: MediaQuery.of(context).size.width *
-                                            0.01),
-                                    Container(
-                                      margin: const EdgeInsets.only(left: 10),
-                                      child: SvgPicture.asset(
-                                        'assets/userIcon.svg',
-                                        color: Colors.deepPurpleAccent,
-                                        height: 60,
-                                        width: 60,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        width: MediaQuery.of(context).size.width *
-                                            0.01),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            users[i].name,
-                                            style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                            users[i].phone,
-                                            style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          const SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                            users[i].userName,
-                                            style: const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.grey,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: const Color.fromARGB(
-                                            255, 221, 221, 221),
-                                        border: Border.all(
-                                            color: const Color.fromARGB(
-                                                255, 221, 221, 221),
-                                            width: 5),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: Text(
-                                        users[i].userRole,
-                                        style: const TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black45,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.009,
-                                    ),
-                                    IconButton(
-                                        onPressed: () {
-
-                                        },
-                                        icon: SvgPicture.asset(
-                                          'assets/userPermission.svg',
-                                          color: Colors.deepPurpleAccent,
-                                          height: 25,
-                                          width: 25,
-                                        )),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.005,
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                      },
-                                      icon: SvgPicture.asset(
-                                        'assets/editIcon.svg',
-                                        height: 25,
-                                        width: 25,
-                                        color: Colors.deepPurpleAccent,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.005,
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                      },
-                                      icon: SvgPicture.asset(
-                                        'assets/deleteIcon.svg',
-                                        height: 25,
-                                        width: 25,
-                                        color: Colors.deepPurpleAccent,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.005,
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                      },
-                                      icon: SvgPicture.asset(
-                                        'assets/userBlock.svg',
-                                        height: 25,
-                                        width: 25,
-                                        color: Colors.deepPurpleAccent,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.025,
-                                    ),
-                                  ],
+                                    height: MediaQuery.of(context).size.height /
+                                        50),
+                                const Center(
+                                  child: Text(
+                                    'Hozircha mahsulot yo`q',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                                 SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.02),
+                                    height: MediaQuery.of(context).size.height /
+                                        50),
                               ],
                             ),
                           ),
-                          if (users.isEmpty)
-                            Container(
-                              margin: const EdgeInsets.only(
-                                  left: 10, right: 10, top: 10, bottom: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.35),
-                                    //color: Color.fromARGB(255, 221, 221, 221),
-                                    spreadRadius: 1,
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                      height: MediaQuery.of(context).size.height /
-                                          50),
-                                  const Center(
-                                    child: Text(
-                                      'Hozircha mahsulot yo`q',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                      height: MediaQuery.of(context).size.height /
-                                          50),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
+                      ],
                     ),
-                ],
-              ),
+                  ),
+              ],
+            ),
           ),
         ],
       ),
