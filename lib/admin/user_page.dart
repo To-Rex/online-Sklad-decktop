@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:online_ombor/admin/tarnsaktion_page.dart';
 import 'package:online_ombor/models/user_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -196,7 +197,14 @@ class _UserPageState extends State<UserPage>
                       splashColor: Colors.transparent,
                       highlightColor: Colors.white,
                       color: Colors.white,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TransaktionsPage(),
+                          ),
+                        );
+                      },
                       icon: SvgPicture.asset(
                         'assets/userStatic.svg',
                         color: Colors.deepPurpleAccent,

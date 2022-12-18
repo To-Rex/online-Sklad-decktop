@@ -18,10 +18,14 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(0), // here the desired height
+        preferredSize: const Size.fromHeight(50),
         child: AppBar(
-          backgroundColor: const Color.fromRGBO(33, 158, 188, 10),
+          backgroundColor: Colors.white,
+          elevation: 0.4,
+          actionsIconTheme: const IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
         ),
       ),
       body: Column(
