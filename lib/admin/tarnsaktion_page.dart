@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TransaktionsPage extends StatefulWidget {
   const TransaktionsPage({super.key});
@@ -10,12 +15,61 @@ class TransaktionsPage extends StatefulWidget {
 
 class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerProviderStateMixin {
 
+  var userName = '';
+  var userId = '';
+  var userSurname = '';
+  var userPhone = '';
+  var userRole = '';
+  var userStatus = '';
+  var userBlocked = false;
+  var userNames = '';
+  var minWeight = '';
+  var maxWeight = '';
+  var minHeight = '';
+  var maxHeight = '';
+
+  var _selectedMenu;
+
+  Future<bool> checkInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
+    return false;
+  }
+  Future<void> _getUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userName = prefs.getString('name') ?? '';
+    userId = prefs.getString('userid') ?? '';
+    userSurname = prefs.getString('surname') ?? '';
+    userPhone = prefs.getString('phone') ?? '';
+    userRole = prefs.getString('role') ?? '';
+    userStatus = prefs.getString('userstatus') ?? '';
+    userBlocked = prefs.getBool('blocked') ?? false;
+    userNames = prefs.getString('username') ?? '';
+  }
+
+  Future<void> getSellTransaction() async {
+    final response = await http.get(Uri.parse('https://golalang-online-sklad-production.up.railway.app/getSellTransaction?months=${_selectedMenu}'));
+    if (response.statusCode == 200) {
+      print(response.body);
+    } else {
+      throw Exception('Failed to load album');
+    }
+
+  }
+
   @override
   void initState() {
+    _getUser();
+    getSellTransaction();
     super.initState();
   }
 
-  String _selectedMenu = '';
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +139,6 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
                     highlightColor: Colors.white,
                     color: Colors.white,
                     onPressed: () {
-                      //context menu
                       showMenu(
                         context: context,
                         position: RelativeRect.fromLTRB(
@@ -107,7 +160,8 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
                         ],
                       ).then((value) {
                         setState(() {
-                          //_selectedMenu = value;
+                          _selectedMenu = value;
+                          print(_selectedMenu);
                         });
                       });
                     },
