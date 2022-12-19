@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:online_ombor/models/transaktions_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TransaktionsPage extends StatefulWidget {
@@ -13,7 +15,8 @@ class TransaktionsPage extends StatefulWidget {
   _TransktionPageState createState() => _TransktionPageState();
 }
 
-class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerProviderStateMixin {
+class _TransktionPageState extends State<TransaktionsPage>
+    with SingleTickerProviderStateMixin {
 
   var userName = '';
   var userId = '';
@@ -28,7 +31,9 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
   var minHeight = '';
   var maxHeight = '';
 
-  var _selectedMenu;
+  var _selectedMenu = 1;
+  var transaktionList = [];
+  var listTransaktion = [];
 
   Future<bool> checkInternetConnection() async {
     try {
@@ -41,6 +46,7 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
     }
     return false;
   }
+
   Future<void> _getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = prefs.getString('name') ?? '';
@@ -54,13 +60,27 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
   }
 
   Future<void> getSellTransaction() async {
-    final response = await http.get(Uri.parse('https://golalang-online-sklad-production.up.railway.app/getSellTransaction?months=${_selectedMenu}'));
-    if (response.statusCode == 200) {
-      print(response.body);
-    } else {
-      throw Exception('Failed to load album');
+    final response = await http.get(Uri.parse(
+        'https://golalang-online-sklad-production.up.railway.app/getSellTransaction?months=${_selectedMenu}'));
+    final data = jsonDecode(response.body);
+    if (response.statusCode == 200 ||
+        response.statusCode == 201 && data['status'] == 'success') {
+      for (var i = 0; i < data['data'].length; i++) {
+        transaktionList.add(TransaktionList(
+            transactionId: data['data'][i]['transactionId'],
+            transactionDate: data['data'][i]['transactionDate'],
+            transactionSeller: data['data'][i]['transactionSeller'],
+            transactionProduct: data['data'][i]['transactionProduct'],
+            transactionNumber: data['data'][i]['transactionNumber'],
+            transactionPrice: data['data'][i]['transactionPrice'],
+            transactionStatus: data['data'][i]['transactionStatus'],
+            transactionBenefit: data['data'][i]['transactionBenefit'],
+        ));
+      }
+    }else{
+      SnackBar snackBar = const SnackBar(content: Text('Internet bilan aloqa yo\'q'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-
   }
 
   @override
@@ -91,7 +111,10 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
               //iconbutton
               SizedBox(
                 height: 30,
-                width: MediaQuery.of(context).size.width / 4,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width / 4,
                 child: Container(
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 221, 221, 221),
@@ -121,10 +144,16 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
                 ),
               ),
               SizedBox(
-                width: MediaQuery.of(context).size.width / 50,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width / 50,
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.05,
                 child: Container(
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 221, 221, 221),
@@ -142,8 +171,14 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
                       showMenu(
                         context: context,
                         position: RelativeRect.fromLTRB(
-                            MediaQuery.of(context).size.width * 0.8,
-                            MediaQuery.of(context).size.height * 0.1, 0, 0),
+                            MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.8,
+                            MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.1, 0, 0),
                         items: [
                           const PopupMenuItem(
                             value: '1',
@@ -160,7 +195,7 @@ class _TransktionPageState extends State<TransaktionsPage>  with SingleTickerPro
                         ],
                       ).then((value) {
                         setState(() {
-                          _selectedMenu = value;
+                          _selectedMenu = int.parse(value.toString());
                           print(_selectedMenu);
                         });
                       });

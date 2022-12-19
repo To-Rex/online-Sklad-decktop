@@ -59,8 +59,7 @@ class _UserPageState extends State<UserPage>
 
   //https://golalang-online-sklad-production.up.railway.app/getAllUser
   Future<void> _getUsers() async {
-    var url = Uri.parse(
-        'https://golalang-online-sklad-production.up.railway.app/getAllUser');
+    var url = Uri.parse('https://golalang-online-sklad-production.up.railway.app/getAllUser');
     var response = await http.get(url);
     final data = jsonDecode(response.body);
     if (data['status'] == 'success' && data['message'] == null) {
