@@ -1,4 +1,4 @@
-# online_ombor
+# online_sklad
 
 A new Flutter project.
 

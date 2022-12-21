@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:online_ombor/login_page.dart';
+import 'package:online_sklad/login_page.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {

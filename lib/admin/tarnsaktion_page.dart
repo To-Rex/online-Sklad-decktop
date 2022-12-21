@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:online_ombor/models/transaktions_list.dart';
+import 'package:online_sklad/models/transaktions_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TransaktionsPage extends StatefulWidget {

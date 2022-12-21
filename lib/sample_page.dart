@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
-import 'package:online_ombor/admin/user_page.dart';
+import 'package:online_sklad/admin/product_page.dart';
+import 'package:online_sklad/admin/user_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'admin/product_page.dart';
 
 class SamplePage extends StatefulWidget {
   const SamplePage({super.key});

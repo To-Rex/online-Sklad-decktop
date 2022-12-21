@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
-import 'package:online_ombor/admin/user_page.dart';
-import 'package:online_ombor/models/product_list.dart';
+import 'package:online_sklad/admin/user_page.dart';
+import 'package:online_sklad/models/product_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductPage extends StatefulWidget {
