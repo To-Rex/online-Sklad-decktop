@@ -25,10 +25,9 @@ class _TransktionPageState extends State<TransaktionsPage>
   var userStatus = '';
   var userBlocked = false;
   var userNames = '';
-  var minWeight = '';
-  var maxWeight = '';
-  var minHeight = '';
-  var maxHeight = '';
+
+  var benefit = 0;
+  var price =  0;
 
   var _selectedMenu = 1;
   var transaktionList = [];
@@ -64,6 +63,8 @@ class _TransktionPageState extends State<TransaktionsPage>
     final data = jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201 && data['status'] == 'success') {
       print(data);
+      benefit = data['benefit'];
+      price = data['price'];
       for (var i = 0; i < data['data'].length; i++) {
         transaktionList.add(TransaktionList(
           transactionId: data['data'][i]['transaction_id'],
@@ -113,7 +114,67 @@ class _TransktionPageState extends State<TransaktionsPage>
               const Expanded(
                 child: SizedBox(),
               ),
-              //iconbutton
+              Column(
+                children: [
+                  IconButton(
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.white,
+                    color: Colors.white,
+                    onPressed: () {},
+                    icon: SvgPicture.asset(
+                      'assets/sendIcon.svg',
+                      height: 22,
+                      width: 22,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                  ),
+                  Text(
+                    //price.toString(),
+                    '${price.toString()} so\'m',
+                    style: const TextStyle(
+                      color: Colors.deepPurpleAccent,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+              Column(
+                children: [
+                  IconButton(
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.white,
+                    color: Colors.white,
+                    onPressed: () {},
+                    icon: SvgPicture.asset(
+                      'assets/getIcon.svg',
+                      height: 22,
+                      width: 22,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                  ),
+                  Text(
+                    '$benefit so\'m',
+                    style: TextStyle(
+                      color: Colors.deepPurpleAccent,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: 20,
+              ),
               SizedBox(
                 height: 30,
                 width: MediaQuery.of(context).size.width / 4,
@@ -230,15 +291,46 @@ class _TransktionPageState extends State<TransaktionsPage>
                           ),
                           child: Column(
                             children: [
-                              Text(
-                                listTransaktion[i].transactionProductName,
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.05,
                               ),
                               Row(
                                 children: [
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.01,
+                                  ),
+                                  if (listTransaktion[i].transactionStatus == 'added')
+                                    SvgPicture.asset(
+                                      'assets/sendIcon.svg',
+                                      height: MediaQuery.of(context).size.height * 0.05,
+                                      width: MediaQuery.of(context).size.width * 0.05,
+                                      color: Colors.deepPurpleAccent,
+                                    ),
+                                  if (listTransaktion[i].transactionStatus == 'sold')
+                                    SvgPicture.asset(
+                                      'assets/getIcon.svg',
+                                      height: MediaQuery.of(context).size.height * 0.05,
+                                      width: MediaQuery.of(context).size.height * 0.05,
+                                      color: Colors.red,
+                                    ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.01,
+                                  ),
+                                  Column(
+                                    children: [
+
+                                      Text(
+                                        listTransaktion[i].transactionProductName,
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.05,
+                                  ),
                                   Text(
                                     listTransaktion[i].transactionDate,
                                     style: const TextStyle(
@@ -247,6 +339,9 @@ class _TransktionPageState extends State<TransaktionsPage>
                                         fontWeight: FontWeight.w400),
                                   ),
                                 ],
+                              ),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.05,
                               ),
                             ],
                           ),

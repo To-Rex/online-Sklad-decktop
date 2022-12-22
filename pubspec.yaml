@@ -78,6 +78,8 @@ flutter:
     - assets/userPermission.svg
     - assets/userStatic.svg
     - assets/sort.svg
+    - assets/sendIcon.svg
+    - assets/getIcon.svg
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
