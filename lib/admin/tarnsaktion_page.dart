@@ -78,8 +78,6 @@ class _TransktionPageState extends State<TransaktionsPage>
           transactionBenefit: data['data'][i]['transaction_benefit'],
         ));
       }
-      print(transaktionList);
-
       setState(() {
         listTransaktion = transaktionList;
       });
@@ -114,6 +112,37 @@ class _TransktionPageState extends State<TransaktionsPage>
               const Expanded(
                 child: SizedBox(),
               ),
+
+              Column(
+                children: [
+                  IconButton(
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.white,
+                    color: Colors.white,
+                    onPressed: () {},
+                    icon: SvgPicture.asset(
+                      'assets/benIcon.svg',
+                      height: 22,
+                      width: 22,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                  ),
+                  Text(
+                    '${price-benefit} so\'m',
+                    style: const TextStyle(
+                      color: Colors.deepPurpleAccent,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                width: 20,
+              ),
               Column(
                 children: [
                   IconButton(
@@ -145,6 +174,7 @@ class _TransktionPageState extends State<TransaktionsPage>
               const SizedBox(
                 width: 20,
               ),
+
               Column(
                 children: [
                   IconButton(
@@ -162,7 +192,7 @@ class _TransktionPageState extends State<TransaktionsPage>
                   ),
                   Text(
                     '$benefit so\'m',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.deepPurpleAccent,
                       fontSize: 12,
                     ),
@@ -172,7 +202,7 @@ class _TransktionPageState extends State<TransaktionsPage>
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20,
               ),
               SizedBox(
@@ -318,13 +348,33 @@ class _TransktionPageState extends State<TransaktionsPage>
                                   ),
                                   Column(
                                     children: [
-
                                       Text(
                                         listTransaktion[i].transactionProductName,
                                         style: const TextStyle(
                                             color: Colors.black,
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400),
+                                      ),
+                                      SizedBox(
+                                        height: MediaQuery.of(context).size.height * 0.01,
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromARGB(
+                                              255, 221, 221, 221),
+                                          border: Border.all(
+                                              color: const Color.fromARGB(
+                                                  255, 221, 221, 221),
+                                              width: 5),
+                                          borderRadius: BorderRadius.circular(5),
+                                        ),
+                                        child: Text(
+                                          '  ${listTransaktion[i].transactionNumber} Dona  ',
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400),
+                                        ),
                                       ),
                                     ],
                                   ),

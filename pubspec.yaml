@@ -80,6 +80,7 @@ flutter:
     - assets/sort.svg
     - assets/sendIcon.svg
     - assets/getIcon.svg
+    - assets/benIcon.svg
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
