@@ -17,7 +17,6 @@ class TransaktionsPage extends StatefulWidget {
 
 class _TransktionPageState extends State<TransaktionsPage>
     with SingleTickerProviderStateMixin {
-
   var userName = '';
   var userId = '';
   var userSurname = '';
@@ -63,22 +62,29 @@ class _TransktionPageState extends State<TransaktionsPage>
     final response = await http.get(Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/getSellTransaction?months=${_selectedMenu}'));
     final data = jsonDecode(response.body);
-    if (response.statusCode == 200 ||
-        response.statusCode == 201 && data['status'] == 'success') {
+    if (response.statusCode == 200 || response.statusCode == 201 && data['status'] == 'success') {
+      print(data);
       for (var i = 0; i < data['data'].length; i++) {
         transaktionList.add(TransaktionList(
-            transactionId: data['data'][i]['transactionId'],
-            transactionDate: data['data'][i]['transactionDate'],
-            transactionSeller: data['data'][i]['transactionSeller'],
-            transactionProduct: data['data'][i]['transactionProduct'],
-            transactionNumber: data['data'][i]['transactionNumber'],
-            transactionPrice: data['data'][i]['transactionPrice'],
-            transactionStatus: data['data'][i]['transactionStatus'],
-            transactionBenefit: data['data'][i]['transactionBenefit'],
+          transactionId: data['data'][i]['transaction_id'],
+          transactionDate: data['data'][i]['transaction_date'],
+          transactionSeller: data['data'][i]['transaction_seller'],
+          transactionProductName: data['data'][i]['transaction_product_name'],
+          transactionProduct: data['data'][i]['transaction_product'],
+          transactionNumber: data['data'][i]['transaction_number'],
+          transactionPrice: data['data'][i]['transaction_price'],
+          transactionStatus: data['data'][i]['transaction_status'],
+          transactionBenefit: data['data'][i]['transaction_benefit'],
         ));
       }
-    }else{
-      SnackBar snackBar = const SnackBar(content: Text('Internet bilan aloqa yo\'q'));
+      print(transaktionList);
+
+      setState(() {
+        listTransaktion = transaktionList;
+      });
+    } else {
+      SnackBar snackBar =
+          const SnackBar(content: Text('Internet bilan aloqa yo\'q'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
@@ -89,7 +95,6 @@ class _TransktionPageState extends State<TransaktionsPage>
     getSellTransaction();
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -111,10 +116,7 @@ class _TransktionPageState extends State<TransaktionsPage>
               //iconbutton
               SizedBox(
                 height: 30,
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width / 4,
+                width: MediaQuery.of(context).size.width / 4,
                 child: Container(
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 221, 221, 221),
@@ -127,9 +129,7 @@ class _TransktionPageState extends State<TransaktionsPage>
                     cursorColor: Colors.deepPurpleAccent,
                     textAlign: TextAlign.justify,
                     textInputAction: TextInputAction.next,
-                    onChanged: (value) {
-
-                    },
+                    onChanged: (value) {},
                     decoration: const InputDecoration(
                       contentPadding: EdgeInsets.only(left: 10, right: 10),
                       border: InputBorder.none,
@@ -144,16 +144,10 @@ class _TransktionPageState extends State<TransaktionsPage>
                 ),
               ),
               SizedBox(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width / 50,
+                width: MediaQuery.of(context).size.width / 50,
               ),
               SizedBox(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 0.05,
+                height: MediaQuery.of(context).size.height * 0.05,
                 child: Container(
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 221, 221, 221),
@@ -171,14 +165,10 @@ class _TransktionPageState extends State<TransaktionsPage>
                       showMenu(
                         context: context,
                         position: RelativeRect.fromLTRB(
-                            MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.8,
-                            MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.1, 0, 0),
+                            MediaQuery.of(context).size.width * 0.8,
+                            MediaQuery.of(context).size.height * 0.1,
+                            0,
+                            0),
                         items: [
                           const PopupMenuItem(
                             value: '1',
@@ -214,9 +204,59 @@ class _TransktionPageState extends State<TransaktionsPage>
         ),
       ),
       body: Column(
-        children: const [
-          Text(''),
-          //floating button default
+        children: [
+          Expanded(
+            child: ListView(
+              children: [
+                for (var i = 0; i < listTransaktion.length; i++)
+                  GestureDetector(
+                    onTap: () {},
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(
+                              left: 10, right: 10, top: 10, bottom: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.35),
+                                spreadRadius: 1,
+                                blurRadius: 10,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                listTransaktion[i].transactionProductName,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    listTransaktion[i].transactionDate,
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
     );

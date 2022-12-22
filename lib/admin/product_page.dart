@@ -319,7 +319,7 @@ class _ProductPageState extends State<ProductPage>
     }
   }
 
-  Future<void> _putPraductSell(String productId) async {
+  Future<void> _putPraductSell(String productId, String productName) async {
     var number = int.parse(_productNumberController.text);
 
     final response = await http.post(
@@ -328,6 +328,7 @@ class _ProductPageState extends State<ProductPage>
       body: {
         'transaction_benefit': _productBenefitController.text,
         'transaction_price': _productPriceController.text,
+        'transaction_product_name': productName,
       },
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -963,14 +964,9 @@ class _ProductPageState extends State<ProductPage>
                                   ),
                                   IconButton(
                                       onPressed: () {
-                                        _productPriceController.text =
-                                            products[i].productPrice.toString();
-                                        _productBenefitController.text =
-                                            products[i]
-                                                .productBenefit
-                                                .toString();
-                                        _showDialogSellProduct(
-                                            products[i].productId);
+                                        _productPriceController.text = products[i].productPrice.toString();
+                                        _productBenefitController.text = products[i].productBenefit.toString();
+                                        _showDialogSellProduct(products[i].productId,products[i].productName);
                                       },
                                       icon: const Icon(
                                         Icons.sell_outlined,
@@ -1403,7 +1399,7 @@ class _ProductPageState extends State<ProductPage>
         });
   }
 
-  void _showDialogSellProduct(String productId) {
+  void _showDialogSellProduct(String productId, String productName) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -1492,9 +1488,7 @@ class _ProductPageState extends State<ProductPage>
                             if (int.parse(_productNumberController.text) == 0) {
                               return;
                             }
-                            _productNumberController.text =
-                                (int.parse(_productNumberController.text) - 1)
-                                    .toString();
+                            _productNumberController.text = (int.parse(_productNumberController.text) - 1).toString();
                             setState(() {});
                           },
                           icon: SvgPicture.asset(
@@ -1552,9 +1546,7 @@ class _ProductPageState extends State<ProductPage>
                             if (int.parse(_productNumberController.text) < 0) {
                               _productNumberController.text = '0';
                             }
-                            _productNumberController.text =
-                                (int.parse(_productNumberController.text) + 1)
-                                    .toString();
+                            _productNumberController.text = (int.parse(_productNumberController.text) + 1).toString();
                             setState(() {});
                           },
                           icon: const Icon(
@@ -1622,7 +1614,7 @@ class _ProductPageState extends State<ProductPage>
                   }
                   _isLoad = true;
                   setState(() {});
-                  _putPraductSell(productId);
+                  _putPraductSell(productId,productName);
                   Navigator.pop(context);
                 },
                 child: const Text('Saqlash'),
