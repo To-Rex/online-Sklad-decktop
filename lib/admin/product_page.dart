@@ -1124,11 +1124,8 @@ class _ProductPageState extends State<ProductPage>
       //search name price
       setState(() {
         products = _productList
-            .where((element) =>
-                element.productName
-                    .toLowerCase()
-                    .contains(value.toLowerCase()) ||
-                element.productPrice
+            .where((element) => element.productName.toLowerCase()
+                    .contains(value.toLowerCase()) || element.productPrice
                     .toString()
                     .toLowerCase()
                     .contains(value.toLowerCase()))

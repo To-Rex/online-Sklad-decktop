@@ -112,7 +112,6 @@ class _TransktionPageState extends State<TransaktionsPage>
               const Expanded(
                 child: SizedBox(),
               ),
-
               Column(
                 children: [
                   IconButton(
@@ -205,6 +204,7 @@ class _TransktionPageState extends State<TransaktionsPage>
               const SizedBox(
                 width: 20,
               ),
+
               SizedBox(
                 height: 30,
                 width: MediaQuery.of(context).size.width / 4,
@@ -220,7 +220,11 @@ class _TransktionPageState extends State<TransaktionsPage>
                     cursorColor: Colors.deepPurpleAccent,
                     textAlign: TextAlign.justify,
                     textInputAction: TextInputAction.next,
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      setState(() {
+                        _searchTransaktion(value);
+                      });
+                    },
                     decoration: const InputDecoration(
                       contentPadding: EdgeInsets.only(left: 10, right: 10),
                       border: InputBorder.none,
@@ -322,7 +326,7 @@ class _TransktionPageState extends State<TransaktionsPage>
                           child: Column(
                             children: [
                               SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.05,
+                                height: MediaQuery.of(context).size.height * 0.02,
                               ),
                               Row(
                                 children: [
@@ -376,6 +380,16 @@ class _TransktionPageState extends State<TransaktionsPage>
                                               fontWeight: FontWeight.w400),
                                         ),
                                       ),
+                                      SizedBox(
+                                        height: MediaQuery.of(context).size.height * 0.01,
+                                      ),
+                                      Text(
+                                        '${listTransaktion[i].transactionPrice+listTransaktion[i].transactionBenefit} so\'m',
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400),
+                                      ),
                                     ],
                                   ),
                                   SizedBox(
@@ -391,7 +405,7 @@ class _TransktionPageState extends State<TransaktionsPage>
                                 ],
                               ),
                               SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.05,
+                                height: MediaQuery.of(context).size.height * 0.02,
                               ),
                             ],
                           ),
@@ -405,6 +419,21 @@ class _TransktionPageState extends State<TransaktionsPage>
         ],
       ),
     );
+  }
+  void _searchTransaktion(String value){
+    if (value.isEmpty) {
+      setState(() {
+        listTransaktion = transaktionList;
+      });
+    } else {
+      setState(() {
+        listTransaktion = transaktionList
+            .where((element) => element.transactionProductName.toLowerCase()
+            .contains(value.toLowerCase()) || element.transactionDate.toLowerCase()
+            .contains(value.toLowerCase()))
+            .toList();
+      });
+    }
   }
 }
 
