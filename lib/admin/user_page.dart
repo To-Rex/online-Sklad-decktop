@@ -17,6 +17,14 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage>
     with SingleTickerProviderStateMixin {
+
+  late final _userNameController = TextEditingController();
+  late final _nameController = TextEditingController();
+  late final _surNameController = TextEditingController();
+  late final _phoneController = TextEditingController();
+  late final _passwordController = TextEditingController();
+
+
   var userName = '';
   var userId = '';
   var userSurname = '';
@@ -32,6 +40,8 @@ class _UserPageState extends State<UserPage>
 
   var userList = [];
   var users = [];
+
+
 
   Future<bool> checkInternetConnection() async {
     try {
@@ -88,6 +98,266 @@ class _UserPageState extends State<UserPage>
       return;
     }
   }
+
+  Future<void> _addUser() async{
+    final response = await http.post(
+      Uri.parse('https://golalang-online-sklad-production.up.railway.app/register'),
+      body: jsonEncode(<Object, Object>{
+        'username': _userNameController.text,
+        'name': _nameController.text,
+        'surname': _surNameController.text,
+        'phone': _phoneController.text,
+        'password': _passwordController.text,
+      }),
+    );
+    final data = jsonDecode(response.body);
+    print(data);
+    print(response.statusCode);
+    if(response.statusCode == 200){
+      if (data['status'] == 'success' && data['message'] == 'User created') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('User created'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        return;
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('User not created'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('User not created'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+  }
+
+  Future<void> _deleteUser(String userId) async {
+    //https://golalang-online-sklad-production.up.railway.app/deleteUser?userid=JquoRovTlsWSZKqxUPbvu4gEfNH0XcAL
+    var url = Uri.parse('https://golalang-online-sklad-production.up.railway.app/deleteUser?userid=$userId');
+    var response = await http.delete(url);
+    final data = jsonDecode(response.body);
+    if(response.statusCode == 200){
+      if (data['status'] == 'success' && data['message'] == null) {
+        print('data is null');
+        return;
+      }
+
+      if (data['status'] == 'success' && data['message'] != null) {
+        print('data is not null');
+        setState(() {
+          _getUsers();
+        });
+        return;
+      }
+
+      if (data['status'] == 'error' && data['message'] != null) {
+        print('data is not null');
+        return;
+      }
+    }else{
+      print('error');
+    }
+  }
+
+  void _showDeleteDialog(String userId) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('O`chirish'),
+            content: const Text('Bu foydalanuvchini o`chirishni istaysizmi?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Yo`q'),
+              ),
+              TextButton(
+                onPressed: () {
+                  print(userId);
+                  _deleteUser(userId);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Ha'),
+              ),
+            ],
+          );
+        });
+  }
+
+  void showAddUserDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Yangi foydalanuvchi qo`shish'),
+            content: Container(
+              height: 400,
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width / 2.5,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _userNameController,
+                      textAlign: TextAlign.left,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Foydalanuvchi nomi',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _nameController,
+                      textAlign: TextAlign.left,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Ism',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _surNameController,
+                      textAlign: TextAlign.left,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Familiya',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _phoneController,
+                      textAlign: TextAlign.left,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Telefon raqami',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _passwordController,
+                      textAlign: TextAlign.left,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Parol',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Bekor qilish'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (_userNameController.text.isEmpty ||
+                      _nameController.text.isEmpty ||
+                      _surNameController.text.isEmpty ||
+                      _phoneController.text.isEmpty ||
+                      _passwordController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Barcha maydonlarni to`ldiring'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  _addUser();
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Saqlash'),
+              ),
+            ],
+          );
+        });
+  }
+
+
 
   void _searchProduct(String value) {
     if (value.isEmpty) {
@@ -231,12 +501,7 @@ class _UserPageState extends State<UserPage>
                     highlightColor: Colors.white,
                     color: Colors.white,
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const UserPage(),
-                        ),
-                      );
+                      showAddUserDialog();
                     },
                     icon: const Icon(
                       Icons.add,
@@ -381,8 +646,7 @@ class _UserPageState extends State<UserPage>
                                   if (users[i].userRole == 'user'||users[i].userRole == "admin"&&userRole=='creator')
                                     IconButton(
                                       onPressed: () {
-                                        print(users[i].userRole);
-                                        print(userRole);
+                                        _showDeleteDialog(users[i].userId);
                                       },
                                       icon: SvgPicture.asset(
                                         'assets/deleteIcon.svg',
@@ -462,4 +726,5 @@ class _UserPageState extends State<UserPage>
       ),
     );
   }
+
 }

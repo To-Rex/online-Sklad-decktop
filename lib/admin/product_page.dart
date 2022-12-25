@@ -209,8 +209,7 @@ class _ProductPageState extends State<ProductPage>
     });
     var number = int.parse(_productNumbersController.text);
     final response = await http.post(
-      Uri.parse(
-          'https://golalang-online-sklad-production.up.railway.app/productSell?productId=$productId&userId=$userId&number=$number'),
+      Uri.parse('https://golalang-online-sklad-production.up.railway.app/productSell?productId=$productId&userId=$userId&number=$number'),
     );
     if (response.statusCode == 200) {
       _productNumbersController.clear();
