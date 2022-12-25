@@ -53,7 +53,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   var text = 'Check connection internet ...';
-
   Future<bool> checkInternetConnection() async {
     try {
       final result = await InternetAddress.lookup('google.com');

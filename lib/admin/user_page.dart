@@ -57,7 +57,6 @@ class _UserPageState extends State<UserPage>
     userNames = prefs.getString('username') ?? '';
   }
 
-  //https://golalang-online-sklad-production.up.railway.app/getAllUser
   Future<void> _getUsers() async {
     var url = Uri.parse('https://golalang-online-sklad-production.up.railway.app/getAllUser');
     var response = await http.get(url);
@@ -408,14 +407,11 @@ class _UserPageState extends State<UserPage>
                                     ),
                                   ),
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.025,
-                                  ),
+                                    width: MediaQuery.of(context).size.width * 0.025,),
                                 ],
                               ),
                               SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.02),
+                                  height: MediaQuery.of(context).size.height * 0.02),
                             ],
                           ),
                         ),

@@ -124,7 +124,7 @@ class _TransktionPageState extends State<TransaktionsPage>
                       'assets/benIcon.svg',
                       height: 22,
                       width: 22,
-                      color: Colors.deepPurpleAccent,
+                      color: Colors.green,
                     ),
                   ),
                   Text(
@@ -186,7 +186,7 @@ class _TransktionPageState extends State<TransaktionsPage>
                       'assets/getIcon.svg',
                       height: 22,
                       width: 22,
-                      color: Colors.deepPurpleAccent,
+                      color: Colors.red,
                     ),
                   ),
                   Text(
@@ -383,13 +383,22 @@ class _TransktionPageState extends State<TransaktionsPage>
                                       SizedBox(
                                         height: MediaQuery.of(context).size.height * 0.01,
                                       ),
-                                      Text(
-                                        '${listTransaktion[i].transactionPrice+listTransaktion[i].transactionBenefit} so\'m',
-                                        style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400),
-                                      ),
+                                      if (listTransaktion[i].transactionStatus == 'added')
+                                        Text(
+                                          '${listTransaktion[i].transactionPrice+listTransaktion[i].transactionBenefit} so\'m',
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      if (listTransaktion[i].transactionStatus == 'sold')
+                                        Text(
+                                          '${listTransaktion[i].transactionPrice} so\'m',
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400),
+                                        ),
                                     ],
                                   ),
                                   SizedBox(
