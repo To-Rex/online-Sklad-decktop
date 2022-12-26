@@ -69,6 +69,8 @@ class _UserPageState extends State<UserPage>
   }
 
   Future<void> _getUsers() async {
+    users.clear();
+    userList.clear();
     var url = Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/getAllUser');
     var response = await http.get(url);
@@ -76,10 +78,12 @@ class _UserPageState extends State<UserPage>
     if (response.statusCode == 200) {
       if (data['status'] == 'success' && data['message'] == null) {
         print('data is null');
+        _isLoad = false;
         return;
       }
 
       if (data['status'] == 'success' && data['message'] != null) {
+        _isLoad = false;
         for (var i = 0; i < data['message'].length; i++) {
           userList.add(UserList(
             userName: data['message'][i]['username'],
@@ -101,6 +105,7 @@ class _UserPageState extends State<UserPage>
         return;
       }
     }else{
+      _isLoad = false;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('ulanishda xatolik yuz berdi'),
@@ -111,6 +116,16 @@ class _UserPageState extends State<UserPage>
   }
 
   Future<void> _addUser() async {
+    checkInternetConnection().then((value) {
+      if (!value) {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Internetga ulanish yo\'q!'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+    });
     final response = await http.post(
       Uri.parse(
           'https://golalang-online-sklad-production.up.railway.app/register'),
@@ -127,14 +142,17 @@ class _UserPageState extends State<UserPage>
     print(response.statusCode);
     if (response.statusCode == 200) {
       if (data['status'] == 'success' && data['message'] == 'User created') {
+        _getUsers();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('User created'),
+            content: Text('Yangi foydalanuvchi muvaffaqiyatli qo\'shildi'),
             backgroundColor: Colors.green,
           ),
         );
         return;
       } else {
+        _isLoad = false;
+        setState(() {});
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('User not created'),
@@ -144,6 +162,8 @@ class _UserPageState extends State<UserPage>
         return;
       }
     } else {
+      _isLoad = false;
+      setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('User not created'),
@@ -155,7 +175,16 @@ class _UserPageState extends State<UserPage>
   }
 
   Future<void> _deleteUser(String userId) async {
-    //https://golalang-online-sklad-production.up.railway.app/deleteUser?userid=JquoRovTlsWSZKqxUPbvu4gEfNH0XcAL
+    checkInternetConnection().then((value) {
+      if (!value) {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Internetga ulanish yo\'q!'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+    });
     var url = Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/deleteUser?userid=$userId');
     var response = await http.delete(url);
@@ -167,19 +196,26 @@ class _UserPageState extends State<UserPage>
       }
 
       if (data['status'] == 'success' && data['message'] != null) {
-        print('data is not null');
+        _isLoad = false;
         setState(() {
-          _getUsers();
+          users.removeWhere((element) => element.userId == userId);
         });
         return;
       }
 
       if (data['status'] == 'error' && data['message'] != null) {
+        _isLoad = false;
         print('data is not null');
         return;
       }
     } else {
-      print('error');
+      _isLoad = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('ulanishda xatolik yuz berdi'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -199,7 +235,8 @@ class _UserPageState extends State<UserPage>
               ),
               TextButton(
                 onPressed: () {
-                  print(userId);
+                  _isLoad = true;
+                  setState(() {});
                   _deleteUser(userId);
                   Navigator.of(context).pop();
                 },
@@ -375,6 +412,10 @@ class _UserPageState extends State<UserPage>
                     );
                     return;
                   }
+                  //userList.clear();
+                  //users.clear();
+                  _isLoad = true;
+                  setState(() {});
                   _addUser();
                   Navigator.of(context).pop();
                 },
@@ -384,7 +425,6 @@ class _UserPageState extends State<UserPage>
           );
         });
   }
-
 
   void _searchProduct(String value) {
     if (value.isEmpty) {
@@ -419,6 +459,16 @@ class _UserPageState extends State<UserPage>
         ));
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _userNameController.dispose();
+    _nameController.dispose();
+    _surNameController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -805,7 +855,6 @@ class _UserPageState extends State<UserPage>
                     ),
                 ],
               ),
-
             ),
             Row(
               children: [
