@@ -42,6 +42,7 @@ class _UserPageState extends State<UserPage>
   var userList = [];
   var users = [];
   var _isLoad = true;
+  var _isChangePassword = false;
 
 
   Future<bool> checkInternetConnection() async {
@@ -143,6 +144,12 @@ class _UserPageState extends State<UserPage>
     if (response.statusCode == 200) {
       if (data['status'] == 'success' && data['message'] == 'User created') {
         _getUsers();
+
+        _userNameController.clear();
+        _nameController.clear();
+        _surNameController.clear();
+        _phoneController.clear();
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Yangi foydalanuvchi muvaffaqiyatli qo\'shildi'),
@@ -261,7 +268,6 @@ class _UserPageState extends State<UserPage>
     }
   }
 
-  //localhost:8080/updateUser?userId=nxCNqywFqcL6pKOZDUpRZyqrHv53Q8Zf
   Future<void>  _updateUser(String userId) async {
     checkInternetConnection().then((value) {
       if (!value) {
@@ -504,6 +510,218 @@ class _UserPageState extends State<UserPage>
                   _isLoad = true;
                   setState(() {});
                   _addUser();
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Saqlash'),
+              ),
+            ],
+          );
+        });
+  }
+
+  void showUserUpdateDialog(String userId) {
+    //chesk users list for user userid position and get user data from list
+    _userNameController.text = userList[users.indexWhere((element) => element.userId == userId)].userName;
+    _nameController.text = userList[users.indexWhere((element) => element.userId == userId)].name;
+    _surNameController.text = userList[users.indexWhere((element) => element.userId == userId)].surName;
+    _phoneController.text = userList[users.indexWhere((element) => element.userId == userId)].phone;
+    _passwordController.clear();
+    var isUpdate = false;
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Foydalanuvchi ma`lumotlarini o`zgartirish'),
+            content: SizedBox(
+              height: 400,
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width / 2.5,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _userNameController,
+                      textAlign: TextAlign.left,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Foydalanuvchi nomi',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.02,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _nameController,
+                      textAlign: TextAlign.left,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Ism',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.02,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _surNameController,
+                      textAlign: TextAlign.left,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Familiya',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.02,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _phoneController,
+                      textAlign: TextAlign.left,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Telefon raqami',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.02,
+                  ),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _isChangePassword,
+                        onChanged: (value) {
+                          Navigator.of(context).pop();
+                          showUserUpdateDialog(userId);
+                          isUpdate = value!;
+                          setState(() {
+                            _isChangePassword = value!;
+                          });
+                        },
+                      ),
+                      const Text('Parolni o`zgartirish'),
+                    ],
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _passwordController,
+                      textAlign: TextAlign.left,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Parol',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Bekor qilish'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (_userNameController.text.isEmpty ||
+                      _nameController.text.isEmpty ||
+                      _surNameController.text.isEmpty ||
+                      _phoneController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Barcha maydonlarni to`ldiring'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  if (isUpdate) {
+                    if (_passwordController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('iltimos parolni kiriting'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
+                    //_updatePassword(userId);
+                  }
+                  _isLoad = true;
+                  setState(() {});
+                  _updateUser(userId);
+
                   Navigator.of(context).pop();
                 },
                 child: const Text('Saqlash'),
@@ -810,7 +1028,9 @@ class _UserPageState extends State<UserPage>
                                     ),
                                     if (users[i].userRole == 'user' || users[i].userRole == "admin" && userRole == 'creator')
                                       IconButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            
+                                          },
                                           icon: SvgPicture.asset(
                                             'assets/userPermission.svg',
                                             color: Colors.deepPurpleAccent,
@@ -828,7 +1048,9 @@ class _UserPageState extends State<UserPage>
                                         users[i].userRole == "admin" &&
                                             userRole == 'creator')
                                       IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          showUserUpdateDialog(users[i].userId);
+                                        },
                                         icon: SvgPicture.asset(
                                           'assets/editIcon.svg',
                                           height: 25,
