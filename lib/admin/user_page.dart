@@ -721,9 +721,7 @@ class _UserPageState extends State<UserPage>
                                           .width *
                                           0.009,
                                     ),
-                                    if (users[i].userRole == 'user' ||
-                                        users[i].userRole == "admin" &&
-                                            userRole == 'creator')
+                                    if (users[i].userRole == 'user' || users[i].userRole == "admin" && userRole == 'creator')
                                       IconButton(
                                           onPressed: () {},
                                           icon: SvgPicture.asset(
@@ -780,18 +778,31 @@ class _UserPageState extends State<UserPage>
                                           .width *
                                           0.005,
                                     ),
-                                    if (users[i].userRole == 'user' ||
-                                        users[i].userRole == "admin" &&
-                                            userRole == 'creator')
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: SvgPicture.asset(
-                                          'assets/userBlock.svg',
-                                          height: 25,
-                                          width: 25,
-                                          color: Colors.deepPurpleAccent,
+                                    if (users[i].userRole == 'user' || users[i].userRole == "admin" && userRole == 'creator')
+                                      if(users[i].blocked == false)
+                                        IconButton(
+                                          onPressed: () {
+                                           // _showBlockDialog(users[i].userId);
+                                          },
+                                          icon: SvgPicture.asset(
+                                            'assets/userBlock.svg',
+                                            height: 25,
+                                            width: 25,
+                                            color: Colors.deepPurpleAccent,
+                                          ),
                                         ),
-                                      ),
+                                      if (users[i].blocked == true)
+                                        IconButton(
+                                          onPressed: () {
+                                            //_showUnBlockDialog(users[i].userId);
+                                          },
+                                          icon: SvgPicture.asset(
+                                            'assets/userBlock.svg',
+                                            height: 25,
+                                            width: 25,
+                                            color: Colors.red,
+                                          ),
+                                        ),
                                     SizedBox(
                                       width: MediaQuery
                                           .of(context)
