@@ -155,7 +155,7 @@ class _UserPageState extends State<UserPage>
         setState(() {});
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('User not created'),
+            content: Text('bunday foydalanuvchi mavjud'),
             backgroundColor: Colors.red,
           ),
         );
@@ -166,7 +166,7 @@ class _UserPageState extends State<UserPage>
       setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('User not created'),
+          content: Text('foydlanuvchi qo\'shishda xatolik yuz berdi'),
           backgroundColor: Colors.red,
         ),
       );
