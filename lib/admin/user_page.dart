@@ -219,6 +219,93 @@ class _UserPageState extends State<UserPage>
     }
   }
 
+  Future<void> _updateBlocked(String userNames, bool blocked) async {
+    checkInternetConnection().then((value) {
+      if (!value) {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Internetga ulanish yo\'q!'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+    });
+    var response = await http.put(
+        Uri.parse('https://golalang-online-sklad-production.up.railway.app/updateBlocked'),
+        body: jsonEncode(<Object, Object>{
+          'username': userNames,
+          'blocked': blocked,
+        }));
+    final data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      if (data['status'] == 'success' && data['message'] != null) {
+        _isLoad = false;
+        setState(() {});
+        _getUsers();
+        return;
+      }
+      if (data['status'] == 'error' && data['message'] != null) {
+        _isLoad = false;
+        setState(() {});
+        _getUsers();
+        return;
+      }
+    } else {
+      _isLoad = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('ulanishda xatolik yuz berdi'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  //localhost:8080/updateUser?userId=nxCNqywFqcL6pKOZDUpRZyqrHv53Q8Zf
+  Future<void>  _updateUser(String userId) async {
+    checkInternetConnection().then((value) {
+      if (!value) {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Internetga ulanish yo\'q!'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+    });
+    var response = await http.put(
+        Uri.parse('https://golalang-online-sklad-production.up.railway.app/updateUser?userId=$userId'),
+        body: jsonEncode(<Object, Object>{
+          'username': _userNameController.text,
+          'name': _nameController.text,
+          'surname': _surNameController.text,
+          'phone': _phoneController.text,
+        }));
+    final data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      if (data['status'] == 'success' && data['message'] != null) {
+        _isLoad = false;
+        setState(() {});
+        _getUsers();
+        return;
+      }
+      if (data['status'] == 'error' && data['message'] != null) {
+        _isLoad = false;
+        setState(() {});
+        _getUsers();
+        return;
+      }
+    } else {
+      _isLoad = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('ulanishda xatolik yuz berdi'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   void _showDeleteDialog(String userId) {
     showDialog(
         context: context,
@@ -253,7 +340,7 @@ class _UserPageState extends State<UserPage>
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Yangi foydalanuvchi qo`shish'),
-            content: Container(
+            content: SizedBox(
               height: 400,
               child: Column(
                 children: [
@@ -782,7 +869,10 @@ class _UserPageState extends State<UserPage>
                                       if(users[i].blocked == false)
                                         IconButton(
                                           onPressed: () {
-                                           // _showBlockDialog(users[i].userId);
+                                            _isLoad = true;
+                                            setState(() {
+                                              _updateBlocked(users[i].userName, true);
+                                            });
                                           },
                                           icon: SvgPicture.asset(
                                             'assets/userBlock.svg',
@@ -794,7 +884,10 @@ class _UserPageState extends State<UserPage>
                                       if (users[i].blocked == true)
                                         IconButton(
                                           onPressed: () {
-                                            //_showUnBlockDialog(users[i].userId);
+                                            _isLoad = true;
+                                            setState(() {
+                                              _updateBlocked(users[i].userName, false);
+                                            });
                                           },
                                           icon: SvgPicture.asset(
                                             'assets/userBlock.svg',
