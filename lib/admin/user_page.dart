@@ -18,13 +18,11 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage>
     with SingleTickerProviderStateMixin {
-
   late final _userNameController = TextEditingController();
   late final _nameController = TextEditingController();
   late final _surNameController = TextEditingController();
   late final _phoneController = TextEditingController();
   late final _passwordController = TextEditingController();
-
 
   var userName = '';
   var userId = '';
@@ -42,8 +40,8 @@ class _UserPageState extends State<UserPage>
   var userList = [];
   var users = [];
   var _isLoad = true;
+  var isUpdate = false;
   var _isChangePassword = false;
-
 
   Future<bool> checkInternetConnection() async {
     try {
@@ -67,6 +65,7 @@ class _UserPageState extends State<UserPage>
     userStatus = prefs.getString('userstatus') ?? '';
     userBlocked = prefs.getBool('blocked') ?? false;
     userNames = prefs.getString('username') ?? '';
+    print('role: $userRole');
   }
 
   Future<void> _getUsers() async {
@@ -105,7 +104,7 @@ class _UserPageState extends State<UserPage>
         });
         return;
       }
-    }else{
+    } else {
       _isLoad = false;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -238,10 +237,68 @@ class _UserPageState extends State<UserPage>
       }
     });
     var response = await http.put(
-        Uri.parse('https://golalang-online-sklad-production.up.railway.app/updateBlocked'),
+        Uri.parse(
+            'https://golalang-online-sklad-production.up.railway.app/updateBlocked'),
         body: jsonEncode(<Object, Object>{
           'username': userNames,
           'blocked': blocked,
+        }));
+    final data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      if (data['status'] == 'success' && data['message'] != null) {
+        _isLoad = false;
+        setState(() {});
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Foydalanuvchi muvaffaqiyatli yangilandi'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        _getUsers();
+        return;
+      }
+      if (data['status'] == 'error' && data['message'] != null) {
+        _isLoad = false;
+        setState(() {});
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Foydalanuvchi yangilanishda xatolik yuz berdi'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        _getUsers();
+        return;
+      }
+    } else {
+      _isLoad = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('ulanishda xatolik yuz berdi'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _updateUser(String userId) async {
+    checkInternetConnection().then((value) {
+      if (!value) {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Internetga ulanish yo\'q!'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+    });
+    var response = await http.put(
+        Uri.parse(
+            'https://golalang-online-sklad-production.up.railway.app/updateUser?userId=$userId'),
+        body: jsonEncode(<Object, Object>{
+          'username': _userNameController.text,
+          'name': _nameController.text,
+          'surname': _surNameController.text,
+          'phone': _phoneController.text,
         }));
     final data = jsonDecode(response.body);
     if (response.statusCode == 200) {
@@ -268,7 +325,7 @@ class _UserPageState extends State<UserPage>
     }
   }
 
-  Future<void>  _updateUser(String userId) async {
+  Future<void> _updateUserPassword(String userNames) async{
     checkInternetConnection().then((value) {
       if (!value) {
         _isLoad = false;
@@ -280,25 +337,30 @@ class _UserPageState extends State<UserPage>
       }
     });
     var response = await http.put(
-        Uri.parse('https://golalang-online-sklad-production.up.railway.app/updateUser?userId=$userId'),
+        Uri.parse(
+            'https://golalang-online-sklad-production.up.railway.app/updatePassword'),
         body: jsonEncode(<Object, Object>{
-          'username': _userNameController.text,
-          'name': _nameController.text,
-          'surname': _surNameController.text,
-          'phone': _phoneController.text,
+          'username': userNames,
+          'password': _passwordController.text,
         }));
     final data = jsonDecode(response.body);
     if (response.statusCode == 200) {
       if (data['status'] == 'success' && data['message'] != null) {
-        _isLoad = false;
-        setState(() {});
-        _getUsers();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Foydalanuvchi paroli muvaffaqiyatli yangilandi'),
+            backgroundColor: Colors.green,
+          ),
+        );
         return;
       }
       if (data['status'] == 'error' && data['message'] != null) {
-        _isLoad = false;
-        setState(() {});
-        _getUsers();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Foydalanuvchi paroli yangilanishda xatolik yuz berdi'),
+            backgroundColor: Colors.red,
+          ),
+        );
         return;
       }
     } else {
@@ -351,10 +413,7 @@ class _UserPageState extends State<UserPage>
               child: Column(
                 children: [
                   SizedBox(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width / 2.5,
+                    width: MediaQuery.of(context).size.width / 2.5,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -377,10 +436,7 @@ class _UserPageState extends State<UserPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -403,10 +459,7 @@ class _UserPageState extends State<UserPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -429,10 +482,7 @@ class _UserPageState extends State<UserPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -455,10 +505,7 @@ class _UserPageState extends State<UserPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -526,7 +573,7 @@ class _UserPageState extends State<UserPage>
     _surNameController.text = userList[users.indexWhere((element) => element.userId == userId)].surName;
     _phoneController.text = userList[users.indexWhere((element) => element.userId == userId)].phone;
     _passwordController.clear();
-    var isUpdate = false;
+
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -537,10 +584,7 @@ class _UserPageState extends State<UserPage>
               child: Column(
                 children: [
                   SizedBox(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width / 2.5,
+                    width: MediaQuery.of(context).size.width / 2.5,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -563,10 +607,7 @@ class _UserPageState extends State<UserPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -589,10 +630,7 @@ class _UserPageState extends State<UserPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -615,10 +653,7 @@ class _UserPageState extends State<UserPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -641,10 +676,7 @@ class _UserPageState extends State<UserPage>
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Row(
                     children: [
@@ -654,6 +686,7 @@ class _UserPageState extends State<UserPage>
                           Navigator.of(context).pop();
                           showUserUpdateDialog(userId);
                           isUpdate = value!;
+                          print(isUpdate);
                           setState(() {
                             _isChangePassword = value!;
                           });
@@ -706,22 +739,22 @@ class _UserPageState extends State<UserPage>
                     );
                     return;
                   }
-                  if (isUpdate) {
-                    if (_passwordController.text.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('iltimos parolni kiriting'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                      return;
-                    }
-                    //_updatePassword(userId);
+                  if (isUpdate == true && _passwordController.text.isEmpty) {
+                    print('parolni to`ldiring');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('iltimos parolni kiriting'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  if (isUpdate == true){
+                    _updateUserPassword(_userNameController.text);
                   }
                   _isLoad = true;
                   setState(() {});
                   _updateUser(userId);
-
                   Navigator.of(context).pop();
                 },
                 child: const Text('Saqlash'),
@@ -741,11 +774,11 @@ class _UserPageState extends State<UserPage>
       setState(() {
         users = userList
             .where((element) =>
-        element.userName.toLowerCase().contains(value.toLowerCase()) ||
-            element.name
-                .toString()
-                .toLowerCase()
-                .contains(value.toLowerCase()))
+                element.userName.toLowerCase().contains(value.toLowerCase()) ||
+                element.name
+                    .toString()
+                    .toLowerCase()
+                    .contains(value.toLowerCase()))
             .toList();
       });
     }
@@ -797,10 +830,7 @@ class _UserPageState extends State<UserPage>
                 //iconbutton
                 SizedBox(
                   height: 30,
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width / 4,
+                  width: MediaQuery.of(context).size.width / 4,
                   child: Container(
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 221, 221, 221),
@@ -833,17 +863,11 @@ class _UserPageState extends State<UserPage>
                 ),
                 if (userRole == 'creator')
                   SizedBox(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width / 50,
+                    width: MediaQuery.of(context).size.width / 50,
                   ),
                 if (userRole == 'creator')
                   SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.05,
+                    height: MediaQuery.of(context).size.height * 0.05,
                     child: Container(
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 221, 221, 221),
@@ -875,16 +899,10 @@ class _UserPageState extends State<UserPage>
                     ),
                   ),
                 SizedBox(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width / 50,
+                  width: MediaQuery.of(context).size.width / 50,
                 ),
                 SizedBox(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.05,
+                  height: MediaQuery.of(context).size.height * 0.05,
                   child: Container(
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 221, 221, 221),
@@ -940,19 +958,14 @@ class _UserPageState extends State<UserPage>
                             child: Column(
                               children: [
                                 SizedBox(
-                                    height: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height *
+                                    height: MediaQuery.of(context).size.height *
                                         0.02),
                                 Row(
                                   children: [
                                     SizedBox(
-                                        width: MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width *
-                                            0.01),
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.01),
                                     Container(
                                       margin: const EdgeInsets.only(left: 10),
                                       child: SvgPicture.asset(
@@ -963,15 +976,13 @@ class _UserPageState extends State<UserPage>
                                       ),
                                     ),
                                     SizedBox(
-                                        width: MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width *
-                                            0.01),
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.01),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             users[i].name,
@@ -1020,17 +1031,12 @@ class _UserPageState extends State<UserPage>
                                       ),
                                     ),
                                     SizedBox(
-                                      width: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width *
+                                      width: MediaQuery.of(context).size.width *
                                           0.009,
                                     ),
                                     if (users[i].userRole == 'user' || users[i].userRole == "admin" && userRole == 'creator')
                                       IconButton(
-                                          onPressed: () {
-                                            
-                                          },
+                                          onPressed: () {},
                                           icon: SvgPicture.asset(
                                             'assets/userPermission.svg',
                                             color: Colors.deepPurpleAccent,
@@ -1038,15 +1044,10 @@ class _UserPageState extends State<UserPage>
                                             width: 25,
                                           )),
                                     SizedBox(
-                                      width: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width *
+                                      width: MediaQuery.of(context).size.width *
                                           0.005,
                                     ),
-                                    if (users[i].userRole == 'user' ||
-                                        users[i].userRole == "admin" &&
-                                            userRole == 'creator')
+                                    if (users[i].userRole == 'user' || users[i].userRole == "admin" && userRole == 'creator')
                                       IconButton(
                                         onPressed: () {
                                           showUserUpdateDialog(users[i].userId);
@@ -1059,15 +1060,10 @@ class _UserPageState extends State<UserPage>
                                         ),
                                       ),
                                     SizedBox(
-                                      width: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width *
+                                      width: MediaQuery.of(context).size.width *
                                           0.005,
                                     ),
-                                    if (users[i].userRole == 'user' ||
-                                        users[i].userRole == "admin" &&
-                                            userRole == 'creator')
+                                    if (users[i].userRole == 'user' || users[i].userRole == "admin" && userRole == 'creator')
                                       IconButton(
                                         onPressed: () {
                                           _showDeleteDialog(users[i].userId);
@@ -1079,21 +1075,18 @@ class _UserPageState extends State<UserPage>
                                           color: Colors.deepPurpleAccent,
                                         ),
                                       ),
-
                                     SizedBox(
-                                      width: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width *
+                                      width: MediaQuery.of(context).size.width *
                                           0.005,
                                     ),
                                     if (users[i].userRole == 'user' || users[i].userRole == "admin" && userRole == 'creator')
-                                      if(users[i].blocked == false)
+                                      if (users[i].blocked == false)
                                         IconButton(
                                           onPressed: () {
                                             _isLoad = true;
                                             setState(() {
-                                              _updateBlocked(users[i].userName, true);
+                                              _updateBlocked(
+                                                  users[i].userName, true);
                                             });
                                           },
                                           icon: SvgPicture.asset(
@@ -1103,33 +1096,31 @@ class _UserPageState extends State<UserPage>
                                             color: Colors.deepPurpleAccent,
                                           ),
                                         ),
-                                      if (users[i].blocked == true)
-                                        IconButton(
-                                          onPressed: () {
-                                            _isLoad = true;
-                                            setState(() {
-                                              _updateBlocked(users[i].userName, false);
-                                            });
-                                          },
-                                          icon: SvgPicture.asset(
-                                            'assets/userBlock.svg',
-                                            height: 25,
-                                            width: 25,
-                                            color: Colors.red,
-                                          ),
+                                    if (users[i].blocked == true)
+                                      IconButton(
+                                        onPressed: () {
+                                          _isLoad = true;
+                                          setState(() {
+                                            _updateBlocked(
+                                                users[i].userName, false);
+                                          });
+                                        },
+                                        icon: SvgPicture.asset(
+                                          'assets/userBlock.svg',
+                                          height: 25,
+                                          width: 25,
+                                          color: Colors.red,
                                         ),
+                                      ),
                                     SizedBox(
-                                      width: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width * 0.025,),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.025,
+                                    ),
                                   ],
                                 ),
                                 SizedBox(
-                                    height: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height * 0.02),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.02),
                               ],
                             ),
                           ),
@@ -1153,11 +1144,9 @@ class _UserPageState extends State<UserPage>
                               child: Column(
                                 children: [
                                   SizedBox(
-                                      height: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height /
-                                          50),
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              50),
                                   const Center(
                                     child: Text(
                                       'Hozircha mahsulot yo`q',
@@ -1168,11 +1157,9 @@ class _UserPageState extends State<UserPage>
                                     ),
                                   ),
                                   SizedBox(
-                                      height: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height /
-                                          50),
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              50),
                                 ],
                               ),
                             ),
@@ -1194,8 +1181,7 @@ class _UserPageState extends State<UserPage>
                   onPressed: () {
                     userList.clear();
                     users.clear();
-                    setState(() {
-                    });
+                    setState(() {});
                     _getUsers();
                   },
                   icon: const Icon(
@@ -1243,10 +1229,7 @@ class _UserPageState extends State<UserPage>
               //iconbutton
               SizedBox(
                 height: 30,
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width / 4,
+                width: MediaQuery.of(context).size.width / 4,
                 child: Container(
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 221, 221, 221),
@@ -1279,17 +1262,11 @@ class _UserPageState extends State<UserPage>
               ),
               if (userRole == 'creator')
                 SizedBox(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width / 50,
+                  width: MediaQuery.of(context).size.width / 50,
                 ),
               if (userRole == 'creator')
                 SizedBox(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.05,
+                  height: MediaQuery.of(context).size.height * 0.05,
                   child: Container(
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 221, 221, 221),
@@ -1321,16 +1298,10 @@ class _UserPageState extends State<UserPage>
                   ),
                 ),
               SizedBox(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width / 50,
+                width: MediaQuery.of(context).size.width / 50,
               ),
               SizedBox(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 0.05,
+                height: MediaQuery.of(context).size.height * 0.05,
                 child: Container(
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 221, 221, 221),
@@ -1363,4 +1334,5 @@ class _UserPageState extends State<UserPage>
       ),
     );
   }
+
 }
