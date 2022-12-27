@@ -1034,7 +1034,7 @@ class _UserPageState extends State<UserPage>
                                       width: MediaQuery.of(context).size.width *
                                           0.009,
                                     ),
-                                    if (users[i].userRole == 'user' || users[i].userRole == "admin" && userRole == 'creator')
+                                    if (userRole == 'creator'&& users[i].userRole != 'creator')
                                       IconButton(
                                           onPressed: () {},
                                           icon: SvgPicture.asset(
@@ -1047,7 +1047,7 @@ class _UserPageState extends State<UserPage>
                                       width: MediaQuery.of(context).size.width *
                                           0.005,
                                     ),
-                                    if (users[i].userRole == 'user' || users[i].userRole == "admin" && userRole == 'creator')
+                                    if (userRole == 'creator'||userRole == 'admin'&& users[i].userRole != 'creator')
                                       IconButton(
                                         onPressed: () {
                                           showUserUpdateDialog(users[i].userId);
@@ -1063,7 +1063,7 @@ class _UserPageState extends State<UserPage>
                                       width: MediaQuery.of(context).size.width *
                                           0.005,
                                     ),
-                                    if (users[i].userRole == 'user' || users[i].userRole == "admin" && userRole == 'creator')
+                                    if (userRole == 'creator'&& users[i].userRole != 'creator')
                                       IconButton(
                                         onPressed: () {
                                           _showDeleteDialog(users[i].userId);
