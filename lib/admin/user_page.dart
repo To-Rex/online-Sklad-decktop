@@ -69,8 +69,6 @@ class _UserPageState extends State<UserPage>
   }
 
   Future<void> _getUsers() async {
-    users.clear();
-    userList.clear();
     var url = Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/getAllUser');
     var response = await http.get(url);
@@ -84,6 +82,8 @@ class _UserPageState extends State<UserPage>
 
       if (data['status'] == 'success' && data['message'] != null) {
         _isLoad = false;
+        users.clear();
+        userList.clear();
         for (var i = 0; i < data['message'].length; i++) {
           userList.add(UserList(
             userName: data['message'][i]['username'],
@@ -306,12 +306,30 @@ class _UserPageState extends State<UserPage>
         _isLoad = false;
         setState(() {});
         _getUsers();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Foydalanuvchi muvaffaqiyatli yangilandi'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        _userNameController.clear();
+        _nameController.clear();
+        _surNameController.clear();
+        _phoneController.clear();
+        _passwordController.clear();
+        _nameController.clear();
         return;
       }
       if (data['status'] == 'error' && data['message'] != null) {
         _isLoad = false;
         setState(() {});
         _getUsers();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Foydalanuvchi yangilanishda xatolik yuz berdi'),
+            backgroundColor: Colors.red,
+          ),
+        );
         return;
       }
     } else {
@@ -325,7 +343,7 @@ class _UserPageState extends State<UserPage>
     }
   }
 
-  Future<void> _updateUserPassword(String userNames) async{
+  Future<void> _updateUserPassword(String userNames) async {
     checkInternetConnection().then((value) {
       if (!value) {
         _isLoad = false;
@@ -357,7 +375,59 @@ class _UserPageState extends State<UserPage>
       if (data['status'] == 'error' && data['message'] != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Foydalanuvchi paroli yangilanishda xatolik yuz berdi'),
+            content:
+                Text('Foydalanuvchi paroli yangilanishda xatolik yuz berdi'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+    } else {
+      _isLoad = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('ulanishda xatolik yuz berdi'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _updateUserRole(String userNames, String roles) async {
+    checkInternetConnection().then((value) {
+      if (!value) {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Internetga ulanish yo\'q!'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+    });
+    var response = await http.put(
+        Uri.parse(
+            'https://golalang-online-sklad-production.up.railway.app/updateUserRole'),
+        body: jsonEncode(<Object, Object>{
+          'username': userNames,
+          'user_role': roles,
+        }));
+    final data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      if (data['status'] == 'success' && data['message'] != null) {
+        _getUsers();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Foydalanuvchi huquqi muvaffaqiyatli yangilandi'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        return;
+      }
+      if (data['status'] == 'error' && data['message'] != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content:
+                Text('Foydalanuvchi huquqi yangilanishda xatolik yuz berdi'),
             backgroundColor: Colors.red,
           ),
         );
@@ -568,10 +638,16 @@ class _UserPageState extends State<UserPage>
 
   void showUserUpdateDialog(String userId) {
     //chesk users list for user userid position and get user data from list
-    _userNameController.text = userList[users.indexWhere((element) => element.userId == userId)].userName;
-    _nameController.text = userList[users.indexWhere((element) => element.userId == userId)].name;
-    _surNameController.text = userList[users.indexWhere((element) => element.userId == userId)].surName;
-    _phoneController.text = userList[users.indexWhere((element) => element.userId == userId)].phone;
+    _userNameController.text =
+        userList[users.indexWhere((element) => element.userId == userId)]
+            .userName;
+    _nameController.text =
+        userList[users.indexWhere((element) => element.userId == userId)].name;
+    _surNameController.text =
+        userList[users.indexWhere((element) => element.userId == userId)]
+            .surName;
+    _phoneController.text =
+        userList[users.indexWhere((element) => element.userId == userId)].phone;
     _passwordController.clear();
 
     showDialog(
@@ -749,7 +825,7 @@ class _UserPageState extends State<UserPage>
                     );
                     return;
                   }
-                  if (isUpdate == true){
+                  if (isUpdate == true) {
                     _updateUserPassword(_userNameController.text);
                   }
                   _isLoad = true;
@@ -778,7 +854,8 @@ class _UserPageState extends State<UserPage>
                 element.name
                     .toString()
                     .toLowerCase()
-                    .contains(value.toLowerCase()))
+                    .contains(value.toLowerCase()) ||
+                element.surName.toLowerCase().contains(value.toLowerCase()))
             .toList();
       });
     }
@@ -827,7 +904,6 @@ class _UserPageState extends State<UserPage>
                 const Expanded(
                   child: SizedBox(),
                 ),
-                //iconbutton
                 SizedBox(
                   height: 30,
                   width: MediaQuery.of(context).size.width / 4,
@@ -937,7 +1013,9 @@ class _UserPageState extends State<UserPage>
                 children: [
                   for (var i = 0; i < users.length; i++)
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+
+                      },
                       child: Column(
                         children: [
                           Container(
@@ -985,7 +1063,9 @@ class _UserPageState extends State<UserPage>
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            users[i].name,
+                                            users[i].name +
+                                                ' ' +
+                                                users[i].surName,
                                             style: const TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold),
@@ -1034,20 +1114,59 @@ class _UserPageState extends State<UserPage>
                                       width: MediaQuery.of(context).size.width *
                                           0.009,
                                     ),
-                                    if (userRole == 'creator'&& users[i].userRole != 'creator')
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: SvgPicture.asset(
-                                            'assets/userPermission.svg',
-                                            color: Colors.deepPurpleAccent,
-                                            height: 25,
-                                            width: 25,
-                                          )),
+                                    if (userRole == 'creator' &&
+                                        users[i].userRole != 'creator')
+                                      PopupMenuButton(
+                                        icon: SvgPicture.asset(
+                                          'assets/userPermission.svg',
+                                          color: Colors.deepPurpleAccent,
+                                          height: 25,
+                                          width: 25,
+                                        ),
+                                        itemBuilder: (context) => [
+                                          PopupMenuItem(
+                                            child: TextButton(
+                                              onPressed: () {
+                                                _isLoad = true;
+                                                setState(() {});
+                                                Navigator.pop(context);
+                                                _updateUserRole(
+                                                    users[i].userName, 'user');
+                                                //print(users[i].userName);
+                                              },
+                                              child: const Text(
+                                                'user ga o\'zgartirish',
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                            ),
+                                          ),
+                                          PopupMenuItem(
+                                            child: TextButton(
+                                              onPressed: () {
+                                                _isLoad = true;
+                                                setState(() {});
+                                                Navigator.pop(context);
+                                                _updateUserRole(
+                                                    users[i].userName, 'admin');
+                                                //print(users[i].userName);
+                                              },
+                                              child: const Text(
+                                                'admin ga o\'zgartirish',
+                                                style: TextStyle(
+                                                    color: Colors.green),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
                                           0.005,
                                     ),
-                                    if (userRole == 'creator'||userRole == 'admin'&& users[i].userRole != 'creator')
+                                    if (userRole == 'creator' ||
+                                        userRole == 'admin' &&
+                                            users[i].userRole != 'creator')
                                       IconButton(
                                         onPressed: () {
                                           showUserUpdateDialog(users[i].userId);
@@ -1063,7 +1182,8 @@ class _UserPageState extends State<UserPage>
                                       width: MediaQuery.of(context).size.width *
                                           0.005,
                                     ),
-                                    if (userRole == 'creator'&& users[i].userRole != 'creator')
+                                    if (userRole == 'creator' &&
+                                        users[i].userRole != 'creator')
                                       IconButton(
                                         onPressed: () {
                                           _showDeleteDialog(users[i].userId);
@@ -1079,7 +1199,9 @@ class _UserPageState extends State<UserPage>
                                       width: MediaQuery.of(context).size.width *
                                           0.005,
                                     ),
-                                    if (users[i].userRole == 'user' || users[i].userRole == "admin" && userRole == 'creator')
+                                    if (users[i].userRole == 'user' ||
+                                        users[i].userRole == "admin" &&
+                                            userRole == 'creator')
                                       if (users[i].blocked == false)
                                         IconButton(
                                           onPressed: () {
@@ -1334,5 +1456,4 @@ class _UserPageState extends State<UserPage>
       ),
     );
   }
-
 }
