@@ -9,17 +9,17 @@ import 'package:online_sklad/admin/user_page.dart';
 import 'package:online_sklad/models/product_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ProductPage extends StatefulWidget {
+class ProductPageUser extends StatefulWidget {
   var category_id;
   var category_name;
 
-  ProductPage({super.key, this.category_id, this.category_name});
+  ProductPageUser({super.key, this.category_id, this.category_name});
 
   @override
   _ProductPageState createState() => _ProductPageState();
 }
 
-class _ProductPageState extends State<ProductPage>
+class _ProductPageState extends State<ProductPageUser>
     with SingleTickerProviderStateMixin {
   late final _productNameController = TextEditingController();
   late final _productDescriptionController = TextEditingController();

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:online_sklad/sample_page.dart';
+import 'package:online_sklad/user/sample_page_user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
@@ -115,11 +116,21 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
       prefs.setString('registerdate', data['registerdate']);
       prefs.setBool('blocked', data['blocked']);
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SamplePage()),
-      );
-
+      if(data['role'] == 'admin'|| data['role'] == 'creator') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SamplePage(),
+          ),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SamplePageUser(),
+          ),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
