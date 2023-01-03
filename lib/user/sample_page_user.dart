@@ -22,6 +22,8 @@ class _SamplePageState extends State<SamplePageUser>
   var category_name = [];
   var category_id = [];
 
+  var isLoading = false;
+
   var userName = '';
   var userId = '';
   var userSurname = '';
@@ -59,15 +61,17 @@ class _SamplePageState extends State<SamplePageUser>
         'https://golalang-online-sklad-production.up.railway.app/getAllCategory'));
     print(response.body);
     if (response.statusCode == 200) {
-      category_name.clear();
-      category_id.clear();
       final data = jsonDecode(response.body);
       if (data['status'] == 'success') {
+        category_name.clear();
+        category_id.clear();
+        isLoading = false;
         for (var i = 0; i < data['data'].length; i++) {
           category_name.add(data['data'][i]['category_name']);
           category_id.add(data['data'][i]['category_id']);
         }
       } else {
+        isLoading = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('No internet connection'),
@@ -213,8 +217,9 @@ class _SamplePageState extends State<SamplePageUser>
                   splashColor: Colors.transparent,
                   highlightColor: const Color.fromRGBO(217, 217, 217, 100),
                   onPressed: () {
-                    category_name.clear();
-                    category_id.clear();
+                    isLoading = true;
+                    setState(() {
+                    });
                     _getAllCategory();
                   },
                   icon: const Icon(
@@ -228,6 +233,13 @@ class _SamplePageState extends State<SamplePageUser>
                 ),
                 Text("Jami: ${category_name.length}",
                     style: const TextStyle(fontSize: 20, color: Colors.black)),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.02,
+                ),
+                if (isLoading)
+                  const CircularProgressIndicator(
+                    color: Colors.deepPurpleAccent,
+                  ),
               ],
             ),
             SizedBox(
