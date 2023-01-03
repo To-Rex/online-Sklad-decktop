@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:online_sklad/admin/tarnsaktion_page.dart';
 import 'package:online_sklad/admin/user_page.dart';
 import 'package:online_sklad/models/product_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -256,12 +257,12 @@ class _ProductPageState extends State<ProductPageUser>
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const UserPage(),
+                      builder: (context) => const TransaktionsPage(),
                     ),
                   );
                 },
                 icon: SvgPicture.asset(
-                  'assets/userIcon.svg',
+                  'assets/userStatic.svg',
                   height: 25,
                   width: 25,
                   color: Colors.deepPurpleAccent,
