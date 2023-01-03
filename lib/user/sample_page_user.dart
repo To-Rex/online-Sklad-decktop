@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:online_sklad/admin/product_page.dart';
 import 'package:online_sklad/admin/user_page.dart';
+import 'package:online_sklad/user/product_page.dart';
 import 'package:online_sklad/user/user_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -174,7 +175,7 @@ class _SamplePageState extends State<SamplePageUser>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProductPage(
+                            builder: (context) => ProductPageUser(
                               category_id: category_id[index],
                               category_name: category_name[index],
                             ),
