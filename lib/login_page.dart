@@ -14,13 +14,15 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMixin {
-
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   late final _emailController = TextEditingController();
   late final _passwordController = TextEditingController();
   bool _validateEmail = false;
   bool _validatePassword = false;
   bool _isLoading = false;
+
+  var usersLiest = ["",""];
 
   Future<bool> checkInternetConnection() async {
     try {
@@ -49,7 +51,7 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
         );
         _isLoading = false;
         return;
-      }else {
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Connected'),
@@ -64,7 +66,8 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
     });
 
     final response = await http.post(
-      Uri.parse('https://golalang-online-sklad-production.up.railway.app/login'),
+      Uri.parse(
+          'https://golalang-online-sklad-production.up.railway.app/login'),
       body: jsonEncode(<String, String>{
         'username': _emailController.text,
         'password': _passwordController.text,
@@ -117,7 +120,7 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
       prefs.setBool('blocked', data['blocked']);
       _isLoading = false;
 
-      if(data['role'] == 'admin'|| data['role'] == 'creator') {
+      if (data['role'] == 'admin' || data['role'] == 'creator') {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -146,22 +149,35 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
     }
   }
 
+  Future<void> _getUsers() async {
+    final response = await http.get(
+      Uri.parse(
+          'https://golalang-online-sklad-production.up.railway.app/getAllUser'),
+    );
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      for (var i = 0; i < data['message'].length; i++) {
+        usersLiest.add(''+data['message'][i]['username'].toString());
+      }
+    } else {
+      print('error');
+    }
+    print(usersLiest);
+  }
 
   @override
   void initState() {
     super.initState();
+    _getUsers();
     checkInternetConnection().then((value) {
       if (!value) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Not Connected'),
-              backgroundColor: Colors.red,
-            )
-        );
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Not Connected'),
+          backgroundColor: Colors.red,
+        ));
       }
     });
   }
-
 
   @override
   void dispose() {
@@ -181,20 +197,21 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
         ),
       ),
       body: Column(
-        children:  [
+        children: [
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.1,
           ),
           Row(
-            children:  [
+            children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.06,
               ),
               Column(
                 children: [
-                  SizedBox(
+                  if(usersLiest.isNotEmpty)
+                    SizedBox(
                     height: 50,
-                    width: MediaQuery.of(context).size.width/2.5,
+                    width: MediaQuery.of(context).size.width / 2.5,
                     child: Container(
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 221, 221, 221),
@@ -203,26 +220,108 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
                             width: 2),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: TextField(
-                        cursorColor: Colors.deepPurpleAccent,
-                        controller: _emailController,
-                        textAlign: TextAlign.left,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.only(left: 10, right: 10),
-                          border: InputBorder.none,
-                          hintText: 'Username',
-                          errorText: _validateEmail ? 'Pochta kiriting' : null,
-                        ),
+                      child: Autocomplete<String>(
+                        optionsBuilder: (TextEditingValue textEditingValue) {
+                          if (textEditingValue.text == '') {
+                            return const Iterable<String>.empty();
+                          }
+                          return usersLiest.where((String option) {
+                            return option
+                                .contains(textEditingValue.text.toLowerCase());
+                          });
+                        },
+                        onSelected: (String selection) {
+                          _emailController.text = selection;
+                        },
+                        fieldViewBuilder: (BuildContext context,
+                            TextEditingController textEditingController,
+                            FocusNode focusNode,
+                            VoidCallback onFieldSubmitted) {
+                          return TextFormField(
+                            controller: textEditingController,
+                            focusNode: focusNode,
+                            onFieldSubmitted: (String value) {
+                              onFieldSubmitted();
+                            },
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.only(left: 10, right: 10),
+                              border: InputBorder.none,
+                              hintText: 'Username',
+                              errorText: _validateEmail ? 'Pochta kiriting' : null,
+                            ),
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 0, 0, 0),
+                              fontSize: 16,
+                              fontFamily: 'Roboto',
+                            ),
+                            keyboardType: TextInputType.text,
+                          );
+                        },
+                        optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<String> onSelected, Iterable<String> options) {
+                          return Align(
+                            alignment: Alignment.topLeft,
+                            child: Material(
+                              elevation: 4.0,
+                              borderOnForeground: true,
+                              borderRadius: BorderRadius.circular(10),
+                              animationDuration: const Duration(milliseconds: 100),
+                              child: SizedBox(
+                                height: 150,
+                                width: MediaQuery.of(context).size.width / 2.7,
+                                child: ListView.builder(
+                                  padding: const EdgeInsets.all(8.0),
+                                  itemCount: options.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    final String option = options.elementAt(index);
+                                    return GestureDetector(
+                                      onTap: () {
+                                        onSelected(option);
+                                      },
+                                      child: ListTile(
+                                        title: Text(option),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
+                  if(usersLiest.isEmpty)
+                    SizedBox(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 221, 221, 221),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: TextField(
+                          cursorColor: Colors.deepPurpleAccent,
+                          controller: _emailController,
+                          textAlign: TextAlign.left,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.only(left: 10, right: 10),
+                            border: InputBorder.none,
+                            hintText: 'Username',
+                            errorText: _validateEmail ? 'Pochta kiriting' : null,
+                          ),
+                        ),
+                      ),
+                    ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.015,
                   ),
                   SizedBox(
                     height: 50,
-                    width: MediaQuery.of(context).size.width/2.5,
+                    width: MediaQuery.of(context).size.width / 2.5,
                     child: Container(
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 221, 221, 221),
@@ -237,10 +336,12 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
                         textAlign: TextAlign.left,
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.only(left: 10, right: 10),
+                          contentPadding:
+                              const EdgeInsets.only(left: 10, right: 10),
                           border: InputBorder.none,
                           hintText: 'Parol',
-                          errorText: _validatePassword ? 'Parol kiriting' : null,
+                          errorText:
+                              _validatePassword ? 'Parol kiriting' : null,
                         ),
                       ),
                     ),
@@ -255,7 +356,7 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
               const Expanded(child: SizedBox()),
               SizedBox(
                 height: 50,
-                width: MediaQuery.of(context).size.width/7.5,
+                width: MediaQuery.of(context).size.width / 7.5,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     primary: const Color.fromRGBO(33, 158, 188, 10),
@@ -283,7 +384,9 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
                   },
                   child: Row(
                     children: [
-                      const SizedBox(width: 5,),
+                      const SizedBox(
+                        width: 5,
+                      ),
                       const Text('Kirish'),
                       const Expanded(child: SizedBox()),
                       //SizedBox(width: MediaQuery.of(context).size.width*0.01,),
@@ -295,8 +398,7 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
                             color: Colors.white,
                           ),
                         ),
-                        if (!_isLoading)
-                        const Icon(Icons.arrow_forward),
+                      if (!_isLoading) const Icon(Icons.arrow_forward),
                       const Expanded(child: SizedBox()),
                     ],
                   ),
