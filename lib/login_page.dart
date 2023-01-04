@@ -52,6 +52,7 @@ class _LoginPageState extends State<LoginPage>
         _isLoading = false;
         return;
       } else {
+        _isLoading = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Connected'),
