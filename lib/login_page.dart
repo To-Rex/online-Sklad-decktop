@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage>
         _isLoading = false;
         return;
       } else {
-        _isLoading = false;
+        //_isLoading = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Connected'),
@@ -92,9 +92,11 @@ class _LoginPageState extends State<LoginPage>
           ),
         );
         _isLoading = false;
+        setState(() {});
         return;
       }
       if (data['message'] == 'Wrong password') {
+        _isLoading = false;
         _passwordController.clear();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -107,7 +109,7 @@ class _LoginPageState extends State<LoginPage>
             backgroundColor: Colors.red,
           ),
         );
-        _isLoading = false;
+        setState(() {});
         return;
       }
       prefs.setString('name', data['name']);
@@ -120,7 +122,7 @@ class _LoginPageState extends State<LoginPage>
       prefs.setString('registerdate', data['registerdate']);
       prefs.setBool('blocked', data['blocked']);
       _isLoading = false;
-
+      setState(() {});
       if (data['role'] == 'admin' || data['role'] == 'creator') {
         Navigator.pushReplacement(
           context,
@@ -137,6 +139,7 @@ class _LoginPageState extends State<LoginPage>
         );
       }
     } else {
+      _isLoading = false;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Iltimos login yoki parolni tekshiring'),
@@ -147,6 +150,7 @@ class _LoginPageState extends State<LoginPage>
           behavior: SnackBarBehavior.floating,
         ),
       );
+      setState(() {});
     }
   }
 
