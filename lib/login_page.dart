@@ -115,6 +115,7 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
       prefs.setString('userstatus', data['userstatus']);
       prefs.setString('registerdate', data['registerdate']);
       prefs.setBool('blocked', data['blocked']);
+      _isLoading = false;
 
       if(data['role'] == 'admin'|| data['role'] == 'creator') {
         Navigator.pushReplacement(
@@ -284,17 +285,19 @@ class _LoginPageState extends State<LoginPage>  with SingleTickerProviderStateMi
                     children: [
                       const SizedBox(width: 5,),
                       const Text('Kirish'),
-                      const SizedBox(width: 5,),
+                      const Expanded(child: SizedBox()),
+                      //SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                       if (_isLoading)
-                        const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.03,
+                          width: MediaQuery.of(context).size.height * 0.03,
+                          child: const CircularProgressIndicator(
                             color: Colors.white,
                           ),
                         ),
                         if (!_isLoading)
                         const Icon(Icons.arrow_forward),
+                      const Expanded(child: SizedBox()),
                     ],
                   ),
                 ),
