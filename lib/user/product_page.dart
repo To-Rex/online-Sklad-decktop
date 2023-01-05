@@ -177,10 +177,9 @@ class _ProductPageState extends State<ProductPageUser>
           return AlertDialog(
             title: const Text('Mahsulotni sotish'),
             content: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.2,
+              height: MediaQuery.of(context).size.height * 0.3,
               child: Column(
                 children: [
-
                   Container(
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 221, 221, 221),
@@ -207,7 +206,7 @@ class _ProductPageState extends State<ProductPageUser>
                     ),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Row(
                     children: [
