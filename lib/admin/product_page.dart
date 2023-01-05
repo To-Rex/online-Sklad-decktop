@@ -926,7 +926,7 @@ class _ProductPageState extends State<ProductPage>
                                           height: 5,
                                         ),
                                         Text(
-                                          '${products[i].productPrice} so\'m',
+                                          '${products[i].productPrice+products[i].productBenefit} so\'m',
                                           style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold),
