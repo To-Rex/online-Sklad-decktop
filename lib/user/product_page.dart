@@ -180,34 +180,7 @@ class _ProductPageState extends State<ProductPageUser>
               height: MediaQuery.of(context).size.height * 0.2,
               child: Column(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 221, 221, 221),
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      cursorColor: Colors.deepPurpleAccent,
-                      controller: _productNumbersController,
-                      textAlign: TextAlign.left,
-                      keyboardType: TextInputType.text,
-                      keyboardAppearance: Brightness.light,
-                      textInputAction: TextInputAction.next,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      ],
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10, right: 10),
-                        border: InputBorder.none,
-                        hintText: 'Mahsulot soni',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+
                   Container(
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 221, 221, 221),
@@ -233,6 +206,110 @@ class _ProductPageState extends State<ProductPageUser>
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 221, 221, 221),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            if (_productNumbersController.text.isEmpty) {
+                              _productNumbersController.text = '0';
+                              return;
+                            }
+                            if (int.parse(_productNumbersController.text) <
+                                0) {
+                              _productNumbersController.text = '0';
+                              return;
+                            }
+                            if (int.parse(_productNumbersController.text) ==
+                                0) {
+                              return;
+                            }
+                            _productNumbersController.text =
+                                (int.parse(_productNumbersController.text) - 1)
+                                    .toString();
+                            setState(() {});
+                          },
+                          icon: SvgPicture.asset(
+                            'assets/minusIcon.svg',
+                            color: Colors.deepPurpleAccent,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.02,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 221, 221, 221),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          child: TextField(
+                            cursorColor: Colors.deepPurpleAccent,
+                            controller: _productNumbersController,
+                            textAlign: TextAlign.center,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
+                            ],
+                            decoration: const InputDecoration(
+                              contentPadding:
+                              EdgeInsets.only(left: 10, right: 10),
+                              border: InputBorder.none,
+                              hintText: 'Mahsulot miqdori',
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.02,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 221, 221, 221),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            if (_productNumbersController.text.isEmpty) {
+                              _productNumbersController.text = '0';
+                            }
+                            if (int.parse(_productNumbersController.text) <
+                                0) {
+                              _productNumbersController.text = '0';
+                            }
+                            _productNumbersController.text =
+                                (int.parse(_productNumbersController.text) + 1)
+                                    .toString();
+                            setState(() {});
+                          },
+                          icon: const Icon(
+                            Icons.add,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -240,13 +317,15 @@ class _ProductPageState extends State<ProductPageUser>
               TextButton(
                 onPressed: () {
                   _productNumbersController.clear();
+                  _productPriceController.clear();
                   Navigator.pop(context);
                 },
                 child: const Text('Bekor qilish'),
               ),
               TextButton(
                 onPressed: () {
-                  if (_productNumbersController.text.isEmpty) {
+                  if (_productNumbersController.text.isEmpty||
+                      _productPriceController.text == ''|| _productPriceController.text == '0') {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Mahsulot sonini kiriting!'),
@@ -254,8 +333,8 @@ class _ProductPageState extends State<ProductPageUser>
                       ),
                     );
                   } else {
-                    if (int.parse(_productNumbersController.text) >
-                        productNumber) {
+                    if (int.parse(_productNumbersController.text) > productNumber) {
+                      _isLoad = false;
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Mahsulot soni yetarli emas!'),
