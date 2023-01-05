@@ -165,6 +165,86 @@ class _ProductPageState extends State<ProductPageUser>
       }
     }
   }
+  
+  void _showProductDialog(String id, int productNumber) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Mahsulotni sotish'),
+            content: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.1,
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _productNumbersController,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.text,
+                      keyboardAppearance: Brightness.light,
+                      textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Mahsulot soni',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  _productNumbersController.clear();
+                  Navigator.pop(context);
+                },
+                child: const Text('Bekor qilish'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (_productNumbersController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Mahsulot sonini kiriting!'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  } else {
+                    if (int.parse(_productNumbersController.text) >
+                        productNumber) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Mahsulot soni yetarli emas!'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
+                    _isLoad = true;
+                    setState(() {});
+                    _sellProduct(id);
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text('Sotish'),
+              ),
+            ],
+          );
+        });
+  }
+
 
   @override
   void initState() {
@@ -498,85 +578,6 @@ class _ProductPageState extends State<ProductPageUser>
             .toList();
       });
     }
-  }
-
-  void _showProductDialog(String id, int productNumber) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Mahsulotni sotish'),
-            content: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.1,
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 221, 221, 221),
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      cursorColor: Colors.deepPurpleAccent,
-                      controller: _productNumbersController,
-                      textAlign: TextAlign.left,
-                      keyboardType: TextInputType.text,
-                      keyboardAppearance: Brightness.light,
-                      textInputAction: TextInputAction.next,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      ],
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10, right: 10),
-                        border: InputBorder.none,
-                        hintText: 'Mahsulot soni',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  _productNumbersController.clear();
-                  Navigator.pop(context);
-                },
-                child: const Text('Bekor qilish'),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (_productNumbersController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Mahsulot sonini kiriting!'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  } else {
-                    if (int.parse(_productNumbersController.text) >
-                        productNumber) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Mahsulot soni yetarli emas!'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                      return;
-                    }
-                    _isLoad = true;
-                    setState(() {});
-                    _sellProduct(id);
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text('Sotish'),
-              ),
-            ],
-          );
-        });
   }
 
 }
