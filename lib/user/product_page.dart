@@ -131,11 +131,14 @@ class _ProductPageState extends State<ProductPageUser>
     });
     var number = int.parse(_productNumbersController.text);
     final response = await http.post(
-      Uri.parse(
-          'https://golalang-online-sklad-production.up.railway.app/productSell?productId=$productId&userId=$userId&number=$number'),
+      Uri.parse('https://golalang-online-sklad-production.up.railway.app/productSell?productId=$productId&userId=$userId&number=$number'),
+      body: {
+        'addition_price': _productPriceController.text,
+      },
     );
     if (response.statusCode == 200) {
       _productNumbersController.clear();
+      _productPriceController.clear();
       final data = jsonDecode(response.body);
       if (data['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -205,7 +208,6 @@ class _ProductPageState extends State<ProductPageUser>
                   const SizedBox(
                     height: 10,
                   ),
-                  //ustama haq qilish
                   Container(
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 221, 221, 221),
@@ -227,7 +229,7 @@ class _ProductPageState extends State<ProductPageUser>
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10, right: 10),
                         border: InputBorder.none,
-                        hintText: 'Mahsulot narxi',
+                        hintText: 'Ustama haq',
                       ),
                     ),
                   ),
