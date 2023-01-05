@@ -128,7 +128,7 @@ class _TransktionPageState extends State<TransaktionsPage>
                     ),
                   ),
                   Text(
-                    '${price-benefit} so\'m',
+                    '${benefit-price} so\'m',
                     style: const TextStyle(
                       color: Colors.deepPurpleAccent,
                       fontSize: 12,

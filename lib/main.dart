@@ -8,18 +8,14 @@ import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Must add this line.
   await windowManager.ensureInitialized();
-  var width = MediaQueryData.fromWindow(window).size.height*0.8;
-  var height = MediaQueryData.fromWindow(window).size.width*0.8;
-  WindowOptions windowOptions =  WindowOptions(
-
-    size: Size(width, height),
+  WindowOptions windowOptions =  const WindowOptions(
+    size: Size(800, 600),
     center: true,
     backgroundColor: Colors.white,
     skipTaskbar: false,
     //titleBarStyle: TitleBarStyle.hidden,
-    minimumSize: const Size(800, 600),
+    minimumSize: Size(800, 600),
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
