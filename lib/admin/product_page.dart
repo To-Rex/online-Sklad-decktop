@@ -78,12 +78,13 @@ class _ProductPageState extends State<ProductPage>
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      _productList.clear();
       if (data['status'] == 'success' && data['data'] == null) {
         _isLoad = false;
         setState(() {});
         return;
       }
+      _productList.clear();
+      products.clear();
       for (var i = 0; i < data['data'].length; i++) {
         _isLoad = false;
         _productList.add(ProductList(
@@ -149,13 +150,13 @@ class _ProductPageState extends State<ProductPage>
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      _productNameController.clear();
-      _productDescriptionController.clear();
-      _productPriceController.clear();
-      _productBenefitController.clear();
-      _productStockController.clear();
-      _productNumberController.clear();
       if (data['status'] == 'success') {
+        _productNameController.clear();
+        _productDescriptionController.clear();
+        _productPriceController.clear();
+        _productBenefitController.clear();
+        _productStockController.clear();
+        _productNumberController.clear();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Mahsulot qo\'shildi'),
@@ -1092,8 +1093,6 @@ class _ProductPageState extends State<ProductPage>
                 splashColor: Colors.transparent,
                 highlightColor: const Color.fromRGBO(217, 217, 217, 100),
                 onPressed: () {
-                  _productList.clear();
-                  products.clear();
                   setState(() {
                     _isLoad = true;
                   });
