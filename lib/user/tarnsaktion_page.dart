@@ -298,22 +298,26 @@ class _TransktionPageState extends State<TransaktionsPageUser>
                             0),
                         items: [
                           const PopupMenuItem(
+                            value: '0',
+                            child: Text('1 kunlik ma\'lumot'),
+                          ),
+                          const PopupMenuItem(
                             value: '1',
-                            child: Text('1 oylik'),
+                            child: Text('1 oylik ma\'lumot'),
                           ),
                           const PopupMenuItem(
                             value: '2',
-                            child: Text('2 oylik'),
+                            child: Text('2 oylik ma\'lumot'),
                           ),
                           const PopupMenuItem(
                             value: '3',
-                            child: Text('3 oylik'),
+                            child: Text('3 oylik ma\'lumot'),
                           ),
                         ],
                       ).then((value) {
                         setState(() {
                           _selectedMenu = int.parse(value.toString());
-                          print(_selectedMenu);
+                          getSellTransaction();
                         });
                       });
                     },

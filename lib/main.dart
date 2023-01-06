@@ -15,7 +15,7 @@ Future<void> main() async {
     backgroundColor: Colors.white,
     skipTaskbar: false,
     //titleBarStyle: TitleBarStyle.hidden,
-    minimumSize: Size(800, 600),
+    minimumSize: Size(900, 700),
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
