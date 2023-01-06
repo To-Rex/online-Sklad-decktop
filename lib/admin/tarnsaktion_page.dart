@@ -27,7 +27,7 @@ class _TransktionPageState extends State<TransaktionsPage>
   var userNames = '';
 
   var benefit = 0;
-  var price =  0;
+  var price = 0;
 
   var _selectedMenu = 1;
   var transaktionList = [];
@@ -61,7 +61,8 @@ class _TransktionPageState extends State<TransaktionsPage>
     final response = await http.get(Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/getSellTransaction?months=${_selectedMenu}'));
     final data = jsonDecode(response.body);
-    if (response.statusCode == 200 || response.statusCode == 201 && data['status'] == 'success') {
+    if (response.statusCode == 200 ||
+        response.statusCode == 201 && data['status'] == 'success') {
       print(data);
       benefit = data['benefit'];
       price = data['price'];
@@ -146,7 +147,6 @@ class _TransktionPageState extends State<TransaktionsPage>
               const SizedBox(
                 width: 20,
               ),
-
               Column(
                 children: [
                   IconButton(
@@ -177,7 +177,6 @@ class _TransktionPageState extends State<TransaktionsPage>
               const SizedBox(
                 width: 20,
               ),
-
               SizedBox(
                 height: 30,
                 width: MediaQuery.of(context).size.width / 4,
@@ -299,41 +298,56 @@ class _TransktionPageState extends State<TransaktionsPage>
                           child: Column(
                             children: [
                               SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.02,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.02,
                               ),
                               Row(
                                 children: [
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.01,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.01,
                                   ),
-                                  if (listTransaktion[i].transactionStatus == 'added')
+                                  if (listTransaktion[i].transactionStatus ==
+                                      'added')
                                     SvgPicture.asset(
                                       'assets/sendIcon.svg',
-                                      height: MediaQuery.of(context).size.height * 0.05,
-                                      width: MediaQuery.of(context).size.width * 0.05,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.05,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.05,
                                       color: Colors.deepPurpleAccent,
                                     ),
-                                  if (listTransaktion[i].transactionStatus == 'sold')
+                                  if (listTransaktion[i].transactionStatus ==
+                                      'sold')
                                     SvgPicture.asset(
                                       'assets/getIcon.svg',
-                                      height: MediaQuery.of(context).size.height * 0.05,
-                                      width: MediaQuery.of(context).size.height * 0.05,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.05,
+                                      width:
+                                          MediaQuery.of(context).size.height *
+                                              0.05,
                                       color: Colors.red,
                                     ),
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.01,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.01,
                                   ),
                                   Column(
                                     children: [
                                       Text(
-                                        listTransaktion[i].transactionProductName,
+                                        listTransaktion[i]
+                                            .transactionProductName,
                                         style: const TextStyle(
                                             color: Colors.black,
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400),
                                       ),
                                       SizedBox(
-                                        height: MediaQuery.of(context).size.height * 0.01,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.01,
                                       ),
                                       Container(
                                         decoration: BoxDecoration(
@@ -343,7 +357,8 @@ class _TransktionPageState extends State<TransaktionsPage>
                                               color: const Color.fromARGB(
                                                   255, 221, 221, 221),
                                               width: 5),
-                                          borderRadius: BorderRadius.circular(5),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
                                         ),
                                         child: Text(
                                           '  ${listTransaktion[i].transactionNumber} Dona  ',
@@ -354,19 +369,25 @@ class _TransktionPageState extends State<TransaktionsPage>
                                         ),
                                       ),
                                       SizedBox(
-                                        height: MediaQuery.of(context).size.height * 0.01,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.01,
                                       ),
-                                      if (listTransaktion[i].transactionStatus == 'added')
+                                      if (listTransaktion[i]
+                                              .transactionStatus ==
+                                          'added')
                                         Text(
-                                          '${listTransaktion[i].transactionPrice+listTransaktion[i].transactionBenefit} so\'m',
+                                          '${listTransaktion[i].transactionPrice + listTransaktion[i].transactionBenefit} so\'m',
                                           style: const TextStyle(
                                               color: Colors.black,
                                               fontSize: 12,
                                               fontWeight: FontWeight.w400),
                                         ),
-                                      if (listTransaktion[i].transactionStatus == 'sold')
+                                      if (listTransaktion[i]
+                                              .transactionStatus ==
+                                          'sold')
                                         Text(
-                                          '${listTransaktion[i].transactionPrice} so\'m',
+                                          '${listTransaktion[i].transactionPrice + listTransaktion[i].transactionBenefit} so\'m',
                                           style: const TextStyle(
                                               color: Colors.black,
                                               fontSize: 12,
@@ -375,8 +396,41 @@ class _TransktionPageState extends State<TransaktionsPage>
                                     ],
                                   ),
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.05,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.05,
                                   ),
+                                  //tan narxi
+                                  Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Tan narx: ${listTransaktion[i].transactionPrice} so\'m',
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width * 0.05,
+                                        height: MediaQuery.of(context).size.height * 0.01,
+                                      ),
+                                      Text(
+                                        'Foyda: ${listTransaktion[i].transactionBenefit} so\'m',
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ],
+                                  ),
+
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.05,
+                                  ),
+
                                   Text(
                                     listTransaktion[i].transactionDate,
                                     style: const TextStyle(
@@ -387,7 +441,8 @@ class _TransktionPageState extends State<TransaktionsPage>
                                 ],
                               ),
                               SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.02,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.02,
                               ),
                             ],
                           ),
@@ -402,7 +457,8 @@ class _TransktionPageState extends State<TransaktionsPage>
       ),
     );
   }
-  void _searchTransaktion(String value){
+
+  void _searchTransaktion(String value) {
     if (value.isEmpty) {
       setState(() {
         listTransaktion = transaktionList;
@@ -410,9 +466,13 @@ class _TransktionPageState extends State<TransaktionsPage>
     } else {
       setState(() {
         listTransaktion = transaktionList
-            .where((element) => element.transactionProductName.toLowerCase()
-            .contains(value.toLowerCase()) || element.transactionDate.toLowerCase()
-            .contains(value.toLowerCase()))
+            .where((element) =>
+                element.transactionProductName
+                    .toLowerCase()
+                    .contains(value.toLowerCase()) ||
+                element.transactionDate
+                    .toLowerCase()
+                    .contains(value.toLowerCase()))
             .toList();
       });
     }

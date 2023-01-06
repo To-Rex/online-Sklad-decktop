@@ -399,8 +399,7 @@ class _TransktionPageState extends State<TransaktionsPageAdmin> {
                                                   .height *
                                               0.01,
                                         ),
-                                        if (listTransaktion[i]
-                                                .transactionStatus ==
+                                        if (listTransaktion[i].transactionStatus ==
                                             'added')
                                           Text(
                                             '${listTransaktion[i].transactionPrice + listTransaktion[i].transactionBenefit} so\'m',
