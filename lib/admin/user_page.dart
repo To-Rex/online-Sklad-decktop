@@ -68,8 +68,7 @@ class _UserPageState extends State<UserPage>
   }
 
   Future<void> _getUsers() async {
-    var url = Uri.parse(
-        'https://golalang-online-sklad-production.up.railway.app/getAllUser');
+    var url = Uri.parse('https://golalang-online-sklad-production.up.railway.app/getAllUser');
     var response = await http.get(url);
     final data = jsonDecode(response.body);
     if (response.statusCode == 200) {
@@ -760,9 +759,8 @@ class _UserPageState extends State<UserPage>
                           showUserUpdateDialog(userId);
                           isUpdate = value!;
                           print(isUpdate);
-                          setState(() {
-                            _isChangePassword = value!;
-                          });
+                          setState(() {});
+                          _isChangePassword = value!;
                         },
                       ),
                       const Text('Parolni o`zgartirish'),
