@@ -478,8 +478,6 @@ class _SamplePageState extends State<SamplePage>
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
         onPressed: () {
-          // Add your onPressed code here!
-
           _showDialogAddCategory();
         },
         child: const Icon(Icons.add, color: Colors.deepPurpleAccent),
