@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:online_sklad/admin/tarnsaktion_page.dart';
 
 import 'package:online_sklad/models/user_list.dart';
+import 'package:online_sklad/user/tarnsaktion_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserPage extends StatefulWidget {
@@ -1008,7 +1009,12 @@ class _UserPageState extends State<UserPage>
                   for (var i = 0; i < users.length; i++)
                     GestureDetector(
                       onTap: () {
-
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TransaktionsPageUser()
+                          ),
+                        );
                       },
                       child: Column(
                         children: [
