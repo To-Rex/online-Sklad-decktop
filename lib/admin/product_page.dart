@@ -212,9 +212,13 @@ class _ProductPageState extends State<ProductPage>
     final response = await http.post(
       Uri.parse(
           'https://golalang-online-sklad-production.up.railway.app/productSell?productId=$productId&userId=$userId&number=$number'),
+      body: {
+        'addition_price': _productPriceController.text,
+      },
     );
     if (response.statusCode == 200) {
       _productNumbersController.clear();
+      _productPriceController.clear();
       final data = jsonDecode(response.body);
       if (data['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -231,6 +235,7 @@ class _ProductPageState extends State<ProductPage>
         _getProductsByCategory();
       } else {
         _isLoad = false;
+        _productPriceController.clear();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Mahsulot sotilmadi. Mahsulot yetarli emas'),
@@ -243,6 +248,18 @@ class _ProductPageState extends State<ProductPage>
           ),
         );
       }
+    }else{
+      _isLoad = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Internet ulanish yo\'q yoki serverda xatolik'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          duration: Duration(milliseconds: 2700),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
@@ -274,12 +291,12 @@ class _ProductPageState extends State<ProductPage>
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      _productNameController.clear();
-      _productDescriptionController.clear();
-      _productPriceController.clear();
-      _productBenefitController.clear();
-      _productStockController.clear();
       if (data['status'] == 'success') {
+        _productNameController.clear();
+        _productDescriptionController.clear();
+        _productPriceController.clear();
+        _productBenefitController.clear();
+        _productStockController.clear();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Mahsulot yangilandi'),
@@ -703,6 +720,626 @@ class _ProductPageState extends State<ProductPage>
     );
   }
 
+  void _searchProduct(String value) {
+    if (value.isEmpty) {
+      setState(() {
+        products = _productList;
+      });
+    } else {
+      //search name price
+      setState(() {
+        products = _productList
+            .where((element) =>
+        element.productName
+            .toLowerCase()
+            .contains(value.toLowerCase()) ||
+            element.productPrice
+                .toString()
+                .toLowerCase()
+                .contains(value.toLowerCase()))
+            .toList();
+      });
+    }
+  }
+
+  void _showDialogDeleteProduct(id) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Mahsulotni o`chirish'),
+            content: const Text('Mahsulotni o`chirishni istaysizmi?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Yo`q'),
+              ),
+              TextButton(
+                onPressed: () {
+                  _isLoad = true;
+                  _deleteProduct(id);
+                  Navigator.pop(context);
+                },
+                child: const Text('Ha'),
+              ),
+            ],
+          );
+        });
+  }
+
+  void _showProductDialog(String id, int productNumber) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Mahsulotni sotish'),
+            content: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _productPriceController,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.text,
+                      keyboardAppearance: Brightness.light,
+                      textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Ustama haq',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 221, 221, 221),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            if (_productNumbersController.text.isEmpty) {
+                              _productNumbersController.text = '0';
+                              return;
+                            }
+                            if (int.parse(_productNumbersController.text) <
+                                0) {
+                              _productNumbersController.text = '0';
+                              return;
+                            }
+                            if (int.parse(_productNumbersController.text) ==
+                                0) {
+                              return;
+                            }
+                            _productNumbersController.text =
+                                (int.parse(_productNumbersController.text) - 1)
+                                    .toString();
+                            setState(() {});
+                          },
+                          icon: SvgPicture.asset(
+                            'assets/minusIcon.svg',
+                            color: Colors.deepPurpleAccent,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.02,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 221, 221, 221),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          child: TextField(
+                            cursorColor: Colors.deepPurpleAccent,
+                            controller: _productNumbersController,
+                            textAlign: TextAlign.center,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
+                            ],
+                            decoration: const InputDecoration(
+                              contentPadding:
+                              EdgeInsets.only(left: 10, right: 10),
+                              border: InputBorder.none,
+                              hintText: 'Mahsulot miqdori',
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.02,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 221, 221, 221),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            if (_productNumbersController.text.isEmpty) {
+                              _productNumbersController.text = '0';
+                            }
+                            if (int.parse(_productNumbersController.text) <
+                                0) {
+                              _productNumbersController.text = '0';
+                            }
+                            _productNumbersController.text =
+                                (int.parse(_productNumbersController.text) + 1)
+                                    .toString();
+                            setState(() {});
+                          },
+                          icon: const Icon(
+                            Icons.add,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  _productNumbersController.clear();
+                  _productPriceController.clear();
+                  Navigator.pop(context);
+                },
+                child: const Text('Bekor qilish'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (_productNumbersController.text.isEmpty||
+                      _productNumbersController.text == ''|| _productNumbersController.text == '0') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Mahsulot sonini kiriting!'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  } else {
+                    if (int.parse(_productNumbersController.text) > productNumber) {
+                      _isLoad = false;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Mahsulot soni yetarli emas!'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
+                    _isLoad = true;
+                    setState(() {});
+                    _sellProduct(id);
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text('Sotish'),
+              ),
+            ],
+          );
+        });
+  }
+
+  void _showDialogEditProduct(String id) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Mahsulotni tahrirlash'),
+            content: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _productNameController,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.text,
+                      keyboardAppearance: Brightness.light,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Mahsulot nomi',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _productDescriptionController,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.text,
+                      keyboardAppearance: Brightness.light,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Mahsulot izohi',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _productPriceController,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.text,
+                      keyboardAppearance: Brightness.light,
+                      textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Mahsulot narxi',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _productBenefitController,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.text,
+                      keyboardAppearance: Brightness.light,
+                      textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Mahsulot foydasi',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  _productNameController.clear();
+                  _productPriceController.clear();
+                  _productBenefitController.clear();
+                  _productDescriptionController.clear();
+                  Navigator.pop(context);
+                },
+                child: const Text('Bekor qilish'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (_productNameController.text.isEmpty ||
+                      _productDescriptionController.text.isEmpty ||
+                      _productPriceController.text.isEmpty ||
+                      _productBenefitController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Barcha maydonlarni to`ldiring!'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  } else {
+                    _isLoad = true;
+                    setState(() {});
+                    _updateProduct(id);
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text('Saqlash'),
+              ),
+            ],
+          );
+        });
+  }
+
+  void _showDialogSellProduct(String productId, String productName) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Mahsulotni sotish'),
+            content: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _productPriceController,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.text,
+                      keyboardAppearance: Brightness.light,
+                      textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Mahsulot narxi',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 221, 221, 221),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      cursorColor: Colors.deepPurpleAccent,
+                      controller: _productBenefitController,
+                      textAlign: TextAlign.left,
+                      keyboardType: TextInputType.text,
+                      keyboardAppearance: Brightness.light,
+                      textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 10, right: 10),
+                        border: InputBorder.none,
+                        hintText: 'Mahsulot foydasi',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 221, 221, 221),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            if (_productNumberController.text.isEmpty) {
+                              _productNumberController.text = '0';
+                              return;
+                            }
+                            if (int.parse(_productNumberController.text) < 0) {
+                              _productNumberController.text = '0';
+                              return;
+                            }
+                            if (int.parse(_productNumberController.text) == 0) {
+                              return;
+                            }
+                            _productNumberController.text =
+                                (int.parse(_productNumberController.text) - 1)
+                                    .toString();
+                            setState(() {});
+                          },
+                          icon: SvgPicture.asset(
+                            'assets/minusIcon.svg',
+                            color: Colors.deepPurpleAccent,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.02,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 221, 221, 221),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          child: TextField(
+                            cursorColor: Colors.deepPurpleAccent,
+                            controller: _productNumberController,
+                            textAlign: TextAlign.center,
+                            textInputAction: TextInputAction.next,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
+                            ],
+                            decoration: const InputDecoration(
+                              contentPadding:
+                              EdgeInsets.only(left: 10, right: 10),
+                              border: InputBorder.none,
+                              hintText: 'Mahsulot miqdori',
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.02,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 221, 221, 221),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 221, 221, 221),
+                              width: 2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            if (_productNumberController.text.isEmpty) {
+                              _productNumberController.text = '0';
+                            }
+                            if (int.parse(_productNumberController.text) < 0) {
+                              _productNumberController.text = '0';
+                            }
+                            _productNumberController.text =
+                                (int.parse(_productNumberController.text) + 1)
+                                    .toString();
+                            setState(() {});
+                          },
+                          icon: const Icon(
+                            Icons.add,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  _productBenefitController.clear();
+                  _productNumberController.clear();
+                  _productPriceController.clear();
+                  Navigator.pop(context);
+                },
+                child: const Text('Bekor qilish'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (_productNumberController.text.isEmpty) {
+                    _productNumberController.text = '0';
+                  }
+                  if (int.parse(_productNumberController.text) < 0) {
+                    _productNumberController.text = '0';
+                  }
+                  if (_productPriceController.text.isEmpty) {
+                    _productPriceController.text = '0';
+                  }
+                  if (int.parse(_productPriceController.text) < 0) {
+                    _productPriceController.text = '0';
+                  }
+                  if (_productBenefitController.text.isEmpty) {
+                    _productBenefitController.text = '0';
+                  }
+                  if (int.parse(_productBenefitController.text) < 0) {
+                    _productBenefitController.text = '0';
+                  }
+                  if (_productPriceController.text.isEmpty ||
+                      _productBenefitController.text.isEmpty ||
+                      _productNumberController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Barcha maydonlarni to\'ldiring'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
+                  if (int.parse(_productNumberController.text) <= 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                            'Mahsulot miqdori 0 dan katta bo\'lishi kerak'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  _isLoad = true;
+                  setState(() {});
+                  _putPraductSell(productId, productName);
+                  Navigator.pop(context);
+                },
+                child: const Text('Saqlash'),
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   void initState() {
     _getUser();
@@ -1124,519 +1761,5 @@ class _ProductPageState extends State<ProductPage>
         ],
       ),
     );
-  }
-
-  void _searchProduct(String value) {
-    if (value.isEmpty) {
-      setState(() {
-        products = _productList;
-      });
-    } else {
-      //search name price
-      setState(() {
-        products = _productList
-            .where((element) =>
-                element.productName
-                    .toLowerCase()
-                    .contains(value.toLowerCase()) ||
-                element.productPrice
-                    .toString()
-                    .toLowerCase()
-                    .contains(value.toLowerCase()))
-            .toList();
-      });
-    }
-  }
-
-  void _showDialogDeleteProduct(id) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Mahsulotni o`chirish'),
-            content: const Text('Mahsulotni o`chirishni istaysizmi?'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Yo`q'),
-              ),
-              TextButton(
-                onPressed: () {
-                  _isLoad = true;
-                  _deleteProduct(id);
-                  Navigator.pop(context);
-                },
-                child: const Text('Ha'),
-              ),
-            ],
-          );
-        });
-  }
-
-  void _showProductDialog(String id, int productNumber) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Mahsulotni sotish'),
-            content: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.1,
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 221, 221, 221),
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      cursorColor: Colors.deepPurpleAccent,
-                      controller: _productNumbersController,
-                      textAlign: TextAlign.left,
-                      keyboardType: TextInputType.text,
-                      keyboardAppearance: Brightness.light,
-                      textInputAction: TextInputAction.next,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      ],
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10, right: 10),
-                        border: InputBorder.none,
-                        hintText: 'Mahsulot soni',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  _productNumbersController.clear();
-                  Navigator.pop(context);
-                },
-                child: const Text('Bekor qilish'),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (_productNumbersController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Mahsulot sonini kiriting!'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  } else {
-                    if (int.parse(_productNumbersController.text) >
-                        productNumber) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Mahsulot soni yetarli emas!'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                      return;
-                    }
-                    _isLoad = true;
-                    setState(() {});
-                    _sellProduct(id);
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text('Sotish'),
-              ),
-            ],
-          );
-        });
-  }
-
-  void _showDialogEditProduct(String id) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Mahsulotni tahrirlash'),
-            content: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 221, 221, 221),
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      cursorColor: Colors.deepPurpleAccent,
-                      controller: _productNameController,
-                      textAlign: TextAlign.left,
-                      keyboardType: TextInputType.text,
-                      keyboardAppearance: Brightness.light,
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10, right: 10),
-                        border: InputBorder.none,
-                        hintText: 'Mahsulot nomi',
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 221, 221, 221),
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      cursorColor: Colors.deepPurpleAccent,
-                      controller: _productDescriptionController,
-                      textAlign: TextAlign.left,
-                      keyboardType: TextInputType.text,
-                      keyboardAppearance: Brightness.light,
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10, right: 10),
-                        border: InputBorder.none,
-                        hintText: 'Mahsulot izohi',
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 221, 221, 221),
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      cursorColor: Colors.deepPurpleAccent,
-                      controller: _productPriceController,
-                      textAlign: TextAlign.left,
-                      keyboardType: TextInputType.text,
-                      keyboardAppearance: Brightness.light,
-                      textInputAction: TextInputAction.next,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      ],
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10, right: 10),
-                        border: InputBorder.none,
-                        hintText: 'Mahsulot narxi',
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 221, 221, 221),
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      cursorColor: Colors.deepPurpleAccent,
-                      controller: _productBenefitController,
-                      textAlign: TextAlign.left,
-                      keyboardType: TextInputType.text,
-                      keyboardAppearance: Brightness.light,
-                      textInputAction: TextInputAction.next,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      ],
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10, right: 10),
-                        border: InputBorder.none,
-                        hintText: 'Mahsulot foydasi',
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  _productNameController.clear();
-                  _productPriceController.clear();
-                  _productBenefitController.clear();
-                  _productDescriptionController.clear();
-                  Navigator.pop(context);
-                },
-                child: const Text('Bekor qilish'),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (_productNameController.text.isEmpty ||
-                      _productDescriptionController.text.isEmpty ||
-                      _productPriceController.text.isEmpty ||
-                      _productBenefitController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Barcha maydonlarni to`ldiring!'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  } else {
-                    _isLoad = true;
-                    setState(() {});
-                    _updateProduct(id);
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text('Saqlash'),
-              ),
-            ],
-          );
-        });
-  }
-
-  void _showDialogSellProduct(String productId, String productName) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Mahsulotni sotish'),
-            content: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 221, 221, 221),
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      cursorColor: Colors.deepPurpleAccent,
-                      controller: _productPriceController,
-                      textAlign: TextAlign.left,
-                      keyboardType: TextInputType.text,
-                      keyboardAppearance: Brightness.light,
-                      textInputAction: TextInputAction.next,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      ],
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10, right: 10),
-                        border: InputBorder.none,
-                        hintText: 'Mahsulot narxi',
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 221, 221, 221),
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      cursorColor: Colors.deepPurpleAccent,
-                      controller: _productBenefitController,
-                      textAlign: TextAlign.left,
-                      keyboardType: TextInputType.text,
-                      keyboardAppearance: Brightness.light,
-                      textInputAction: TextInputAction.next,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      ],
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10, right: 10),
-                        border: InputBorder.none,
-                        hintText: 'Mahsulot foydasi',
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          border: Border.all(
-                              color: const Color.fromARGB(255, 221, 221, 221),
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: IconButton(
-                          onPressed: () {
-                            if (_productNumberController.text.isEmpty) {
-                              _productNumberController.text = '0';
-                              return;
-                            }
-                            if (int.parse(_productNumberController.text) < 0) {
-                              _productNumberController.text = '0';
-                              return;
-                            }
-                            if (int.parse(_productNumberController.text) == 0) {
-                              return;
-                            }
-                            _productNumberController.text =
-                                (int.parse(_productNumberController.text) - 1)
-                                    .toString();
-                            setState(() {});
-                          },
-                          icon: SvgPicture.asset(
-                            'assets/minusIcon.svg',
-                            color: Colors.deepPurpleAccent,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.02,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          border: Border.all(
-                              color: const Color.fromARGB(255, 221, 221, 221),
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.2,
-                          child: TextField(
-                            cursorColor: Colors.deepPurpleAccent,
-                            controller: _productNumberController,
-                            textAlign: TextAlign.center,
-                            textInputAction: TextInputAction.next,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9]')),
-                            ],
-                            decoration: const InputDecoration(
-                              contentPadding:
-                                  EdgeInsets.only(left: 10, right: 10),
-                              border: InputBorder.none,
-                              hintText: 'Mahsulot miqdori',
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.02,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          border: Border.all(
-                              color: const Color.fromARGB(255, 221, 221, 221),
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: IconButton(
-                          onPressed: () {
-                            if (_productNumberController.text.isEmpty) {
-                              _productNumberController.text = '0';
-                            }
-                            if (int.parse(_productNumberController.text) < 0) {
-                              _productNumberController.text = '0';
-                            }
-                            _productNumberController.text =
-                                (int.parse(_productNumberController.text) + 1)
-                                    .toString();
-                            setState(() {});
-                          },
-                          icon: const Icon(
-                            Icons.add,
-                            color: Colors.deepPurpleAccent,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  _productBenefitController.clear();
-                  _productNumberController.clear();
-                  _productPriceController.clear();
-                  Navigator.pop(context);
-                },
-                child: const Text('Bekor qilish'),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (_productNumberController.text.isEmpty) {
-                    _productNumberController.text = '0';
-                  }
-                  if (int.parse(_productNumberController.text) < 0) {
-                    _productNumberController.text = '0';
-                  }
-                  if (_productPriceController.text.isEmpty) {
-                    _productPriceController.text = '0';
-                  }
-                  if (int.parse(_productPriceController.text) < 0) {
-                    _productPriceController.text = '0';
-                  }
-                  if (_productBenefitController.text.isEmpty) {
-                    _productBenefitController.text = '0';
-                  }
-                  if (int.parse(_productBenefitController.text) < 0) {
-                    _productBenefitController.text = '0';
-                  }
-                  if (_productPriceController.text.isEmpty ||
-                      _productBenefitController.text.isEmpty ||
-                      _productNumberController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Barcha maydonlarni to\'ldiring'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                    return;
-                  }
-
-                  if (int.parse(_productNumberController.text) <= 0) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                            'Mahsulot miqdori 0 dan katta bo\'lishi kerak'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                    return;
-                  }
-                  _isLoad = true;
-                  setState(() {});
-                  _putPraductSell(productId, productName);
-                  Navigator.pop(context);
-                },
-                child: const Text('Saqlash'),
-              ),
-            ],
-          );
-        });
   }
 }
