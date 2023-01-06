@@ -136,17 +136,13 @@ class _UserPageState extends State<UserPage>
       }),
     );
     final data = jsonDecode(response.body);
-    print(data);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       if (data['status'] == 'success' && data['message'] == 'User created') {
         _getUsers();
-
         _userNameController.clear();
         _nameController.clear();
         _surNameController.clear();
         _phoneController.clear();
-
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Yangi foydalanuvchi muvaffaqiyatli qo\'shildi'),
@@ -195,7 +191,12 @@ class _UserPageState extends State<UserPage>
     final data = jsonDecode(response.body);
     if (response.statusCode == 200) {
       if (data['status'] == 'success' && data['message'] == null) {
-        print('data is null');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Iltimos, qayta urinib ko\'ring'),
+            backgroundColor: Colors.red,
+          ),
+        );
         return;
       }
 
@@ -209,7 +210,13 @@ class _UserPageState extends State<UserPage>
 
       if (data['status'] == 'error' && data['message'] != null) {
         _isLoad = false;
-        print('data is not null');
+        setState(() {});
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Iltimos, qayta urinib ko\'ring'),
+            backgroundColor: Colors.red,
+          ),
+        );
         return;
       }
     } else {
@@ -620,8 +627,6 @@ class _UserPageState extends State<UserPage>
                     );
                     return;
                   }
-                  //userList.clear();
-                  //users.clear();
                   _isLoad = true;
                   setState(() {});
                   _addUser();
@@ -635,7 +640,6 @@ class _UserPageState extends State<UserPage>
   }
 
   void showUserUpdateDialog(String userId) {
-    //chesk users list for user userid position and get user data from list
     _userNameController.text =
         userList[users.indexWhere((element) => element.userId == userId)]
             .userName;
@@ -760,7 +764,6 @@ class _UserPageState extends State<UserPage>
                           Navigator.of(context).pop();
                           showUserUpdateDialog(userId);
                           isUpdate = value!;
-                          print(isUpdate);
                           setState(() {});
                           _isChangePassword = value!;
                         },
@@ -813,7 +816,6 @@ class _UserPageState extends State<UserPage>
                     return;
                   }
                   if (isUpdate == true && _passwordController.text.isEmpty) {
-                    print('parolni to`ldiring');
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('iltimos parolni kiriting'),
@@ -843,7 +845,6 @@ class _UserPageState extends State<UserPage>
         users = userList;
       });
     } else {
-      //search name price
       setState(() {
         users = userList
             .where((element) =>
@@ -1163,7 +1164,6 @@ class _UserPageState extends State<UserPage>
                                                 Navigator.pop(context);
                                                 _updateUserRole(
                                                     users[i].userName, 'user');
-                                                //print(users[i].userName);
                                               },
                                               child: const Text(
                                                 'user ga o\'zgartirish',
@@ -1180,7 +1180,6 @@ class _UserPageState extends State<UserPage>
                                                 Navigator.pop(context);
                                                 _updateUserRole(
                                                     users[i].userName, 'admin');
-                                                //print(users[i].userName);
                                               },
                                               child: const Text(
                                                 'admin ga o\'zgartirish',

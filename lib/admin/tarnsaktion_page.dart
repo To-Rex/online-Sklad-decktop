@@ -404,7 +404,6 @@ class _TransktionPageState extends State<TransaktionsPage>
                                     width: MediaQuery.of(context).size.width *
                                         0.05,
                                   ),
-                                  //tan narxi
                                   Column(
                                     crossAxisAlignment:
                                     CrossAxisAlignment.start,
@@ -430,7 +429,6 @@ class _TransktionPageState extends State<TransaktionsPage>
                                       ),
                                     ],
                                   ),
-
                                   SizedBox(
                                     width: MediaQuery.of(context).size.width *
                                         0.05,
@@ -498,7 +496,6 @@ class _TransktionPageState extends State<TransaktionsPage>
                   child: CircularProgressIndicator(),
                 ),
               Expanded(child: Container()),
-              //olik malumotlar
               Text(
                 ' $_selectedMenu - oylik ma\'lumotlar',
                 style: const TextStyle(

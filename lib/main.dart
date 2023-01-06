@@ -49,7 +49,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   var text = 'Internetga ulanishni tekshirilmoqda ...';
   Future<bool> checkInternetConnection() async {
     try {
@@ -100,7 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 SizedBox(width: MediaQuery.of(context).size.width * 0.3),
                 const Expanded(child: SizedBox()),
-
                 const SizedBox(
                   height: 40,
                   width: 40,

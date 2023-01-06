@@ -58,7 +58,6 @@ class _SamplePageState extends State<SamplePage>
 
     final response = await http.get(Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/getAllCategory'));
-    print(response.body);
     if (response.statusCode == 200) {
       category_name.clear();
       category_id.clear();
@@ -130,8 +129,6 @@ class _SamplePageState extends State<SamplePage>
   Future<void> _deleteCategory(String id) async {
     final response = await http.delete(Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/deleteCategory?categoryId=$id'));
-    print(response.body);
-
     if (response.statusCode == 200) {
       isLoading = false;
       final data = jsonDecode(response.body);

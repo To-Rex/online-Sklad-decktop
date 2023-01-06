@@ -63,7 +63,6 @@ class _SamplePageState extends State<SamplePageUser>
 
     final response = await http.get(Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/getAllCategory'));
-    print(response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       if (data['status'] == 'success') {
@@ -88,6 +87,17 @@ class _SamplePageState extends State<SamplePageUser>
         );
       }
       setState(() {});
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('internetga ulanishni tekshiring!'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          duration: Duration(milliseconds: 1700),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 

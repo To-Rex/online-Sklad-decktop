@@ -83,9 +83,7 @@ class _TransktionPageState extends State<TransaktionsPageUser>
     final response = await http.get(Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/getUserProductSell?months=$_selectedMenu&userId=$userId&sells=all'));
     final data = jsonDecode(response.body);
-    print(data);
     if (response.statusCode == 200 && data['status'] == 'success') {
-      print(data);
       benefit = data['benefit'];
       price = data['price'];
       if (data["transactions"].toString() == 'null') {

@@ -340,7 +340,6 @@ class _ProductPageState extends State<ProductPage>
 
   Future<void> _putPraductSell(String productId, String productName) async {
     var number = int.parse(_productNumberController.text);
-
     final response = await http.post(
       Uri.parse(
           'https://golalang-online-sklad-production.up.railway.app/addProductSell?productId=$productId&number=$number&userId=$userId'),
@@ -350,7 +349,6 @@ class _ProductPageState extends State<ProductPage>
         'transaction_product_name': productName,
       },
     );
-    print(response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       if (data['status'] == 'success') {

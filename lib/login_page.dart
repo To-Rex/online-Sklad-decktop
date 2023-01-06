@@ -73,7 +73,6 @@ class _LoginPageState extends State<LoginPage>
       }),
     );
     if (response.statusCode == 200) {
-      print(response.body);
       _isLoading = false;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final data = jsonDecode(response.body);
@@ -259,13 +258,10 @@ class _LoginPageState extends State<LoginPage>
                         enableSuggestions: false,
                         autocorrect: false,
                         decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.only(left: 10, right: 10),
+                          contentPadding: const EdgeInsets.only(left: 10, right: 10),
                           border: InputBorder.none,
                           hintText: 'Parol',
-
-                          errorText:
-                              _validatePassword ? 'Parol kiriting' : null,
+                          errorText: _validatePassword ? 'Parol kiriting' : null,
                         ),
                       ),
                     ),
@@ -313,7 +309,6 @@ class _LoginPageState extends State<LoginPage>
                       ),
                       const Text('Kirish'),
                       const Expanded(child: SizedBox()),
-                      //SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                       if (_isLoading)
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03,
