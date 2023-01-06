@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:online_sklad/admin/tarnsaktion_page_product.dart';
 import 'package:online_sklad/admin/user_page.dart';
 import 'package:online_sklad/models/product_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -1542,16 +1543,25 @@ class _ProductPageState extends State<ProductPage>
                                       0.02),
                               Row(
                                 children: [
+                                  SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                                   SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.01),
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 10),
-                                    child: SvgPicture.asset(
-                                      'assets/productIcon.svg',
-                                      height: 50,
-                                      width: 50,
-                                    ),
+                                    height: 50,
+                                    width: 50,
+                                    child: IconButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TransaktionsPageProduct(products[i].productId),
+                                            ),
+                                          );
+                                        },
+                                        icon: SvgPicture.asset(
+                                          'assets/productIcon.svg',
+                                          height: 50,
+                                          width: 50,
+                                        )),
                                   ),
                                   SizedBox(
                                       width: MediaQuery.of(context).size.width *

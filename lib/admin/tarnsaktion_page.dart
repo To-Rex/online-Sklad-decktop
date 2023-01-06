@@ -112,33 +112,6 @@ class _TransktionPageState extends State<TransaktionsPage>
               const Expanded(
                 child: SizedBox(),
               ),
-              Column(
-                children: [
-                  IconButton(
-                    hoverColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.white,
-                    color: Colors.white,
-                    onPressed: () {},
-                    icon: SvgPicture.asset(
-                      'assets/benIcon.svg',
-                      height: 22,
-                      width: 22,
-                      color: Colors.green,
-                    ),
-                  ),
-                  Text(
-                    '${benefit-price} so\'m',
-                    style: const TextStyle(
-                      color: Colors.deepPurpleAccent,
-                      fontSize: 12,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
               const SizedBox(
                 width: 20,
               ),

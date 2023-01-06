@@ -62,14 +62,14 @@ class _TransktionPageState extends State<TransaktionsPageProduct> {
     userId = widget.productId.toString();
     print(userId);
     final response = await http.get(Uri.parse(
-        'https://golalang-online-sklad-production.up.railway.app/getUserProductSell?months=$_selectedMenu&userId=$userId&sells=all'));
+        'https://golalang-online-sklad-production.up.railway.app/getProductSell?months=$_selectedMenu&productId=$userId&sells=all'));
     final data = jsonDecode(response.body);
     print(data);
     if (response.statusCode == 200 && data['status'] == 'success') {
       print(data);
       benefit = data['benefit'];
       price = data['price'];
-      if (data["transactions"].toString() == 'null') {
+      if (data["data"].toString() == 'null') {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Hisobotlar mavjud emas'),
         ));
@@ -79,18 +79,17 @@ class _TransktionPageState extends State<TransaktionsPageProduct> {
       }
       transaktionList.clear();
       listTransaktion.clear();
-      for (var i = 0; i < data['transactions'].length; i++) {
+      for (var i = 0; i < data['data'].length; i++) {
         transaktionList.add(TransaktionList(
-          transactionId: data['transactions'][i]['transaction_id'],
-          transactionDate: data['transactions'][i]['transaction_date'],
-          transactionSeller: data['transactions'][i]['transaction_seller'],
-          transactionProductName: data['transactions'][i]
-              ['transaction_product_name'],
-          transactionProduct: data['transactions'][i]['transaction_product'],
-          transactionNumber: data['transactions'][i]['transaction_number'],
-          transactionPrice: data['transactions'][i]['transaction_price'],
-          transactionStatus: data['transactions'][i]['transaction_status'],
-          transactionBenefit: data['transactions'][i]['transaction_benefit'],
+          transactionId: data['data'][i]['transaction_id'],
+          transactionDate: data['data'][i]['transaction_date'],
+          transactionSeller: data['data'][i]['transaction_seller'],
+          transactionProductName: data['data'][i]['transaction_product_name'],
+          transactionProduct: data['data'][i]['transaction_product'],
+          transactionNumber: data['data'][i]['transaction_number'],
+          transactionPrice: data['data'][i]['transaction_price'],
+          transactionStatus: data['data'][i]['transaction_status'],
+          transactionBenefit: data['data'][i]['transaction_benefit'],
         ));
       }
       isLoading = false;
@@ -129,33 +128,7 @@ class _TransktionPageState extends State<TransaktionsPageProduct> {
               const Expanded(
                 child: SizedBox(),
               ),
-              Column(
-                children: [
-                  IconButton(
-                    hoverColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.white,
-                    color: Colors.white,
-                    onPressed: () {},
-                    icon: SvgPicture.asset(
-                      'assets/benIcon.svg',
-                      height: 22,
-                      width: 22,
-                      color: Colors.green,
-                    ),
-                  ),
-                  Text(
-                    '${benefit - price} so\'m',
-                    style: const TextStyle(
-                      color: Colors.deepPurpleAccent,
-                      fontSize: 12,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
+
               const SizedBox(
                 width: 20,
               ),
