@@ -56,15 +56,6 @@ class _TransktionPageState extends State<TransaktionsPageUser>
     userStatus = prefs.getString('userstatus') ?? '';
     userBlocked = prefs.getBool('blocked') ?? false;
     userNames = prefs.getString('username') ?? '';
-    print('userNames: $userNames');
-    print('userId: $userId');
-    print('userName: $userName');
-    print('userSurname: $userSurname');
-    print('userPhone: $userPhone');
-    print('userRole: $userRole');
-    print('userStatus: $userStatus');
-    print('userBlocked: $userBlocked');
-
     getSellTransaction();
   }
 
