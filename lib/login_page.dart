@@ -110,6 +110,23 @@ class _LoginPageState extends State<LoginPage>
         setState(() {});
         return;
       }
+      if (data['message'] == 'User blocked') {
+        _isLoading = false;
+        _passwordController.clear();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Foydalanuvchi bloklangan iltimos administrator bilan bog\'laning'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 1700),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red,
+          ),
+        );
+        setState(() {});
+        return;
+      }
       prefs.setString('name', data['name']);
       prefs.setString('surname', data['surname']);
       prefs.setString('phone', data['phone']);
