@@ -209,7 +209,8 @@ class _ProductPageState extends State<ProductPage>
     });
     var number = int.parse(_productNumbersController.text);
     final response = await http.post(
-      Uri.parse('https://golalang-online-sklad-production.up.railway.app/productSell?productId=$productId&userId=$userId&number=$number'),
+      Uri.parse(
+          'https://golalang-online-sklad-production.up.railway.app/productSell?productId=$productId&userId=$userId&number=$number'),
     );
     if (response.statusCode == 200) {
       _productNumbersController.clear();
@@ -515,8 +516,7 @@ class _ProductPageState extends State<ProductPage>
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp(r'[0-9]')),
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                         ],
                         decoration: const InputDecoration(
                           contentPadding: EdgeInsets.only(left: 10, right: 10),
@@ -543,8 +543,7 @@ class _ProductPageState extends State<ProductPage>
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp(r'[0-9]')),
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                         ],
                         decoration: const InputDecoration(
                           contentPadding: EdgeInsets.only(left: 10, right: 10),
@@ -814,64 +813,72 @@ class _ProductPageState extends State<ProductPage>
           Expanded(
             child: ListView(
               children: [
-                Container(
-                  margin: const EdgeInsets.only(
-                      left: 10, right: 10, top: 10, bottom: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.35),
-                        //color: Color.fromARGB(255, 221, 221, 221),
-                        spreadRadius: 1,
-                        blurRadius: 10,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      SizedBox(height: MediaQuery.of(context).size.height / 50),
-                      //product qo`shish
-                      Row(
-                        //mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 50,
-                          ),
-                          const Text(
-                            'Yangi mahsulot',
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          const Expanded(
-                            child: SizedBox(),
-                          ),
-                          IconButton(
-                              onPressed: () {
-                                _showDialogAddProduct();
-                              },
-                              icon: const Icon(
-                                Icons.add_circle_outline_outlined,
-                                color: Colors.deepPurpleAccent,
-                                size: 30,
-                              )),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 35,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height / 50),
-                    ],
+                GestureDetector(
+                  onTap: () {
+                    _showDialogAddProduct();
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                        left: 10, right: 10, top: 10, bottom: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.35),
+                          //color: Color.fromARGB(255, 221, 221, 221),
+                          spreadRadius: 1,
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height / 50),
+                        //product qo`shish
+                        Row(
+                          //mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 50,
+                            ),
+                            const Text(
+                              'Yangi mahsulot',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const Expanded(
+                              child: SizedBox(),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  _showDialogAddProduct();
+                                },
+                                icon: const Icon(
+                                  Icons.add_circle_outline_outlined,
+                                  color: Colors.deepPurpleAccent,
+                                  size: 30,
+                                )),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 35,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height / 50),
+                      ],
+                    ),
                   ),
                 ),
                 for (var i = 0; i < products.length; i++)
                   GestureDetector(
                     onTap: () {
-                      _showProductDialog(products[i].productId,products[i].productNumber);
+                      _showProductDialog(
+                          products[i].productId, products[i].productNumber);
                     },
                     child: Column(
                       children: [
@@ -926,7 +933,7 @@ class _ProductPageState extends State<ProductPage>
                                           height: 5,
                                         ),
                                         Text(
-                                          '${products[i].productPrice+products[i].productBenefit} so\'m',
+                                          '${products[i].productPrice + products[i].productBenefit} so\'m',
                                           style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold),
@@ -963,9 +970,15 @@ class _ProductPageState extends State<ProductPage>
                                   ),
                                   IconButton(
                                       onPressed: () {
-                                        _productPriceController.text = products[i].productPrice.toString();
-                                        _productBenefitController.text = products[i].productBenefit.toString();
-                                        _showDialogSellProduct(products[i].productId,products[i].productName);
+                                        _productPriceController.text =
+                                            products[i].productPrice.toString();
+                                        _productBenefitController.text =
+                                            products[i]
+                                                .productBenefit
+                                                .toString();
+                                        _showDialogSellProduct(
+                                            products[i].productId,
+                                            products[i].productName);
                                       },
                                       icon: const Icon(
                                         Icons.sell_outlined,
@@ -1123,8 +1136,11 @@ class _ProductPageState extends State<ProductPage>
       //search name price
       setState(() {
         products = _productList
-            .where((element) => element.productName.toLowerCase()
-                    .contains(value.toLowerCase()) || element.productPrice
+            .where((element) =>
+                element.productName
+                    .toLowerCase()
+                    .contains(value.toLowerCase()) ||
+                element.productPrice
                     .toString()
                     .toLowerCase()
                     .contains(value.toLowerCase()))
@@ -1484,7 +1500,9 @@ class _ProductPageState extends State<ProductPage>
                             if (int.parse(_productNumberController.text) == 0) {
                               return;
                             }
-                            _productNumberController.text = (int.parse(_productNumberController.text) - 1).toString();
+                            _productNumberController.text =
+                                (int.parse(_productNumberController.text) - 1)
+                                    .toString();
                             setState(() {});
                           },
                           icon: SvgPicture.asset(
@@ -1512,7 +1530,8 @@ class _ProductPageState extends State<ProductPage>
                             textAlign: TextAlign.center,
                             textInputAction: TextInputAction.next,
                             inputFormatters: [
-                              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
                             ],
                             decoration: const InputDecoration(
                               contentPadding:
@@ -1542,7 +1561,9 @@ class _ProductPageState extends State<ProductPage>
                             if (int.parse(_productNumberController.text) < 0) {
                               _productNumberController.text = '0';
                             }
-                            _productNumberController.text = (int.parse(_productNumberController.text) + 1).toString();
+                            _productNumberController.text =
+                                (int.parse(_productNumberController.text) + 1)
+                                    .toString();
                             setState(() {});
                           },
                           icon: const Icon(
@@ -1610,7 +1631,7 @@ class _ProductPageState extends State<ProductPage>
                   }
                   _isLoad = true;
                   setState(() {});
-                  _putPraductSell(productId,productName);
+                  _putPraductSell(productId, productName);
                   Navigator.pop(context);
                 },
                 child: const Text('Saqlash'),
