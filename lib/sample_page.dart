@@ -226,6 +226,8 @@ class _SamplePageState extends State<SamplePage>
                     ),
                   );
                 } else {
+                  isLoading = true;
+                  setState(() {});
                   _addCategory();
                   Navigator.of(context).pop();
                   _categoryNameController.clear();
@@ -477,7 +479,7 @@ class _SamplePageState extends State<SamplePage>
         backgroundColor: Colors.white,
         onPressed: () {
           // Add your onPressed code here!
-          isLoading = true;
+
           _showDialogAddCategory();
         },
         child: const Icon(Icons.add, color: Colors.deepPurpleAccent),
