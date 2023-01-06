@@ -345,26 +345,23 @@ class _ProductPageState extends State<ProductPage>
       Uri.parse(
           'https://golalang-online-sklad-production.up.railway.app/addProductSell?productId=$productId&number=$number&userId=$userId'),
       body: {
-        'transaction_benefit': _productBenefitController.text,
+        'transaction_benefit': "0",
         'transaction_price': _productPriceController.text,
         'transaction_product_name': productName,
       },
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      encoding: Encoding.getByName('utf-8'),
     );
+    print(response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      _productNameController.clear();
-      _productDescriptionController.clear();
-      _productPriceController.clear();
-      _productBenefitController.clear();
-      _productNumberController.clear();
       if (data['status'] == 'success') {
+        _productNameController.clear();
+        _productDescriptionController.clear();
+        _productPriceController.clear();
+        _productBenefitController.clear();
+        _productNumberController.clear();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Mahsulot sotildi'),
+            content: Text('Mahsulot qo\'shildi'),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
@@ -378,7 +375,7 @@ class _ProductPageState extends State<ProductPage>
         _isLoad = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Mahsulot sotilmadi. Mahsulot yetarli emas'),
+            content: Text('Mahsulot qo\'shilmadi'),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
@@ -388,6 +385,18 @@ class _ProductPageState extends State<ProductPage>
           ),
         );
       }
+    }else{
+      _isLoad = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Internet ulanish yo\'q yoki serverda xatolik'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          duration: Duration(milliseconds: 2700),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
@@ -1116,9 +1125,10 @@ class _ProductPageState extends State<ProductPage>
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Mahsulotni sotish'),
+            title: const Text('Mahsulotlar qo`shish'),
             content: SizedBox(
               width: MediaQuery.of(context).size.width * 0.5,
+              height: MediaQuery.of(context).size.height * 0.3,
               child: Column(
                 children: [
                   Container(
@@ -1142,35 +1152,7 @@ class _ProductPageState extends State<ProductPage>
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.only(left: 10, right: 10),
                         border: InputBorder.none,
-                        hintText: 'Mahsulot narxi',
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 221, 221, 221),
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      cursorColor: Colors.deepPurpleAccent,
-                      controller: _productBenefitController,
-                      textAlign: TextAlign.left,
-                      keyboardType: TextInputType.text,
-                      keyboardAppearance: Brightness.light,
-                      textInputAction: TextInputAction.next,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      ],
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 10, right: 10),
-                        border: InputBorder.none,
-                        hintText: 'Mahsulot foydasi',
+                        hintText: 'Mahsulot tan narxi',
                       ),
                     ),
                   ),
