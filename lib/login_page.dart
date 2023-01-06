@@ -53,11 +53,12 @@ class _LoginPageState extends State<LoginPage>
         //_isLoading = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Internet ulandi ...'),
+            content: Text('Tekshirilmoqda ...'),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
             duration: Duration(milliseconds: 1700),
+            backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
           ),
         );
