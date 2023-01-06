@@ -6,26 +6,18 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:online_sklad/models/transaktions_list.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class TransaktionsPageAdmin extends StatefulWidget {
-  const TransaktionsPageAdmin({super.key});
+  var userIdAdmin;
+
+  TransaktionsPageAdmin(this.userIdAdmin, {super.key});
 
   @override
   _TransktionPageState createState() => _TransktionPageState();
 }
 
-class _TransktionPageState extends State<TransaktionsPageAdmin>
-    with SingleTickerProviderStateMixin {
-  var userName = '';
+class _TransktionPageState extends State<TransaktionsPageAdmin> {
   var userId = '';
-  var userSurname = '';
-  var userPhone = '';
-  var userRole = '';
-  var userStatus = '';
-  var userBlocked = false;
-  var userNames = '';
-
   var benefit = 0;
   var price = 0;
   var isLoading = true;
@@ -44,19 +36,6 @@ class _TransktionPageState extends State<TransaktionsPageAdmin>
       return false;
     }
     return false;
-  }
-
-  Future<void> _getUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    userName = prefs.getString('name') ?? '';
-    userId = prefs.getString('userid') ?? '';
-    userSurname = prefs.getString('surname') ?? '';
-    userPhone = prefs.getString('phone') ?? '';
-    userRole = prefs.getString('role') ?? '';
-    userStatus = prefs.getString('userstatus') ?? '';
-    userBlocked = prefs.getBool('blocked') ?? false;
-    userNames = prefs.getString('username') ?? '';
-    getSellTransaction();
   }
 
   void _searchTransaktion(String value) {
@@ -80,6 +59,8 @@ class _TransktionPageState extends State<TransaktionsPageAdmin>
   }
 
   Future<void> getSellTransaction() async {
+    userId = widget.userIdAdmin.toString();
+    print(userId);
     final response = await http.get(Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/getUserProductSell?months=$_selectedMenu&userId=$userId&sells=all'));
     final data = jsonDecode(response.body);
@@ -92,6 +73,8 @@ class _TransktionPageState extends State<TransaktionsPageAdmin>
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Hisobotlar mavjud emas'),
         ));
+        isLoading = false;
+        setState(() {});
         return;
       }
       transaktionList.clear();
@@ -125,7 +108,7 @@ class _TransktionPageState extends State<TransaktionsPageAdmin>
 
   @override
   void initState() {
-    _getUser();
+    getSellTransaction();
     super.initState();
   }
 
@@ -338,155 +321,161 @@ class _TransktionPageState extends State<TransaktionsPageAdmin>
       ),
       body: Column(
         children: [
-          Expanded(
-            child: ListView(
-              children: [
-                for (var i = 0; i < listTransaktion.length; i++)
-                  GestureDetector(
-                    onTap: () {},
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(
-                              left: 10, right: 10, top: 10, bottom: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.35),
-                                spreadRadius: 1,
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.02,
-                              ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.01,
-                                  ),
-                                  if (listTransaktion[i].transactionStatus ==
-                                      'added')
-                                    SvgPicture.asset(
-                                      'assets/sendIcon.svg',
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.05,
+          if (transaktionList.isNotEmpty)
+            Expanded(
+              child: ListView(
+                children: [
+                  for (var i = 0; i < listTransaktion.length; i++)
+                    GestureDetector(
+                      onTap: () {},
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(
+                                left: 10, right: 10, top: 10, bottom: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.35),
+                                  spreadRadius: 1,
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.02,
+                                ),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.01,
+                                    ),
+                                    if (listTransaktion[i].transactionStatus ==
+                                        'added')
+                                      SvgPicture.asset(
+                                        'assets/sendIcon.svg',
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.05,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                    if (listTransaktion[i].transactionStatus ==
+                                        'sold')
+                                      SvgPicture.asset(
+                                        'assets/getIcon.svg',
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                        width:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                        color: Colors.red,
+                                      ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.01,
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          listTransaktion[i]
+                                              .transactionProductName,
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                        SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.01,
+                                        ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: const Color.fromARGB(
+                                                255, 221, 221, 221),
+                                            border: Border.all(
+                                                color: const Color.fromARGB(
+                                                    255, 221, 221, 221),
+                                                width: 5),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                          child: Text(
+                                            '  ${listTransaktion[i].transactionNumber} Dona  ',
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.01,
+                                        ),
+                                        if (listTransaktion[i]
+                                                .transactionStatus ==
+                                            'added')
+                                          Text(
+                                            '${listTransaktion[i].transactionPrice + listTransaktion[i].transactionBenefit} so\'m',
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                        if (listTransaktion[i]
+                                                .transactionStatus ==
+                                            'sold')
+                                          Text(
+                                            '${listTransaktion[i].transactionPrice + listTransaktion[i].transactionBenefit} so\'m',
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                      ],
+                                    ),
+                                    SizedBox(
                                       width: MediaQuery.of(context).size.width *
                                           0.05,
-                                      color: Colors.deepPurpleAccent,
                                     ),
-                                  if (listTransaktion[i].transactionStatus ==
-                                      'sold')
-                                    SvgPicture.asset(
-                                      'assets/getIcon.svg',
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.05,
-                                      width:
-                                          MediaQuery.of(context).size.height *
-                                              0.05,
-                                      color: Colors.red,
+                                    Text(
+                                      listTransaktion[i].transactionDate,
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400),
                                     ),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.01,
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        listTransaktion[i]
-                                            .transactionProductName,
-                                        style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.01,
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: const Color.fromARGB(
-                                              255, 221, 221, 221),
-                                          border: Border.all(
-                                              color: const Color.fromARGB(
-                                                  255, 221, 221, 221),
-                                              width: 5),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                        child: Text(
-                                          '  ${listTransaktion[i].transactionNumber} Dona  ',
-                                          style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.01,
-                                      ),
-                                      if (listTransaktion[i]
-                                              .transactionStatus ==
-                                          'added')
-                                        Text(
-                                          '${listTransaktion[i].transactionPrice + listTransaktion[i].transactionBenefit} so\'m',
-                                          style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      if (listTransaktion[i]
-                                              .transactionStatus ==
-                                          'sold')
-                                        Text(
-                                          '${listTransaktion[i].transactionPrice + listTransaktion[i].transactionBenefit} so\'m',
-                                          style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.05,
-                                  ),
-                                  Text(
-                                    listTransaktion[i].transactionDate,
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.02,
-                              ),
-                            ],
+                                  ],
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.02,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
-          ),
+          if (transaktionList.isEmpty)
+            const Expanded(child: Center(child: Text('Ma\'lumotlar yo\'q', style: TextStyle(color: Colors.black, fontSize: 20),))),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,
           ),

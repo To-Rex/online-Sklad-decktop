@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:online_sklad/admin/tarnsaktion_page.dart';
+import 'package:online_sklad/admin/tarnsaktion_page_admin.dart';
 
 import 'package:online_sklad/models/user_list.dart';
 import 'package:online_sklad/user/tarnsaktion_page.dart';
@@ -1009,10 +1010,8 @@ class _UserPageState extends State<UserPage>
                   for (var i = 0; i < users.length; i++)
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TransaktionsPageUser()
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => TransaktionsPageAdmin(users[i].userId),
                           ),
                         );
                       },
