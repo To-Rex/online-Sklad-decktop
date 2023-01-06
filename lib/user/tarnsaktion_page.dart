@@ -456,6 +456,27 @@ class _TransktionPageState extends State<TransaktionsPageUser>
                 ],
               ),
             ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.01,
+                ),
+                Text(
+                  'Jami: ${transaktionList.length} ta',
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400),
+                ),
+                
+              ],
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
           ],
         ),
       );
