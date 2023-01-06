@@ -50,7 +50,6 @@ class _LoginPageState extends State<LoginPage>
         _isLoading = false;
         return;
       } else {
-        //_isLoading = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Tekshirilmoqda ...'),
@@ -240,11 +239,15 @@ class _LoginPageState extends State<LoginPage>
                         controller: _passwordController,
                         textAlign: TextAlign.left,
                         textInputAction: TextInputAction.next,
+                        obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
                         decoration: InputDecoration(
                           contentPadding:
                               const EdgeInsets.only(left: 10, right: 10),
                           border: InputBorder.none,
                           hintText: 'Parol',
+
                           errorText:
                               _validatePassword ? 'Parol kiriting' : null,
                         ),
