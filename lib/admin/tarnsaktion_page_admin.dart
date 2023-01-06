@@ -255,19 +255,19 @@ class _TransktionPageState extends State<TransaktionsPageAdmin> {
                         items: [
                           const PopupMenuItem(
                             value: '0',
-                            child: Text('1 kunlik ma\'lumot'),
+                            child: Text('1 kunlik hisobot'),
                           ),
                           const PopupMenuItem(
                             value: '1',
-                            child: Text('1 oylik ma\'lumot'),
+                            child: Text('1 oylik hisobot'),
                           ),
                           const PopupMenuItem(
                             value: '2',
-                            child: Text('2 oylik ma\'lumot'),
+                            child: Text('2 oylik hisobot'),
                           ),
                           const PopupMenuItem(
                             value: '3',
-                            child: Text('3 oylik ma\'lumot'),
+                            child: Text('3 oylik hisobot'),
                           ),
                         ],
                       ).then((value) {

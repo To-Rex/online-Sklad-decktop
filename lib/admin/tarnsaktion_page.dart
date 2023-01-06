@@ -28,6 +28,7 @@ class _TransktionPageState extends State<TransaktionsPage>
 
   var benefit = 0;
   var price = 0;
+  var isLoad = true;
 
   var _selectedMenu = 1;
   var transaktionList = [];
@@ -61,11 +62,12 @@ class _TransktionPageState extends State<TransaktionsPage>
     final response = await http.get(Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/getSellTransaction?months=${_selectedMenu}'));
     final data = jsonDecode(response.body);
-    if (response.statusCode == 200 ||
-        response.statusCode == 201 && data['status'] == 'success') {
-      print(data);
+    if (response.statusCode == 200 && data['status'] == 'success'|| response.statusCode == 200 && data['status'] == 'success') {
       benefit = data['benefit'];
       price = data['price'];
+      isLoad = false;
+      transaktionList.clear();
+      listTransaktion.clear();
       for (var i = 0; i < data['data'].length; i++) {
         transaktionList.add(TransaktionList(
           transactionId: data['data'][i]['transaction_id'],
@@ -83,6 +85,8 @@ class _TransktionPageState extends State<TransaktionsPage>
         listTransaktion = transaktionList;
       });
     } else {
+      isLoad = false;
+      setState(() {});
       SnackBar snackBar =
           const SnackBar(content: Text('Internet bilan aloqa yo\'q'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -238,22 +242,29 @@ class _TransktionPageState extends State<TransaktionsPage>
                             0),
                         items: [
                           const PopupMenuItem(
+                            value: '0',
+                            child: Text('1 kunlik hisobot'),
+                          ),
+                          const PopupMenuItem(
                             value: '1',
-                            child: Text('1 oylik'),
+                            child: Text('1 oylik hisobot'),
                           ),
                           const PopupMenuItem(
                             value: '2',
-                            child: Text('2 oylik'),
+                            child: Text('2 oylik hisobot'),
                           ),
                           const PopupMenuItem(
                             value: '3',
-                            child: Text('3 oylik'),
+                            child: Text('3 oylik hisobot'),
                           ),
                         ],
                       ).then((value) {
                         setState(() {
                           _selectedMenu = int.parse(value.toString());
-                          print(_selectedMenu);
+                          isLoad = true;
+                          setState(() {
+                          });
+                          getSellTransaction();
                         });
                       });
                     },
@@ -452,6 +463,62 @@ class _TransktionPageState extends State<TransaktionsPage>
                   ),
               ],
             ),
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.01,
+              ),
+              IconButton(
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: const Color.fromRGBO(217, 217, 217, 100),
+                onPressed: () {
+                  isLoad = true;
+                  setState(() {});
+                  getSellTransaction();
+                },
+                icon: const Icon(
+                  Icons.refresh,
+                  size: 30,
+                  color: Colors.deepPurpleAccent,
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.01,
+              ),
+              Text(
+                'Jami: ${transaktionList.length} ta',
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.01,
+              ),
+              if (isLoad)
+                const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(),
+                ),
+              Expanded(child: Container()),
+              //olik malumotlar
+              Text(
+                ' $_selectedMenu - oylik ma\'lumotlar',
+                style: const TextStyle(
+                    color: Colors.green,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.01,
+              ),
+            ],
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
           ),
         ],
       ),
