@@ -22,8 +22,6 @@ class _LoginPageState extends State<LoginPage>
   bool _validatePassword = false;
   bool _isLoading = false;
 
-  var usersLiest = ["",""];
-
   Future<bool> checkInternetConnection() async {
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -41,7 +39,7 @@ class _LoginPageState extends State<LoginPage>
       if (!value) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('No internet connection'),
+            content: Text('Internet aloqasi yo\'q'),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
@@ -55,7 +53,7 @@ class _LoginPageState extends State<LoginPage>
         //_isLoading = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Connected'),
+            content: Text('Internet ulandi ...'),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
@@ -82,7 +80,7 @@ class _LoginPageState extends State<LoginPage>
       if (data['message'] == 'User not found') {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('User not found'),
+            content: Text('Bunday foydalanuvchi mavjud emas'),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
@@ -95,7 +93,7 @@ class _LoginPageState extends State<LoginPage>
         setState(() {});
         return;
       }
-      if (data['message'] == 'Wrong password') {
+      if (data['message'] == 'Parolingiz noto\'g\'ri') {
         _isLoading = false;
         _passwordController.clear();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -154,30 +152,13 @@ class _LoginPageState extends State<LoginPage>
     }
   }
 
-  Future<void> _getUsers() async {
-    final response = await http.get(
-      Uri.parse(
-          'https://golalang-online-sklad-production.up.railway.app/getAllUser'),
-    );
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      for (var i = 0; i < data['message'].length; i++) {
-        usersLiest.add(''+data['message'][i]['username'].toString());
-      }
-    } else {
-      print('error');
-    }
-    print(usersLiest);
-  }
-
   @override
   void initState() {
     super.initState();
-    _getUsers();
     checkInternetConnection().then((value) {
       if (!value) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Not Connected'),
+          content: Text('Internet aloqasi yo\'q'),
           backgroundColor: Colors.red,
         ));
       }
@@ -213,8 +194,7 @@ class _LoginPageState extends State<LoginPage>
               ),
               Column(
                 children: [
-                  if(usersLiest.isNotEmpty)
-                    SizedBox(
+                  SizedBox(
                     height: 50,
                     width: MediaQuery.of(context).size.width / 2.5,
                     child: Container(
@@ -225,102 +205,21 @@ class _LoginPageState extends State<LoginPage>
                             width: 2),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Autocomplete<String>(
-                        optionsBuilder: (TextEditingValue textEditingValue) {
-                          if (textEditingValue.text == '') {
-                            return const Iterable<String>.empty();
-                          }
-                          return usersLiest.where((String option) {
-                            return option
-                                .contains(textEditingValue.text.toLowerCase());
-                          });
-                        },
-                        onSelected: (String selection) {
-                          _emailController.text = selection;
-                        },
-                        fieldViewBuilder: (BuildContext context,
-                            TextEditingController textEditingController,
-                            FocusNode focusNode,
-                            VoidCallback onFieldSubmitted) {
-                          return TextFormField(
-                            controller: textEditingController,
-                            focusNode: focusNode,
-                            onFieldSubmitted: (String value) {
-                              onFieldSubmitted();
-                            },
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.only(left: 10, right: 10),
-                              border: InputBorder.none,
-                              hintText: 'Username',
-                              errorText: _validateEmail ? 'Pochta kiriting' : null,
-                            ),
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 0, 0, 0),
-                              fontSize: 16,
-                              fontFamily: 'Roboto',
-                            ),
-                            keyboardType: TextInputType.text,
-                          );
-                        },
-                        optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<String> onSelected, Iterable<String> options) {
-                          return Align(
-                            alignment: Alignment.topLeft,
-                            child: Material(
-                              elevation: 4.0,
-                              borderOnForeground: true,
-                              borderRadius: BorderRadius.circular(10),
-                              animationDuration: const Duration(milliseconds: 100),
-                              child: SizedBox(
-                                height: 150,
-                                width: MediaQuery.of(context).size.width / 2.7,
-                                child: ListView.builder(
-                                  padding: const EdgeInsets.all(8.0),
-                                  itemCount: options.length,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    final String option = options.elementAt(index);
-                                    return GestureDetector(
-                                      onTap: () {
-                                        onSelected(option);
-                                      },
-                                      child: ListTile(
-                                        title: Text(option),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                          );
-                        },
+                      child: TextField(
+                        cursorColor: Colors.deepPurpleAccent,
+                        controller: _emailController,
+                        textAlign: TextAlign.left,
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          contentPadding:
+                              const EdgeInsets.only(left: 10, right: 10),
+                          border: InputBorder.none,
+                          hintText: 'Username',
+                          errorText: _validateEmail ? 'Pochta kiriting' : null,
+                        ),
                       ),
                     ),
                   ),
-                  if(usersLiest.isEmpty)
-                    SizedBox(
-                      height: 50,
-                      width: MediaQuery.of(context).size.width / 2.5,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          border: Border.all(
-                              color: const Color.fromARGB(255, 221, 221, 221),
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextField(
-                          cursorColor: Colors.deepPurpleAccent,
-                          controller: _emailController,
-                          textAlign: TextAlign.left,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.only(left: 10, right: 10),
-                            border: InputBorder.none,
-                            hintText: 'Username',
-                            errorText: _validateEmail ? 'Pochta kiriting' : null,
-                          ),
-                        ),
-                      ),
-                    ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.015,
                   ),

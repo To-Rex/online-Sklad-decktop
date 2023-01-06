@@ -317,6 +317,8 @@ class _TransktionPageState extends State<TransaktionsPageUser>
                       ).then((value) {
                         setState(() {
                           _selectedMenu = int.parse(value.toString());
+                          isLoading = true;
+                          setState(() {});
                           getSellTransaction();
                         });
                       });
@@ -527,6 +529,18 @@ class _TransktionPageState extends State<TransaktionsPageUser>
                   width: 20,
                   child: CircularProgressIndicator(),
                 ),
+              Expanded(child: Container()),
+              //olik malumotlar
+              Text(
+                ' $_selectedMenu - oylik ma\'lumotlar',
+                style: const TextStyle(
+                    color: Colors.green,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.01,
+              ),
             ],
           ),
           SizedBox(
