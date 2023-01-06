@@ -60,7 +60,7 @@ class _TransktionPageState extends State<TransaktionsPageUser>
   Future<void> getSellTransaction() async {
     ///getUserProductSell?userId=KR5BX7h1n1GHy5QuubRdbJJWb3OPLFj8&months=3&sells=added
     final response = await http.get(Uri.parse(
-        'https://golalang-online-sklad-production.up.railway.app/getUserProductSell?months=$_selectedMenu&userId=4a025HJJaYu5sB8IZO5baMJxQxrUEpOF&sells=all'));
+        'https://golalang-online-sklad-production.up.railway.app/getUserProductSell?months=$_selectedMenu&userId=$userId&sells=all'));
     final data = jsonDecode(response.body);
     print(data);
     if (response.statusCode == 200 && data['status'] == 'success') {
