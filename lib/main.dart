@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:online_sklad/login_page.dart';
@@ -51,19 +50,21 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  var text = 'Check connection internet ...';
+  var text = 'Internetga ulanishni tekshirilmoqda ...';
   Future<bool> checkInternetConnection() async {
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         Timer(const Duration(milliseconds: 2000), () {
           setState(() {
-            text = 'Connected';
+            text = 'Internetga muvaffaqiyatli ulandi';
           });
           //login page navigator push
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const LoginPage()),
+            MaterialPageRoute(
+              builder: (context) => LoginPage(),
+            ),
           );
         });
         return true;
@@ -71,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } on SocketException catch (_) {
       Timer(const Duration(milliseconds: 2000), () {
         setState(() {
-          text = 'Not Connected';
+          text = 'Internetga ulanishda xatolik yuz berdi';
         });
       });
       return false;
@@ -109,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-                const Text('  Loading ...', style: TextStyle(fontSize: 20)),
+                const Text('  Kuting ...', style: TextStyle(fontSize: 20)),
                 SizedBox(width: MediaQuery.of(context).size.width * 0.1),
               ],
             ),

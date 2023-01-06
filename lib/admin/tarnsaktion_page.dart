@@ -380,13 +380,9 @@ class _TransktionPageState extends State<TransaktionsPage>
                                         ),
                                       ),
                                       SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.01,
+                                        height: MediaQuery.of(context).size.height * 0.01,
                                       ),
-                                      if (listTransaktion[i]
-                                              .transactionStatus ==
-                                          'added')
+                                      if (listTransaktion[i].transactionStatus == 'added')
                                         Text(
                                           '${listTransaktion[i].transactionPrice + listTransaktion[i].transactionBenefit} so\'m',
                                           style: const TextStyle(
@@ -394,9 +390,7 @@ class _TransktionPageState extends State<TransaktionsPage>
                                               fontSize: 12,
                                               fontWeight: FontWeight.w400),
                                         ),
-                                      if (listTransaktion[i]
-                                              .transactionStatus ==
-                                          'sold')
+                                      if (listTransaktion[i].transactionStatus == 'sold')
                                         Text(
                                           '${listTransaktion[i].transactionPrice + listTransaktion[i].transactionBenefit} so\'m',
                                           style: const TextStyle(

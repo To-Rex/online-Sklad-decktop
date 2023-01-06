@@ -438,6 +438,35 @@ class _TransktionPageState extends State<TransaktionsPageUser>
                                     width: MediaQuery.of(context).size.width *
                                         0.05,
                                   ),
+                                  Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Tan narx: ${listTransaktion[i].transactionPrice} so\'m',
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      SizedBox(
+                                        width:
+                                        MediaQuery.of(context).size.width * 0.05,
+                                        height: MediaQuery.of(context).size.height * 0.01,
+                                      ),
+                                      Text(
+                                        'Foyda: ${listTransaktion[i].transactionBenefit} so\'m',
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.05,
+                                  ),
                                   Text(
                                     listTransaktion[i].transactionDate,
                                     style: const TextStyle(
