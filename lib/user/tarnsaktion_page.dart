@@ -60,8 +60,6 @@ class _TransktionPageState extends State<TransaktionsPageUser>
   }
 
   Future<void> getSellTransaction() async {
-    print(userId);
-    ///getUserProductSell?userId=KR5BX7h1n1GHy5QuubRdbJJWb3OPLFj8&months=3&sells=added
     final response = await http.get(Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/getUserProductSell?months=$_selectedMenu&userId=$userId&sells=all'));
     final data = jsonDecode(response.body);
