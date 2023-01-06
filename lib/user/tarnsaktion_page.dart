@@ -28,6 +28,7 @@ class _TransktionPageState extends State<TransaktionsPageUser>
 
   var benefit = 0;
   var price =  0;
+  var isLoading = false;
 
   var _selectedMenu = 1;
   var transaktionList = [];
