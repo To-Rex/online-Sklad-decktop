@@ -249,7 +249,7 @@ class _ProductPageState extends State<ProductPage>
           ),
         );
       }
-    }else{
+    } else {
       _isLoad = false;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -383,7 +383,7 @@ class _ProductPageState extends State<ProductPage>
           ),
         );
       }
-    }else{
+    } else {
       _isLoad = false;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -738,13 +738,13 @@ class _ProductPageState extends State<ProductPage>
       setState(() {
         products = _productList
             .where((element) =>
-        element.productName
-            .toLowerCase()
-            .contains(value.toLowerCase()) ||
-            element.productPrice
-                .toString()
-                .toLowerCase()
-                .contains(value.toLowerCase()))
+                element.productName
+                    .toLowerCase()
+                    .contains(value.toLowerCase()) ||
+                element.productPrice
+                    .toString()
+                    .toLowerCase()
+                    .contains(value.toLowerCase()))
             .toList();
       });
     }
@@ -831,8 +831,7 @@ class _ProductPageState extends State<ProductPage>
                               _productNumbersController.text = '0';
                               return;
                             }
-                            if (int.parse(_productNumbersController.text) <
-                                0) {
+                            if (int.parse(_productNumbersController.text) < 0) {
                               _productNumbersController.text = '0';
                               return;
                             }
@@ -876,7 +875,7 @@ class _ProductPageState extends State<ProductPage>
                             ],
                             decoration: const InputDecoration(
                               contentPadding:
-                              EdgeInsets.only(left: 10, right: 10),
+                                  EdgeInsets.only(left: 10, right: 10),
                               border: InputBorder.none,
                               hintText: 'Mahsulot miqdori',
                             ),
@@ -899,8 +898,7 @@ class _ProductPageState extends State<ProductPage>
                             if (_productNumbersController.text.isEmpty) {
                               _productNumbersController.text = '0';
                             }
-                            if (int.parse(_productNumbersController.text) <
-                                0) {
+                            if (int.parse(_productNumbersController.text) < 0) {
                               _productNumbersController.text = '0';
                             }
                             _productNumbersController.text =
@@ -930,8 +928,9 @@ class _ProductPageState extends State<ProductPage>
               ),
               TextButton(
                 onPressed: () {
-                  if (_productNumbersController.text.isEmpty||
-                      _productNumbersController.text == ''|| _productNumbersController.text == '0') {
+                  if (_productNumbersController.text.isEmpty ||
+                      _productNumbersController.text == '' ||
+                      _productNumbersController.text == '0') {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Mahsulot sonini kiriting!'),
@@ -939,7 +938,8 @@ class _ProductPageState extends State<ProductPage>
                       ),
                     );
                   } else {
-                    if (int.parse(_productNumbersController.text) > productNumber) {
+                    if (int.parse(_productNumbersController.text) >
+                        productNumber) {
                       _isLoad = false;
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -1215,7 +1215,7 @@ class _ProductPageState extends State<ProductPage>
                             ],
                             decoration: const InputDecoration(
                               contentPadding:
-                              EdgeInsets.only(left: 10, right: 10),
+                                  EdgeInsets.only(left: 10, right: 10),
                               border: InputBorder.none,
                               hintText: 'Mahsulot miqdori',
                             ),
@@ -1429,245 +1429,79 @@ class _ProductPageState extends State<ProductPage>
       ),
       body: Column(
         children: [
-          Expanded(
-            child: ListView(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    _showDialogAddProduct();
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(
-                        left: 10, right: 10, top: 10, bottom: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.35),
-                          //color: Color.fromARGB(255, 221, 221, 221),
-                          spreadRadius: 1,
-                          blurRadius: 10,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height / 50),
-                        //product qo`shish
-                        Row(
-                          //mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 50,
-                            ),
-                            const Text(
-                              'Yangi mahsulot',
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const Expanded(
-                              child: SizedBox(),
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  _showDialogAddProduct();
-                                },
-                                icon: const Icon(
-                                  Icons.add_circle_outline_outlined,
-                                  color: Colors.deepPurpleAccent,
-                                  size: 30,
-                                )),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 35,
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height / 50),
-                      ],
-                    ),
-                  ),
-                ),
-                for (var i = 0; i < products.length; i++)
+          if (_productList.isNotEmpty)
+            Expanded(
+              child: ListView(
+                children: [
                   GestureDetector(
                     onTap: () {
-                      _showProductDialog(
-                          products[i].productId, products[i].productNumber);
+                      _showDialogAddProduct();
                     },
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(
-                              left: 10, right: 10, top: 10, bottom: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.35),
-                                spreadRadius: 1,
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                          left: 10, right: 10, top: 10, bottom: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.35),
+                            //color: Color.fromARGB(255, 221, 221, 221),
+                            spreadRadius: 1,
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
                           ),
-                          child: Column(
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height / 50),
+                          //product qo`shish
+                          Row(
+                            //mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.02),
-                              Row(
-                                children: [
-                                  SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-                                  SizedBox(
-                                    height: 50,
-                                    width: 50,
-                                    child: IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  TransaktionsPageProduct(products[i].productId),
-                                            ),
-                                          );
-                                        },
-                                        icon: SvgPicture.asset(
-                                          'assets/productIcon.svg',
-                                          height: 50,
-                                          width: 50,
-                                        )),
-                                  ),
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.01),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          products[i].productName,
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          '${products[i].productPrice + products[i].productBenefit} so\'m',
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          products[i].productDescription,
-                                          style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          255, 221, 221, 221),
-                                      border: Border.all(
-                                          color: const Color.fromARGB(
-                                              255, 221, 221, 221),
-                                          width: 5),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Text(
-                                        '  ${products[i].productNumber}  Dona  '),
-                                  ),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.009,
-                                  ),
-                                  IconButton(
-                                      onPressed: () {
-                                        _productPriceController.text =
-                                            products[i].productPrice.toString();
-                                        _productBenefitController.text =
-                                            products[i]
-                                                .productBenefit
-                                                .toString();
-                                        _showDialogSellProduct(
-                                            products[i].productId,
-                                            products[i].productName);
-                                      },
-                                      icon: const Icon(
-                                        Icons.sell_outlined,
-                                        color: Colors.deepPurpleAccent,
-                                        size: 30,
-                                      )),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.005,
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      _productNameController.text =
-                                          products[i].productName.toString();
-                                      _productPriceController.text =
-                                          products[i].productPrice.toString();
-                                      _productDescriptionController.text =
-                                          products[i]
-                                              .productDescription
-                                              .toString();
-                                      _productBenefitController.text =
-                                          products[i].productBenefit.toString();
-                                      _showDialogEditProduct(
-                                          products[i].productId);
-                                    },
-                                    icon: SvgPicture.asset(
-                                      'assets/editIcon.svg',
-                                      height: 25,
-                                      width: 25,
-                                      color: Colors.deepPurpleAccent,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.005,
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      _showDialogDeleteProduct(
-                                          products[i].productId);
-                                    },
-                                    icon: SvgPicture.asset(
-                                      'assets/deleteIcon.svg',
-                                      height: 25,
-                                      width: 25,
-                                      color: Colors.deepPurpleAccent,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.025,
-                                  ),
-                                ],
+                                width: MediaQuery.of(context).size.width / 50,
                               ),
+                              const Text(
+                                'Yangi mahsulot',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const Expanded(
+                                child: SizedBox(),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    _showDialogAddProduct();
+                                  },
+                                  icon: const Icon(
+                                    Icons.add_circle_outline_outlined,
+                                    color: Colors.deepPurpleAccent,
+                                    size: 30,
+                                  )),
                               SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.02),
+                                width: MediaQuery.of(context).size.width / 35,
+                              ),
                             ],
                           ),
-                        ),
-                        if (_productList.isEmpty)
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height / 50),
+                        ],
+                      ),
+                    ),
+                  ),
+                  for (var i = 0; i < products.length; i++)
+                    GestureDetector(
+                      onTap: () {
+                        _showProductDialog(
+                            products[i].productId, products[i].productNumber);
+                      },
+                      child: Column(
+                        children: [
                           Container(
                             margin: const EdgeInsets.only(
                                 left: 10, right: 10, top: 10, bottom: 10),
@@ -1677,7 +1511,6 @@ class _ProductPageState extends State<ProductPage>
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.grey.withOpacity(0.35),
-                                  //color: Color.fromARGB(255, 221, 221, 221),
                                   spreadRadius: 1,
                                   blurRadius: 10,
                                   offset: const Offset(0, 3),
@@ -1687,29 +1520,220 @@ class _ProductPageState extends State<ProductPage>
                             child: Column(
                               children: [
                                 SizedBox(
-                                    height: MediaQuery.of(context).size.height /
-                                        50),
-                                const Center(
-                                  child: Text(
-                                    'Hozircha mahsulot yo`q',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.02),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.01),
+                                    SizedBox(
+                                      height: 50,
+                                      width: 50,
+                                      child: IconButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TransaktionsPageProduct(
+                                                        products[i].productId),
+                                              ),
+                                            );
+                                          },
+                                          icon: SvgPicture.asset(
+                                            'assets/productIcon.svg',
+                                            height: 50,
+                                            width: 50,
+                                          )),
+                                    ),
+                                    SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.01),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            products[i].productName,
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            '${products[i].productPrice + products[i].productBenefit} so\'m',
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            products[i].productDescription,
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color.fromARGB(
+                                            255, 221, 221, 221),
+                                        border: Border.all(
+                                            color: const Color.fromARGB(
+                                                255, 221, 221, 221),
+                                            width: 5),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Text(
+                                          '  ${products[i].productNumber}  Dona  '),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.009,
+                                    ),
+                                    IconButton(
+                                        onPressed: () {
+                                          _productPriceController.text =
+                                              products[i]
+                                                  .productPrice
+                                                  .toString();
+                                          _productBenefitController.text =
+                                              products[i]
+                                                  .productBenefit
+                                                  .toString();
+                                          _showDialogSellProduct(
+                                              products[i].productId,
+                                              products[i].productName);
+                                        },
+                                        icon: const Icon(
+                                          Icons.sell_outlined,
+                                          color: Colors.deepPurpleAccent,
+                                          size: 30,
+                                        )),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.005,
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        _productNameController.text =
+                                            products[i].productName.toString();
+                                        _productPriceController.text =
+                                            products[i].productPrice.toString();
+                                        _productDescriptionController.text =
+                                            products[i]
+                                                .productDescription
+                                                .toString();
+                                        _productBenefitController.text =
+                                            products[i]
+                                                .productBenefit
+                                                .toString();
+                                        _showDialogEditProduct(
+                                            products[i].productId);
+                                      },
+                                      icon: SvgPicture.asset(
+                                        'assets/editIcon.svg',
+                                        height: 25,
+                                        width: 25,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.005,
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        _showDialogDeleteProduct(
+                                            products[i].productId);
+                                      },
+                                      icon: SvgPicture.asset(
+                                        'assets/deleteIcon.svg',
+                                        height: 25,
+                                        width: 25,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.025,
+                                    ),
+                                  ],
                                 ),
                                 SizedBox(
-                                    height: MediaQuery.of(context).size.height /
-                                        50),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.02),
                               ],
                             ),
                           ),
-                      ],
+                          if (_productList.isEmpty)
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  left: 10, right: 10, top: 10, bottom: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.35),
+                                    //color: Color.fromARGB(255, 221, 221, 221),
+                                    spreadRadius: 1,
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              50),
+                                  const Center(
+                                    child: Text(
+                                      'Hozircha mahsulot yo`q',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              50),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
-          ),
+          if (_productList.isEmpty)
+            const Expanded(
+              child: Center(
+                child: Text(
+                  'Hozircha mahsulotlar yo`q',
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
           Row(
             children: [
               SizedBox(
