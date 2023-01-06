@@ -65,7 +65,6 @@ class _UserPageState extends State<UserPage>
     userStatus = prefs.getString('userstatus') ?? '';
     userBlocked = prefs.getBool('blocked') ?? false;
     userNames = prefs.getString('username') ?? '';
-    print('role: $userRole');
   }
 
   Future<void> _getUsers() async {
@@ -75,7 +74,6 @@ class _UserPageState extends State<UserPage>
     final data = jsonDecode(response.body);
     if (response.statusCode == 200) {
       if (data['status'] == 'success' && data['message'] == null) {
-        print('data is null');
         _isLoad = false;
         return;
       }
@@ -887,8 +885,7 @@ class _UserPageState extends State<UserPage>
 
   @override
   Widget build(BuildContext context) {
-    if (userList.isNotEmpty) {
-      return Scaffold(
+    return Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(50), // here the desired height
@@ -1300,8 +1297,7 @@ class _UserPageState extends State<UserPage>
                   splashColor: Colors.transparent,
                   highlightColor: const Color.fromRGBO(217, 217, 217, 100),
                   onPressed: () {
-                    userList.clear();
-                    users.clear();
+                    _isLoad = true;
                     setState(() {});
                     _getUsers();
                   },
@@ -1331,128 +1327,5 @@ class _UserPageState extends State<UserPage>
           ],
         ),
       );
-    }
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50), // here the desired height
-        child: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0.4,
-          actionsIconTheme: const IconThemeData(color: Colors.black),
-          iconTheme: const IconThemeData(color: Colors.black),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Expanded(
-                child: SizedBox(),
-              ),
-              //iconbutton
-              SizedBox(
-                height: 30,
-                width: MediaQuery.of(context).size.width / 4,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 221, 221, 221),
-                    border: Border.all(
-                        color: const Color.fromARGB(255, 221, 221, 221),
-                        width: 1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: TextField(
-                    cursorColor: Colors.deepPurpleAccent,
-                    textAlign: TextAlign.justify,
-                    textInputAction: TextInputAction.next,
-                    onChanged: (value) {
-                      setState(() {
-                        _searchProduct(value);
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.only(left: 10, right: 10),
-                      border: InputBorder.none,
-                      hintText: 'Qidirish',
-                      suffixIcon: Icon(
-                        Icons.search,
-                        color: Colors.deepPurpleAccent,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              if (userRole == 'creator')
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 50,
-                ),
-              if (userRole == 'creator')
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 221, 221, 221),
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 221, 221, 221),
-                          width: 1),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: IconButton(
-                      hoverColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.white,
-                      color: Colors.white,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const TransaktionsPage(),
-                          ),
-                        );
-                      },
-                      icon: SvgPicture.asset(
-                        'assets/userStatic.svg',
-                        color: Colors.deepPurpleAccent,
-                        height: 25,
-                        width: 25,
-                      ),
-                    ),
-                  ),
-                ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 50,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 221, 221, 221),
-                    border: Border.all(
-                        color: const Color.fromARGB(255, 221, 221, 221),
-                        width: 1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: IconButton(
-                    hoverColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.white,
-                    color: Colors.white,
-                    onPressed: () {
-                      showAddUserDialog();
-                    },
-                    icon: const Icon(
-                      Icons.add,
-                      color: Colors.deepPurpleAccent,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
   }
 }

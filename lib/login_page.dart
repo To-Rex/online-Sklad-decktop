@@ -93,12 +93,12 @@ class _LoginPageState extends State<LoginPage>
         setState(() {});
         return;
       }
-      if (data['message'] == 'Parolingiz noto\'g\'ri') {
+      if (data['message'] == 'Wrong password') {
         _isLoading = false;
         _passwordController.clear();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Wrong password'),
+            content: Text('Parolingiz noto\'g\'ri'),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
