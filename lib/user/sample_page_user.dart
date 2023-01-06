@@ -9,6 +9,7 @@ import 'package:online_sklad/admin/product_page.dart';
 import 'package:online_sklad/admin/tarnsaktion_page.dart';
 import 'package:online_sklad/admin/user_page.dart';
 import 'package:online_sklad/user/product_page.dart';
+import 'package:online_sklad/user/tarnsaktion_page.dart';
 import 'package:online_sklad/user/user_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -137,7 +138,7 @@ class _SamplePageState extends State<SamplePageUser>
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const TransaktionsPage(),
+                        builder: (context) => const TransaktionsPageUser(),
                       ),
                     );
                   },

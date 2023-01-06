@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:online_sklad/admin/tarnsaktion_page.dart';
 import 'package:online_sklad/admin/user_page.dart';
 import 'package:online_sklad/models/product_list.dart';
+import 'package:online_sklad/user/tarnsaktion_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductPageUser extends StatefulWidget {
@@ -324,7 +325,7 @@ class _ProductPageState extends State<ProductPageUser>
               TextButton(
                 onPressed: () {
                   if (_productNumbersController.text.isEmpty||
-                      _productPriceController.text == ''|| _productPriceController.text == '0') {
+                      _productNumbersController.text == ''|| _productNumbersController.text == '0') {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Mahsulot sonini kiriting!'),
@@ -446,7 +447,7 @@ class _ProductPageState extends State<ProductPageUser>
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const TransaktionsPage(),
+                      builder: (context) => const TransaktionsPageUser(),
                     ),
                   );
                 },
