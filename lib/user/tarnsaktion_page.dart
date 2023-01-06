@@ -55,9 +55,20 @@ class _TransktionPageState extends State<TransaktionsPageUser>
     userStatus = prefs.getString('userstatus') ?? '';
     userBlocked = prefs.getBool('blocked') ?? false;
     userNames = prefs.getString('username') ?? '';
+    print('userNames: $userNames');
+    print('userId: $userId');
+    print('userName: $userName');
+    print('userSurname: $userSurname');
+    print('userPhone: $userPhone');
+    print('userRole: $userRole');
+    print('userStatus: $userStatus');
+    print('userBlocked: $userBlocked');
+
+    getSellTransaction();
   }
 
   Future<void> getSellTransaction() async {
+    print(userId);
     ///getUserProductSell?userId=KR5BX7h1n1GHy5QuubRdbJJWb3OPLFj8&months=3&sells=added
     final response = await http.get(Uri.parse(
         'https://golalang-online-sklad-production.up.railway.app/getUserProductSell?months=$_selectedMenu&userId=$userId&sells=all'));
@@ -67,6 +78,12 @@ class _TransktionPageState extends State<TransaktionsPageUser>
       print(data);
       benefit = data['benefit'];
       price = data['price'];
+      if (data["transactions"].toString()=='null'){
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Hisobotlar mavjud emas'),
+        ));
+        return;
+      }
       for (var i = 0; i < data['transactions'].length; i++) {
         transaktionList.add(TransaktionList(
           transactionId: data['transactions'][i]['transaction_id'],
@@ -93,7 +110,6 @@ class _TransktionPageState extends State<TransaktionsPageUser>
   @override
   void initState() {
     _getUser();
-    getSellTransaction();
     super.initState();
   }
 
@@ -395,7 +411,7 @@ class _TransktionPageState extends State<TransaktionsPageUser>
                                         ),
                                       if (listTransaktion[i].transactionStatus == 'sold')
                                         Text(
-                                          '${listTransaktion[i].transactionPrice} so\'m',
+                                          '${listTransaktion[i].transactionPrice+listTransaktion[i].transactionBenefit} so\'m',
                                           style: const TextStyle(
                                               color: Colors.black,
                                               fontSize: 12,
