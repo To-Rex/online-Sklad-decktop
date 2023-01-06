@@ -7,16 +7,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:online_sklad/models/transaktions_list.dart';
 
-class TransaktionsPageAdmin extends StatefulWidget {
+class TransaktionsPageProduct extends StatefulWidget {
   var productId;
 
-  TransaktionsPageAdmin(this.productId, {super.key});
+  TransaktionsPageProduct(this.productId, {super.key});
 
   @override
   _TransktionPageState createState() => _TransktionPageState();
 }
 
-class _TransktionPageState extends State<TransaktionsPageAdmin> {
+class _TransktionPageState extends State<TransaktionsPageProduct> {
   var userId = '';
   var benefit = 0;
   var price = 0;
