@@ -221,6 +221,10 @@ class _SamplePageState extends State<SamplePageUser>
                   },
                 ),
               ),
+            if (category_name.isEmpty)
+              const Center(
+                child: Text("Bo`limlar mavjud emas yoki biroz kutib turing"),
+              ),
             Row(
               children: [
                 SizedBox(

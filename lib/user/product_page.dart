@@ -464,14 +464,14 @@ class _ProductPageState extends State<ProductPageUser>
       ),
       body: Column(
         children: [
+          if(_productList.isNotEmpty)
           Expanded(
             child: ListView(
               children: [
                 for (var i = 0; i < products.length; i++)
                   GestureDetector(
                     onTap: () {
-                      _showProductDialog(
-                          products[i].productId, products[i].productNumber);
+                      _showProductDialog(products[i].productId, products[i].productNumber);
                     },
                     child: Column(
                       children: [
@@ -625,6 +625,18 @@ class _ProductPageState extends State<ProductPageUser>
                     ),
                   ),
               ],
+            ),
+          ),
+          if(_productList.isEmpty)
+          const Expanded(
+            child: Center(
+              child: Text(
+                'Hozircha mahsulotlar yo`q',
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
           ),
           Row(
