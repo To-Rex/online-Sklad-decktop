@@ -79,7 +79,6 @@ class _UserPageState extends State<UserPage>
         _isLoad = false;
         return;
       }
-
       if (data['status'] == 'success' && data['message'] != null) {
         _isLoad = false;
         users.clear();

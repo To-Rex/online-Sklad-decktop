@@ -34,6 +34,7 @@ class _SamplePageState extends State<SamplePage>
   var maxWeight = '';
   var minHeight = '';
   var maxHeight = '';
+  var isLoading = true;
 
   Future<void> _getAllCategory() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -59,13 +60,18 @@ class _SamplePageState extends State<SamplePage>
         'https://golalang-online-sklad-production.up.railway.app/getAllCategory'));
     print(response.body);
     if (response.statusCode == 200) {
+      category_name.clear();
+      category_id.clear();
+      _categoryNameController.clear();
       final data = jsonDecode(response.body);
       if (data['status'] == 'success') {
+        isLoading = false;
         for (var i = 0; i < data['data'].length; i++) {
           category_name.add(data['data'][i]['category_name']);
           category_id.add(data['data'][i]['category_id']);
         }
       } else {
+        isLoading = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('No internet connection'),
@@ -89,8 +95,8 @@ class _SamplePageState extends State<SamplePage>
           'category_name': _categoryNameController.text,
           'category_icon': 'null',
         }));
-    print(response.body);
     if (response.statusCode == 200) {
+      isLoading = false;
       final data = jsonDecode(response.body);
       if (data['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -103,11 +109,9 @@ class _SamplePageState extends State<SamplePage>
             behavior: SnackBarBehavior.floating,
           ),
         );
-        category_name.clear();
-        category_id.clear();
-        _categoryNameController.clear();
         _getAllCategory();
       } else {
+        isLoading = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('No internet connection'),
@@ -129,6 +133,7 @@ class _SamplePageState extends State<SamplePage>
     print(response.body);
 
     if (response.statusCode == 200) {
+      isLoading = false;
       final data = jsonDecode(response.body);
       if (data['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -142,10 +147,9 @@ class _SamplePageState extends State<SamplePage>
             backgroundColor: Colors.green,
           ),
         );
-        category_name.clear();
-        category_id.clear();
         _getAllCategory();
       } else {
+        isLoading = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('No internet connection'),
@@ -258,6 +262,8 @@ class _SamplePageState extends State<SamplePage>
             TextButton(
               child: const Text('O`chirish'),
               onPressed: () {
+                isLoading = true;
+                setState(() {});
                 _deleteCategory(category_id[index]);
                 Navigator.of(context).pop();
               },
@@ -282,188 +288,200 @@ class _SamplePageState extends State<SamplePage>
 
   @override
   Widget build(BuildContext context) {
-    if (category_name.isNotEmpty) {
-      return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(50), // here the desired height
-          child: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0.4,
-            automaticallyImplyLeading: false,
-            actionsIconTheme: const IconThemeData(color: Colors.black),
-            iconTheme: const IconThemeData(color: Colors.black),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Bo`limlar",
-                    style: TextStyle(fontSize: 20, color: Colors.black)),
-                const Expanded(
-                  child: SizedBox(),
-                ),
-                Text("Salom, $userName",
-                    style: const TextStyle(fontSize: 18, color: Colors.black)),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.009,
-                ),
-                IconButton(
-                  hoverColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.white,
-                  color: Colors.white,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const UserPage(),
-                      ),
-                    );
-                  },
-                  icon: SvgPicture.asset(
-                    'assets/userIcon.svg',
-                    height: 30,
-                    width: 30,
-                    color: Colors.deepPurpleAccent,
-                    //color: Colors.black,
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.005,
-                ),
-              ],
-            ),
-          ),
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (category_name.isNotEmpty)
-              Expanded(
-                child: GridView.builder(
-                  itemCount: category_name.length,
-                  padding: const EdgeInsets.all(70),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 6,
-                    childAspectRatio: 1.0,
-                    crossAxisSpacing: 10.0,
-                    mainAxisSpacing: 10.0,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProductPage(
-                              category_id: category_id[index],
-                              category_name: category_name[index],
-                            ),
-                          ),
-                        );
-                      },
-                      child: Card(
-                        elevation: 10,
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                const Expanded(child: SizedBox()),
-                                IconButton(
-                                  hoverColor: Colors.transparent,
-                                  splashColor: Colors.transparent,
-                                  highlightColor:
-                                      const Color.fromRGBO(217, 217, 217, 100),
-                                  onPressed: () {
-                                    _showDeleteCategoryDialog(index);
-                                  },
-                                  icon: SvgPicture.asset(
-                                    'assets/deleteIcon.svg',
-                                    color: Colors.deepPurpleAccent,
-                                    width: MediaQuery.of(context).size.width *
-                                        0.025,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.025,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Expanded(child: SizedBox()),
-                            Text(
-                              category_name[index],
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.01,
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(50), // here the desired height
+        child: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0.4,
+          automaticallyImplyLeading: false,
+          actionsIconTheme: const IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text("Bo`limlar",
+                  style: TextStyle(fontSize: 20, color: Colors.black)),
+              const Expanded(
+                child: SizedBox(),
+              ),
+              Text("Salom, $userName",
+                  style: const TextStyle(fontSize: 18, color: Colors.black)),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.009,
+              ),
+              IconButton(
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.white,
+                color: Colors.white,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UserPage(),
+                    ),
+                  );
+                },
+                icon: SvgPicture.asset(
+                  'assets/userIcon.svg',
+                  height: 30,
+                  width: 30,
+                  color: Colors.deepPurpleAccent,
+                  //color: Colors.black,
                 ),
               ),
-            Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.01,
-                ),
-                IconButton(
-                  hoverColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  highlightColor: const Color.fromRGBO(217, 217, 217, 100),
-                  onPressed: () {
-                    category_name.clear();
-                    category_id.clear();
-                    _getAllCategory();
-                  },
-                  icon: const Icon(
-                    Icons.refresh,
-                    size: 30,
-                    color: Colors.deepPurpleAccent,
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.02,
-                ),
-                Text("Jami: ${category_name.length}",
-                    style: const TextStyle(fontSize: 20, color: Colors.black)),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.015,
-            ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.white,
-          onPressed: () {
-            // Add your onPressed code here!
-            _showDialogAddCategory();
-          },
-          child: const Icon(Icons.add, color: Colors.deepPurpleAccent),
-        ),
-      );
-    } else {
-      return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(0.0),
-          child: AppBar(
-            backgroundColor: const Color.fromRGBO(33, 158, 188, 10),
-            elevation: 3,
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.005,
+              ),
+            ],
           ),
         ),
-        body: const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (category_name.isNotEmpty)
+            Expanded(
+              child: GridView.builder(
+                itemCount: category_name.length,
+                padding: const EdgeInsets.all(70),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 6,
+                  childAspectRatio: 1.0,
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 10.0,
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductPage(
+                            category_id: category_id[index],
+                            category_name: category_name[index],
+                          ),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      elevation: 10,
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              const Expanded(child: SizedBox()),
+                              IconButton(
+                                hoverColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                highlightColor:
+                                    const Color.fromRGBO(217, 217, 217, 100),
+                                onPressed: () {
+                                  _showDeleteCategoryDialog(index);
+                                },
+                                icon: SvgPicture.asset(
+                                  'assets/deleteIcon.svg',
+                                  color: Colors.deepPurpleAccent,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.025,
+                                  height: MediaQuery.of(context).size.height *
+                                      0.025,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Expanded(child: SizedBox()),
+                          Text(
+                            category_name[index],
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.01,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          if (category_name.isEmpty)
+            const Expanded(
+              child: Center(
+                child: Text(
+                  "Bo`limlar mavjud emas",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          Row(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.01,
+              ),
+              IconButton(
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: const Color.fromRGBO(217, 217, 217, 100),
+                onPressed: () {
+                  isLoading = true;
+                  setState(() {});
+                  _getAllCategory();
+                },
+                icon: const Icon(
+                  Icons.refresh,
+                  size: 30,
+                  color: Colors.deepPurpleAccent,
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.02,
+              ),
+              Text("Jami: ${category_name.length}",
+                  style: const TextStyle(fontSize: 20, color: Colors.black)),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.02,
+              ),
+              if (isLoading)
+                const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Colors.deepPurpleAccent,
+                    ),
+                  ),
+                )
+            ],
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.015,
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        onPressed: () {
+          // Add your onPressed code here!
+          isLoading = true;
+          _showDialogAddCategory();
+        },
+        child: const Icon(Icons.add, color: Colors.deepPurpleAccent),
+      ),
+    );
   }
 }
