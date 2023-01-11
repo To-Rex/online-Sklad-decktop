@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
@@ -37,6 +38,8 @@ class _SamplePageState extends State<SamplePage>
   var isLoading = true;
 
   Future<void> _getAllCategory() async {
+    isLoading = true;
+    setState(() {});
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.getString('userid') ?? '';
     prefs.getString('name') ?? '';
@@ -63,6 +66,27 @@ class _SamplePageState extends State<SamplePage>
       category_id.clear();
       _categoryNameController.clear();
       final data = jsonDecode(response.body);
+      if (data['data'] == null) {
+        isLoading = false;
+        setState(() {});
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Bo\'limlar mavjud emas'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 10),
+            action: SnackBarAction(
+              label: 'Tushunarli',
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+              disabledTextColor: Colors.white,
+              textColor: Colors.white,
+            ),
+          ),
+        );
+        return;
+      }
+
       if (data['status'] == 'success') {
         isLoading = false;
         for (var i = 0; i < data['data'].length; i++) {
@@ -73,7 +97,7 @@ class _SamplePageState extends State<SamplePage>
         isLoading = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('No internet connection'),
+            content: Text('Internet bilan bog\'lanishni tekshiring'),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
@@ -105,6 +129,7 @@ class _SamplePageState extends State<SamplePage>
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
             duration: Duration(milliseconds: 1700),
+            backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -113,16 +138,30 @@ class _SamplePageState extends State<SamplePage>
         isLoading = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('No internet connection'),
+            content: Text('Nimadir xatolik ketdi'),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
             duration: Duration(milliseconds: 1700),
+            backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
           ),
         );
       }
       setState(() {});
+    } else {
+      isLoading = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Internet bilan bog\'lanishni tekshiring'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          duration: Duration(milliseconds: 1700),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
@@ -397,12 +436,16 @@ class _SamplePageState extends State<SamplePage>
                             ],
                           ),
                           const Expanded(child: SizedBox()),
-                          Text(
+                          AutoSizeText(
                             category_name[index],
-                            style: const TextStyle(
-                              fontSize: 16,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.width * 0.015,
                               fontWeight: FontWeight.bold,
                             ),
+                            minFontSize: 10,
+                            maxFontSize: 20,
+                            maxLines: 2,
                           ),
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.01,

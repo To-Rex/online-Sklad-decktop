@@ -78,14 +78,14 @@ class _ProductPageState extends State<ProductPage>
           'https://golalang-online-sklad-production.up.railway.app/getProductsByCategory?categoryId=$catId'),
     );
     if (response.statusCode == 200) {
+      _productList.clear();
+      products.clear();
       final data = jsonDecode(response.body);
       if (data['status'] == 'success' && data['data'] == null) {
         _isLoad = false;
         setState(() {});
         return;
       }
-      _productList.clear();
-      products.clear();
       for (var i = 0; i < data['data'].length; i++) {
         _isLoad = false;
         _productList.add(ProductList(
@@ -105,7 +105,10 @@ class _ProductPageState extends State<ProductPage>
         setState(() {});
       }
     } else {
+      _productList.clear();
+      products.clear();
       _isLoad = false;
+      setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Internet ulanish yo\'q yoki serverda xatolik'),
@@ -123,6 +126,7 @@ class _ProductPageState extends State<ProductPage>
     checkInternetConnection().then((value) {
       if (!value) {
         _isLoad = false;
+        setState(() {});
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Internetga ulanish yo\'q!'),
           backgroundColor: Colors.red,
@@ -185,6 +189,8 @@ class _ProductPageState extends State<ProductPage>
       }
       _getProductsByCategory();
     } else {
+      _isLoad = false;
+      setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Internet ulanish yo\'q yoki serverda xatolik'),
@@ -236,6 +242,7 @@ class _ProductPageState extends State<ProductPage>
         _getProductsByCategory();
       } else {
         _isLoad = false;
+        setState(() {});
         _productPriceController.clear();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -251,6 +258,7 @@ class _ProductPageState extends State<ProductPage>
       }
     } else {
       _isLoad = false;
+      setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Internet ulanish yo\'q yoki serverda xatolik'),
@@ -268,6 +276,8 @@ class _ProductPageState extends State<ProductPage>
     checkInternetConnection().then((value) {
       if (!value) {
         _isLoad = false;
+        setState(() {
+        });
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Internetga ulanish yo\'q!'),
           backgroundColor: Colors.red,
@@ -311,6 +321,8 @@ class _ProductPageState extends State<ProductPage>
         );
         _getProductsByCategory();
       } else {
+        _isLoad = false;
+        setState(() {});
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Mahsulot yangilanmadi'),
@@ -325,6 +337,8 @@ class _ProductPageState extends State<ProductPage>
       }
       _getProductsByCategory();
     } else {
+      _isLoad = false;
+      setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Internet ulanish yo\'q yoki serverda xatolik'),
@@ -371,6 +385,7 @@ class _ProductPageState extends State<ProductPage>
         _getProductsByCategory();
       } else {
         _isLoad = false;
+        setState(() {});
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Mahsulot qo\'shilmadi'),
@@ -385,6 +400,7 @@ class _ProductPageState extends State<ProductPage>
       }
     } else {
       _isLoad = false;
+      setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Internet ulanish yo\'q yoki serverda xatolik'),
@@ -430,6 +446,8 @@ class _ProductPageState extends State<ProductPage>
         );
         _getProductsByCategory();
       } else {
+        _isLoad = false;
+        setState(() {});
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Mahsulot o\'chirilmadi'),
@@ -443,6 +461,8 @@ class _ProductPageState extends State<ProductPage>
         );
       }
     } else {
+      _isLoad = false;
+      setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Internet ulanish yo\'q yoki serverda xatolik'),
@@ -1723,15 +1743,107 @@ class _ProductPageState extends State<ProductPage>
               ),
             ),
           if (_productList.isEmpty)
-            const Expanded(
-              child: Center(
-                child: Text(
-                  'Hozircha mahsulotlar yo`q',
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
-                ),
+            Expanded(
+              child: ListView(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      _showDialogAddProduct();
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                          left: 10, right: 10, top: 10, bottom: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.35),
+                            //color: Color.fromARGB(255, 221, 221, 221),
+                            spreadRadius: 1,
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height / 50),
+                          //product qo`shish
+                          Row(
+                            //mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 50,
+                              ),
+                              const Text(
+                                'Yangi mahsulot',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const Expanded(
+                                child: SizedBox(),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    _showDialogAddProduct();
+                                  },
+                                  icon: const Icon(
+                                    Icons.add_circle_outline_outlined,
+                                    color: Colors.deepPurpleAccent,
+                                    size: 30,
+                                  )),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 35,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height / 50),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                          left: 10, right: 10, top: 10, bottom: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.35),
+                            //color: Color.fromARGB(255, 221, 221, 221),
+                            spreadRadius: 1,
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height / 50),
+                          const Center(
+                            child: Text(
+                              'Hozircha mahsulot yo`q',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height / 50),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           Row(

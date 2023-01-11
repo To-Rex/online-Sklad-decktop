@@ -939,7 +939,7 @@ class _UserPageState extends State<UserPage>
                 ),
                 if (userRole == 'creator')
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.05,
+                    height: 38,
                     child: Container(
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 221, 221, 221),
@@ -972,7 +972,7 @@ class _UserPageState extends State<UserPage>
                   ),
                 if (userRole == 'admin')
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.05,
+                    height: 38,
                     child: Container(
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 221, 221, 221),
@@ -997,8 +997,8 @@ class _UserPageState extends State<UserPage>
                         icon: SvgPicture.asset(
                           'assets/userStatic.svg',
                           color: Colors.deepPurpleAccent,
-                          height: 25,
-                          width: 25,
+                          height: MediaQuery.of(context).size.height * 0.03,
+                          width: MediaQuery.of(context).size.height * 0.03,
                         ),
                       ),
                     ),
@@ -1007,7 +1007,7 @@ class _UserPageState extends State<UserPage>
                   width: MediaQuery.of(context).size.width / 50,
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
+                  height: 38,
                   child: Container(
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 221, 221, 221),
@@ -1024,9 +1024,15 @@ class _UserPageState extends State<UserPage>
                       onPressed: () {
                         showAddUserDialog();
                       },
-                      icon: const Icon(
+                      /*icon: const Icon(
                         Icons.add,
                         color: Colors.deepPurpleAccent,
+                      ),*/
+                      icon: const Center(
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.deepPurpleAccent,
+                        ),
                       ),
                     ),
                   ),

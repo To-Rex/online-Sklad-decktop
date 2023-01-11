@@ -35,6 +35,7 @@ dependencies:
   http: ^0.13.5
   shared_preferences:
   flutter_svg: ^1.1.6
+  auto_size_text: ^3.0.0
   window_manager:
     git:
       url: https://github.com/leanflutter/window_manager.git
