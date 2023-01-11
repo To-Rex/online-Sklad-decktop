@@ -61,11 +61,14 @@ class _TransktionPageState extends State<TransaktionsPageProduct> {
   Future<void> getSellTransaction() async {
     userId = widget.productId.toString();
     final response = await http.get(Uri.parse(
-        'https://golalang-online-sklad-production.up.railway.app/getProductSell?months=$_selectedMenu&productId=$userId&sells=all'));
+        'https://omborxona.herokuapp.com/getProductSell?months=$_selectedMenu&productId=$userId&sells=all'));
     final data = jsonDecode(response.body);
     if (response.statusCode == 200 && data['status'] == 'success') {
       benefit = data['benefit'];
       price = data['price'];
+      transaktionList.clear();
+      listTransaktion.clear();
+
       if (data["data"].toString() == 'null') {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Hisobotlar mavjud emas'),
@@ -74,8 +77,15 @@ class _TransktionPageState extends State<TransaktionsPageProduct> {
         setState(() {});
         return;
       }
-      transaktionList.clear();
-      listTransaktion.clear();
+      if(data['data'] == null){
+        isLoading = false;
+        setState(() {});
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Hisobotlar mavjud emas'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
       for (var i = 0; i < data['data'].length; i++) {
         transaktionList.add(TransaktionList(
           transactionId: data['data'][i]['transaction_id'],

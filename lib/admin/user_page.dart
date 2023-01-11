@@ -70,7 +70,7 @@ class _UserPageState extends State<UserPage>
   }
 
   Future<void> _getUsers() async {
-    var url = Uri.parse('https://golalang-online-sklad-production.up.railway.app/getAllUser');
+    var url = Uri.parse('https://omborxona.herokuapp.com/getAllUser');
     var response = await http.get(url);
     final data = jsonDecode(response.body);
     if (response.statusCode == 200) {
@@ -126,7 +126,7 @@ class _UserPageState extends State<UserPage>
     });
     final response = await http.post(
       Uri.parse(
-          'https://golalang-online-sklad-production.up.railway.app/register'),
+          'https://omborxona.herokuapp.com/register'),
       body: jsonEncode(<Object, Object>{
         'username': _userNameController.text,
         'name': _nameController.text,
@@ -186,7 +186,7 @@ class _UserPageState extends State<UserPage>
       }
     });
     var url = Uri.parse(
-        'https://golalang-online-sklad-production.up.railway.app/deleteUser?userid=$userId');
+        'https://omborxona.herokuapp.com/deleteUser?userid=$userId');
     var response = await http.delete(url);
     final data = jsonDecode(response.body);
     if (response.statusCode == 200) {
@@ -243,7 +243,7 @@ class _UserPageState extends State<UserPage>
     });
     var response = await http.put(
         Uri.parse(
-            'https://golalang-online-sklad-production.up.railway.app/updateBlocked'),
+            'https://omborxona.herokuapp.com/updateBlocked'),
         body: jsonEncode(<Object, Object>{
           'username': userNames,
           'blocked': blocked,
@@ -298,7 +298,7 @@ class _UserPageState extends State<UserPage>
     });
     var response = await http.put(
         Uri.parse(
-            'https://golalang-online-sklad-production.up.railway.app/updateUser?userId=$userId'),
+            'https://omborxona.herokuapp.com/updateUser?userId=$userId'),
         body: jsonEncode(<Object, Object>{
           'username': _userNameController.text,
           'name': _nameController.text,
@@ -361,7 +361,7 @@ class _UserPageState extends State<UserPage>
     });
     var response = await http.put(
         Uri.parse(
-            'https://golalang-online-sklad-production.up.railway.app/updatePassword'),
+            'https://omborxona.herokuapp.com/updatePassword'),
         body: jsonEncode(<Object, Object>{
           'username': userNames,
           'password': _passwordController.text,
@@ -411,7 +411,7 @@ class _UserPageState extends State<UserPage>
     });
     var response = await http.put(
         Uri.parse(
-            'https://golalang-online-sklad-production.up.railway.app/updateUserRole'),
+            'https://omborxona.herokuapp.com/updateUserRole'),
         body: jsonEncode(<Object, Object>{
           'username': userNames,
           'user_role': roles,

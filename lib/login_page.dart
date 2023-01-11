@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage>
 
     final response = await http.post(
       Uri.parse(
-          'https://golalang-online-sklad-production.up.railway.app/login'),
+          'https://omborxona.herokuapp.com/login'),
       body: jsonEncode(<String, String>{
         'username': _emailController.text,
         'password': _passwordController.text,

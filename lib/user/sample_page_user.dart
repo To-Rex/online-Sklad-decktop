@@ -6,12 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
-import 'package:online_sklad/admin/product_page.dart';
-import 'package:online_sklad/admin/tarnsaktion_page.dart';
-import 'package:online_sklad/admin/user_page.dart';
 import 'package:online_sklad/user/product_page.dart';
 import 'package:online_sklad/user/tarnsaktion_page.dart';
-import 'package:online_sklad/user/user_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SamplePageUser extends StatefulWidget {
@@ -63,12 +59,22 @@ class _SamplePageState extends State<SamplePageUser>
     userNames = prefs.getString('username') ?? '';
 
     final response = await http.get(Uri.parse(
-        'https://golalang-online-sklad-production.up.railway.app/getAllCategory'));
+        'https://omborxona.herokuapp.com/getAllCategory'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      category_name.clear();
+      category_id.clear();
+      if(data['data']== 'null'){
+        isLoading = false;
+        setState(() {});
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Kategoriyalar mavjud emas'),
+          ),
+        );
+        return;
+      }
       if (data['status'] == 'success') {
-        category_name.clear();
-        category_id.clear();
         isLoading = false;
         for (var i = 0; i < data['data'].length; i++) {
           category_name.add(data['data'][i]['category_name']);

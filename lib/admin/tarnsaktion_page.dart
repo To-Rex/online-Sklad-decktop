@@ -60,7 +60,7 @@ class _TransktionPageState extends State<TransaktionsPage>
 
   Future<void> getSellTransaction() async {
     final response = await http.get(Uri.parse(
-        'https://golalang-online-sklad-production.up.railway.app/getSellTransaction?months=${_selectedMenu}'));
+        'https://omborxona.herokuapp.com/getSellTransaction?months=${_selectedMenu}'));
     final data = jsonDecode(response.body);
     if (response.statusCode == 200 && data['status'] == 'success'|| response.statusCode == 200 && data['status'] == 'success') {
       benefit = data['benefit'];
@@ -68,6 +68,16 @@ class _TransktionPageState extends State<TransaktionsPage>
       isLoad = false;
       transaktionList.clear();
       listTransaktion.clear();
+      if (data["data"]=='null'||data["data"]==null) {
+        isLoad = false;
+        setState(() {
+        });
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Ma\'lumot mavjud emas'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
       for (var i = 0; i < data['data'].length; i++) {
         transaktionList.add(TransaktionList(
           transactionId: data['data'][i]['transaction_id'],

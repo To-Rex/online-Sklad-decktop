@@ -61,11 +61,13 @@ class _TransktionPageState extends State<TransaktionsPageAdmin> {
   Future<void> getSellTransaction() async {
     userId = widget.userIdAdmin.toString();
     final response = await http.get(Uri.parse(
-        'https://golalang-online-sklad-production.up.railway.app/getUserProductSell?months=$_selectedMenu&userId=$userId&sells=all'));
+        'https://omborxona.herokuapp.com/getUserProductSell?months=$_selectedMenu&userId=$userId&sells=all'));
     final data = jsonDecode(response.body);
     if (response.statusCode == 200 && data['status'] == 'success') {
       benefit = data['benefit'];
       price = data['price'];
+      transaktionList.clear();
+      listTransaktion.clear();
       if (data["transactions"].toString() == 'null') {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Hisobotlar mavjud emas'),
@@ -74,8 +76,6 @@ class _TransktionPageState extends State<TransaktionsPageAdmin> {
         setState(() {});
         return;
       }
-      transaktionList.clear();
-      listTransaktion.clear();
       for (var i = 0; i < data['transactions'].length; i++) {
         transaktionList.add(TransaktionList(
           transactionId: data['transactions'][i]['transaction_id'],

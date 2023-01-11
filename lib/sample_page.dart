@@ -60,7 +60,7 @@ class _SamplePageState extends State<SamplePage>
     userNames = prefs.getString('username') ?? '';
 
     final response = await http.get(Uri.parse(
-        'https://golalang-online-sklad-production.up.railway.app/getAllCategory'));
+        'https://omborxona.herokuapp.com/getAllCategory'));
     if (response.statusCode == 200) {
       category_name.clear();
       category_id.clear();
@@ -113,7 +113,7 @@ class _SamplePageState extends State<SamplePage>
   Future<void> _addCategory() async {
     final response = await http.post(
         Uri.parse(
-            'https://golalang-online-sklad-production.up.railway.app/addCategory'),
+            'https://omborxona.herokuapp.com/addCategory'),
         body: jsonEncode(<String, String>{
           'category_name': _categoryNameController.text,
           'category_icon': 'null',
@@ -167,7 +167,7 @@ class _SamplePageState extends State<SamplePage>
 
   Future<void> _deleteCategory(String id) async {
     final response = await http.delete(Uri.parse(
-        'https://golalang-online-sklad-production.up.railway.app/deleteCategory?categoryId=$id'));
+        'https://omborxona.herokuapp.com/deleteCategory?categoryId=$id'));
     if (response.statusCode == 200) {
       isLoading = false;
       final data = jsonDecode(response.body);

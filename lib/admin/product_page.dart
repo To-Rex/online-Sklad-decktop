@@ -75,15 +75,21 @@ class _ProductPageState extends State<ProductPage>
     var catId = widget.category_id;
     final response = await http.get(
       Uri.parse(
-          'https://golalang-online-sklad-production.up.railway.app/getProductsByCategory?categoryId=$catId'),
+          'https://omborxona.herokuapp.com/getProductsByCategory?categoryId=$catId'),
     );
     if (response.statusCode == 200) {
       _productList.clear();
       products.clear();
       final data = jsonDecode(response.body);
-      if (data['status'] == 'success' && data['data'] == null) {
+      if (data['status'] == 'success' && data['data'] == null || data['data'] == 'null') {
         _isLoad = false;
         setState(() {});
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mahsulotlar topilmadi'),
+            backgroundColor: Colors.black,
+          ),
+        );
         return;
       }
       for (var i = 0; i < data['data'].length; i++) {
@@ -140,7 +146,7 @@ class _ProductPageState extends State<ProductPage>
     _productStockController.text = 'active';
     final response = await http.post(
       Uri.parse(
-          'https://golalang-online-sklad-production.up.railway.app/addProduct'),
+          'https://omborxona.herokuapp.com/addProduct'),
       body: jsonEncode(<Object, Object>{
         'product_name': _productNameController.text,
         'product_desc': _productDescriptionController.text,
@@ -218,7 +224,7 @@ class _ProductPageState extends State<ProductPage>
     var number = int.parse(_productNumbersController.text);
     final response = await http.post(
       Uri.parse(
-          'https://golalang-online-sklad-production.up.railway.app/productSell?productId=$productId&userId=$userId&number=$number'),
+          'https://omborxona.herokuapp.com/productSell?productId=$productId&userId=$userId&number=$number'),
       body: {
         'addition_price': _productPriceController.text,
       },
@@ -289,7 +295,7 @@ class _ProductPageState extends State<ProductPage>
     var benefit = int.parse(_productBenefitController.text);
     final response = await http.put(
       Uri.parse(
-          'https://golalang-online-sklad-production.up.railway.app/updateProduct?productId=$productId'),
+          'https://omborxona.herokuapp.com/updateProduct?productId=$productId'),
       body: jsonEncode(<Object, Object>{
         'product_name': _productNameController.text,
         'product_desc': _productDescriptionController.text,
@@ -356,7 +362,7 @@ class _ProductPageState extends State<ProductPage>
     var number = int.parse(_productNumberController.text);
     final response = await http.post(
       Uri.parse(
-          'https://golalang-online-sklad-production.up.railway.app/addProductSell?productId=$productId&number=$number&userId=$userId'),
+          'https://omborxona.herokuapp.com/addProductSell?productId=$productId&number=$number&userId=$userId'),
       body: {
         'transaction_benefit': "0",
         'transaction_price': _productPriceController.text,
@@ -428,7 +434,7 @@ class _ProductPageState extends State<ProductPage>
     setState(() {});
     final response = await http.delete(
       Uri.parse(
-          'https://golalang-online-sklad-production.up.railway.app/deleteProduct?productId=$productId'),
+          'https://omborxona.herokuapp.com/deleteProduct?productId=$productId'),
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

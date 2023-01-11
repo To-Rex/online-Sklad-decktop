@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
-import 'package:online_sklad/admin/tarnsaktion_page.dart';
-import 'package:online_sklad/admin/user_page.dart';
 import 'package:online_sklad/models/product_list.dart';
 import 'package:online_sklad/user/tarnsaktion_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -76,12 +74,13 @@ class _ProductPageState extends State<ProductPageUser>
     var catId = widget.category_id;
     final response = await http.get(
       Uri.parse(
-          'https://golalang-online-sklad-production.up.railway.app/getProductsByCategory?categoryId=$catId'),
+          'https://omborxona.herokuapp.com/getProductsByCategory?categoryId=$catId'),
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       _productList.clear();
-      if (data['status'] == 'success' && data['data'] == null) {
+      products.clear();
+      if (data['status'] == 'success' && data['data'] == null || data['data'] == 'null') {
         _isLoad = false;
         setState(() {});
         return;
@@ -132,7 +131,7 @@ class _ProductPageState extends State<ProductPageUser>
     });
     var number = int.parse(_productNumbersController.text);
     final response = await http.post(
-      Uri.parse('https://golalang-online-sklad-production.up.railway.app/productSell?productId=$productId&userId=$userId&number=$number'),
+      Uri.parse('https://omborxona.herokuapp.com/productSell?productId=$productId&userId=$userId&number=$number'),
       body: {
         'addition_price': _productPriceController.text,
       },
