@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage>
       _isLoading = false;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final data = jsonDecode(response.body);
-      if (data['message'] == 'Bunday foydalanuvchi mavjud emas') {
+      if (data['message'] == 'User not found') {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Bunday foydalanuvchi mavjud emas'),
@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage>
         setState(() {});
         return;
       }
-      if (data['message'] == 'Parolingiz xato') {
+      if (data['message'] == 'Wrong password') {
         _isLoading = false;
         _passwordController.clear();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -109,7 +109,7 @@ class _LoginPageState extends State<LoginPage>
         setState(() {});
         return;
       }
-      if (data['message'] == 'Foydalanuvchi Bloklangan') {
+      if (data['message'] == 'User blocked') {
         _isLoading = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
