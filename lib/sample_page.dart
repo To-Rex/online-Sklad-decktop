@@ -188,7 +188,7 @@ class _SamplePageState extends State<SamplePage>
         isLoading = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('No internet connection'),
+            content: Text('Internet bilan bog\'lanishni tekshiring'),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
