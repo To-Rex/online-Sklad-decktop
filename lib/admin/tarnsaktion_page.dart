@@ -122,6 +122,13 @@ class _TransktionPageState extends State<TransaktionsPage>
           backgroundColor: Colors.red,
         ));
       }
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Internet bilan aloqa yo\'q'),
+        backgroundColor: Colors.red,
+      ));
+      isLoad = false;
+      setState(() {});
     }
   }
 
