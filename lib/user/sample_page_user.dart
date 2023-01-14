@@ -146,7 +146,7 @@ class _SamplePageState extends State<SamplePageUser>
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.009,
                 ),
-                IconButton(
+                /*IconButton(
                   hoverColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.white,
@@ -169,7 +169,7 @@ class _SamplePageState extends State<SamplePageUser>
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.005,
-                ),
+                ),*/
               ],
             ),
           ),

@@ -112,6 +112,64 @@ class _TransktionPageState extends State<TransaktionsPageProduct> {
     }
   }
 
+  Future<void> deleteSellTransaction(String transactionId) async {
+    final response = await http.delete(Uri.parse(
+        'https://omborxona.herokuapp.com/deleteSellTransaction?transactionid=$transactionId'));
+    final data = jsonDecode(response.body);
+    if (response.statusCode == 200){
+      if (data['message']=='Transaction deleted') {
+        isLoading = false;
+        setState(() {});
+        getSellTransaction();
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Ma\'lumot o\'chirildi'),
+          backgroundColor: Colors.green,
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Ma\'lumot o\'chirilmadi qayta urinib ko\'ring'),
+          backgroundColor: Colors.red,
+        ));
+      }
+    }
+  }
+
+  Future<void> _showDialogDeleteTransaction(String transactionId) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Ma\'lumotni o\'chirish'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Siz rostdan ham ushbu ma\'lumotni o\'chirmoqchimisiz?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Bekor qilish'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('O\'chirish'),
+              onPressed: () {
+                isLoading = true;
+                setState(() {});
+                deleteSellTransaction(transactionId);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     getSellTransaction();
@@ -467,6 +525,30 @@ class _TransktionPageState extends State<TransaktionsPageProduct> {
                                           color: Colors.black,
                                           fontSize: 12,
                                           fontWeight: FontWeight.w400),
+                                    ),
+                                    const Expanded(child: SizedBox()),
+                                    IconButton(
+                                      hoverColor: Colors.transparent,
+                                      splashColor: Colors.transparent,
+                                      highlightColor:
+                                      const Color.fromRGBO(217, 217, 217, 100),
+                                      onPressed: () {
+                                        setState(() {
+                                          _showDialogDeleteTransaction(listTransaktion[i].transactionId);
+                                        });
+                                      },
+                                      icon: SvgPicture.asset(
+                                        'assets/deleteIcon.svg',
+                                        color: Colors.deepPurpleAccent,
+                                        width:
+                                        MediaQuery.of(context).size.width * 0.025,
+                                        height: MediaQuery.of(context).size.height *
+                                            0.025,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.01,
                                     ),
                                   ],
                                 ),

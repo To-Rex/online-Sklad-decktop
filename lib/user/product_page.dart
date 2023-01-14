@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:online_sklad/models/product_list.dart';
-import 'package:online_sklad/user/tarnsaktion_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductPageUser extends StatefulWidget {
@@ -45,6 +44,7 @@ class _ProductPageState extends State<ProductPageUser>
   var minHeight = '';
   var maxHeight = '';
   var _isLoad = true;
+  bool _isCheck = false;
 
   Future<bool> checkInternetConnection() async {
     try {
@@ -80,7 +80,8 @@ class _ProductPageState extends State<ProductPageUser>
       final data = jsonDecode(response.body);
       _productList.clear();
       products.clear();
-      if (data['status'] == 'success' && data['data'] == null || data['data'] == 'null') {
+      if (data['status'] == 'success' && data['data'] == null ||
+          data['data'] == 'null') {
         _isLoad = false;
         setState(() {});
         return;
@@ -131,7 +132,61 @@ class _ProductPageState extends State<ProductPageUser>
     });
     var number = int.parse(_productNumbersController.text);
     final response = await http.post(
-      Uri.parse('https://omborxona.herokuapp.com/productSell?productId=$productId&userId=$userId&number=$number'),
+      Uri.parse(
+          'https://omborxona.herokuapp.com/productSell?productId=$productId&userId=$userId&number=$number'),
+      body: {
+        'addition_price': _productPriceController.text,
+      },
+    );
+    if (response.statusCode == 200) {
+      _productNumbersController.clear();
+      _productPriceController.clear();
+      final data = jsonDecode(response.body);
+      if (data['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mahsulot sotildi'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 1700),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.green,
+          ),
+        );
+        _getProductsByCategory();
+      } else {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mahsulot sotilmadi. Mahsulot yetarli emas'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 3000),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _sellProductPrise(String productId) async {
+    checkInternetConnection().then((value) {
+      if (!value) {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Internetga ulanish yo\'q!'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+    });
+    var number = int.parse(_productNumbersController.text);
+    final response = await http.post(
+      Uri.parse(
+          'https://omborxona.herokuapp.com/addProductSellPrice?productId=$productId&userId=$userId&number=$number'),
       body: {
         'addition_price': _productPriceController.text,
       },
@@ -224,8 +279,7 @@ class _ProductPageState extends State<ProductPageUser>
                               _productNumbersController.text = '0';
                               return;
                             }
-                            if (int.parse(_productNumbersController.text) <
-                                0) {
+                            if (int.parse(_productNumbersController.text) < 0) {
                               _productNumbersController.text = '0';
                               return;
                             }
@@ -269,7 +323,7 @@ class _ProductPageState extends State<ProductPageUser>
                             ],
                             decoration: const InputDecoration(
                               contentPadding:
-                              EdgeInsets.only(left: 10, right: 10),
+                                  EdgeInsets.only(left: 10, right: 10),
                               border: InputBorder.none,
                               hintText: 'Mahsulot miqdori',
                             ),
@@ -292,8 +346,7 @@ class _ProductPageState extends State<ProductPageUser>
                             if (_productNumbersController.text.isEmpty) {
                               _productNumbersController.text = '0';
                             }
-                            if (int.parse(_productNumbersController.text) <
-                                0) {
+                            if (int.parse(_productNumbersController.text) < 0) {
                               _productNumbersController.text = '0';
                             }
                             _productNumbersController.text =
@@ -309,12 +362,32 @@ class _ProductPageState extends State<ProductPageUser>
                       ),
                     ],
                   ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  //check box
+                  Row(
+                    children: [
+                      Checkbox(
+                        checkColor: Colors.white,
+                        value: _isCheck,
+                        onChanged: (bool? value) {
+                          _isCheck = value!;
+                          setState(() {});
+                          Navigator.of(context).pop();
+                          _showProductDialog(id, productNumber);
+                        },
+                      ),
+                      const Text('Mahsulotni tannarxida sotish'),
+                    ],
+                  ),
                 ],
               ),
             ),
             actions: [
               TextButton(
                 onPressed: () {
+                  _isCheck = false;
                   _productNumbersController.clear();
                   _productPriceController.clear();
                   Navigator.pop(context);
@@ -323,8 +396,9 @@ class _ProductPageState extends State<ProductPageUser>
               ),
               TextButton(
                 onPressed: () {
-                  if (_productNumbersController.text.isEmpty||
-                      _productNumbersController.text == ''|| _productNumbersController.text == '0') {
+                  if (_productNumbersController.text.isEmpty ||
+                      _productNumbersController.text == '' ||
+                      _productNumbersController.text == '0') {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Mahsulot sonini kiriting!'),
@@ -332,7 +406,8 @@ class _ProductPageState extends State<ProductPageUser>
                       ),
                     );
                   } else {
-                    if (int.parse(_productNumbersController.text) > productNumber) {
+                    if (int.parse(_productNumbersController.text) >
+                        productNumber) {
                       _isLoad = false;
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -344,7 +419,12 @@ class _ProductPageState extends State<ProductPageUser>
                     }
                     _isLoad = true;
                     setState(() {});
-                    _sellProduct(id);
+                    if (_isCheck) {
+                      _sellProductPrise(id);
+                    } else {
+                      _sellProduct(id);
+                    }
+                    _isCheck = false;
                     Navigator.pop(context);
                   }
                 },
@@ -437,7 +517,7 @@ class _ProductPageState extends State<ProductPageUser>
               SizedBox(
                 width: MediaQuery.of(context).size.width / 50,
               ),
-              IconButton(
+              /*IconButton(
                 hoverColor: Colors.transparent,
                 splashColor: Colors.transparent,
                 highlightColor: Colors.white,
@@ -456,134 +536,25 @@ class _ProductPageState extends State<ProductPageUser>
                   width: 25,
                   color: Colors.deepPurpleAccent,
                 ),
-              ),
+              ),*/
             ],
           ),
         ),
       ),
       body: Column(
         children: [
-          if(_productList.isNotEmpty)
-          Expanded(
-            child: ListView(
-              children: [
-                for (var i = 0; i < products.length; i++)
-                  GestureDetector(
-                    onTap: () {
-                      _showProductDialog(products[i].productId, products[i].productNumber);
-                    },
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(
-                              left: 10, right: 10, top: 10, bottom: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.35),
-                                spreadRadius: 1,
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.02),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.01),
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 10),
-                                    child: SvgPicture.asset(
-                                      'assets/productIcon.svg',
-                                      height: 50,
-                                      width: 50,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.01),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          products[i].productName,
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          '${products[i].productPrice + products[i].productBenefit} so\'m',
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          products[i].productDescription,
-                                          style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          255, 221, 221, 221),
-                                      border: Border.all(
-                                          color: const Color.fromARGB(
-                                              255, 221, 221, 221),
-                                          width: 5),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Text(
-                                        '  ${products[i].productNumber}  Dona  '),
-                                  ),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.009,
-                                  ),
-                                  // IconButton(
-                                  //     onPressed: () {
-                                  //       _productPriceController.text = products[i].productPrice.toString();
-                                  //       _productBenefitController.text = products[i].productBenefit.toString();
-                                  //       _showDialogSellProduct(products[i].productId,products[i].productName);
-                                  //     },
-                                  //     icon: const Icon(
-                                  //       Icons.sell_outlined,
-                                  //       color: Colors.deepPurpleAccent,
-                                  //       size: 30,
-                                  //     )),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.005,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.02),
-                            ],
-                          ),
-                        ),
-                        if (_productList.isEmpty)
+          if (_productList.isNotEmpty)
+            Expanded(
+              child: ListView(
+                children: [
+                  for (var i = 0; i < products.length; i++)
+                    GestureDetector(
+                      onTap: () {
+                        _showProductDialog(
+                            products[i].productId, products[i].productNumber);
+                      },
+                      child: Column(
+                        children: [
                           Container(
                             margin: const EdgeInsets.only(
                                 left: 10, right: 10, top: 10, bottom: 10),
@@ -593,7 +564,6 @@ class _ProductPageState extends State<ProductPageUser>
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.grey.withOpacity(0.35),
-                                  //color: Color.fromARGB(255, 221, 221, 221),
                                   spreadRadius: 1,
                                   blurRadius: 10,
                                   offset: const Offset(0, 3),
@@ -603,41 +573,156 @@ class _ProductPageState extends State<ProductPageUser>
                             child: Column(
                               children: [
                                 SizedBox(
-                                    height: MediaQuery.of(context).size.height /
-                                        50),
-                                const Center(
-                                  child: Text(
-                                    'Hozircha mahsulot yo`q',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.02),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.01),
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 10),
+                                      child: SvgPicture.asset(
+                                        'assets/productIcon.svg',
+                                        height: 50,
+                                        width: 50,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.01),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            products[i].productName,
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            '${products[i].productPrice + products[i].productBenefit} so\'m',
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            products[i].productDescription,
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color.fromARGB(
+                                            255, 221, 221, 221),
+                                        border: Border.all(
+                                            color: const Color.fromARGB(
+                                                255, 221, 221, 221),
+                                            width: 5),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Text(
+                                          '  ${products[i].productNumber}  Dona  '),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.009,
+                                    ),
+                                    // IconButton(
+                                    //     onPressed: () {
+                                    //       _productPriceController.text = products[i].productPrice.toString();
+                                    //       _productBenefitController.text = products[i].productBenefit.toString();
+                                    //       _showDialogSellProduct(products[i].productId,products[i].productName);
+                                    //     },
+                                    //     icon: const Icon(
+                                    //       Icons.sell_outlined,
+                                    //       color: Colors.deepPurpleAccent,
+                                    //       size: 30,
+                                    //     )),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.005,
+                                    ),
+                                  ],
                                 ),
                                 SizedBox(
-                                    height: MediaQuery.of(context).size.height /
-                                        50),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.02),
                               ],
                             ),
                           ),
-                      ],
+                          if (_productList.isEmpty)
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  left: 10, right: 10, top: 10, bottom: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.35),
+                                    //color: Color.fromARGB(255, 221, 221, 221),
+                                    spreadRadius: 1,
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              50),
+                                  const Center(
+                                    child: Text(
+                                      'Hozircha mahsulot yo`q',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              50),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-              ],
-            ),
-          ),
-          if(_productList.isEmpty)
-          const Expanded(
-            child: Center(
-              child: Text(
-                'Hozircha mahsulotlar yo`q',
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
+                ],
               ),
             ),
-          ),
+          if (_productList.isEmpty)
+            const Expanded(
+              child: Center(
+                child: Text(
+                  'Hozircha mahsulotlar yo`q',
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
           Row(
             children: [
               SizedBox(

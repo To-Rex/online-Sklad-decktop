@@ -46,6 +46,8 @@ class _ProductPageState extends State<ProductPage>
   var minHeight = '';
   var maxHeight = '';
   var _isLoad = true;
+  bool _isCheck = false;
+
 
   Future<bool> checkInternetConnection() async {
     try {
@@ -225,6 +227,74 @@ class _ProductPageState extends State<ProductPage>
     final response = await http.post(
       Uri.parse(
           'https://omborxona.herokuapp.com/productSell?productId=$productId&userId=$userId&number=$number'),
+      body: {
+        'addition_price': _productPriceController.text,
+      },
+    );
+    if (response.statusCode == 200) {
+      _productNumbersController.clear();
+      _productPriceController.clear();
+      final data = jsonDecode(response.body);
+      if (data['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mahsulot sotildi'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 1700),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.green,
+          ),
+        );
+        _getProductsByCategory();
+      } else {
+        _isLoad = false;
+        setState(() {});
+        _productPriceController.clear();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mahsulot sotilmadi. Mahsulot yetarli emas'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            duration: Duration(milliseconds: 3000),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } else {
+      _isLoad = false;
+      setState(() {});
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Internet ulanish yo\'q yoki serverda xatolik'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          duration: Duration(milliseconds: 2700),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  Future<void> _sellProductPrise(String productId) async {
+    checkInternetConnection().then((value) {
+      if (!value) {
+        _isLoad = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Internetga ulanish yo\'q!'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+    });
+    var number = int.parse(_productNumbersController.text);
+    final response = await http.post(
+      Uri.parse(
+          'https://omborxona.herokuapp.com/addProductSellPrice?productId=$productId&userId=$userId&number=$number'),
       body: {
         'addition_price': _productPriceController.text,
       },
@@ -940,6 +1010,21 @@ class _ProductPageState extends State<ProductPage>
                       ),
                     ],
                   ),
+                  Row(
+                    children: [
+                      Checkbox(
+                        checkColor: Colors.white,
+                        value: _isCheck,
+                        onChanged: (bool? value) {
+                          _isCheck = value!;
+                          setState(() {});
+                          Navigator.of(context).pop();
+                          _showProductDialog(id, productNumber);
+                        },
+                      ),
+                      const Text('Mahsulotni tannarxida sotish'),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -977,7 +1062,12 @@ class _ProductPageState extends State<ProductPage>
                     }
                     _isLoad = true;
                     setState(() {});
-                    _sellProduct(id);
+                    if (_isCheck) {
+                      _sellProductPrise(id);
+                    } else {
+                      _sellProduct(id);
+                    }
+                    _isCheck = false;
                     Navigator.pop(context);
                   }
                 },
